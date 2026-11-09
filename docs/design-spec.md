@@ -71,6 +71,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
                "hover_in_ms": 60, "hover_out_ms": 250 },
   "style":   { "name": "xl-Cheeselooks", "depth": 50 },
   "panel":   { "separate_colors": false, "accent": null, "bg": null, "text": null,
+               "label_weight": "bold", "panel_opacity": 70, "menu_opacity": 94,
                "panel_shape": { "follow_global": true, "roundness": 20, "gradient": 30 },
                "menu_shape":  { "follow_global": true, "roundness": 20, "gradient": 30 } },
   "window_borders": { "separate_colors": false, "title_bar": null, "title_text": null, "border": null,
@@ -195,6 +196,12 @@ The toolkits use the transition time of the state being **entered**:
 
 Easing is `ease-out` in GTK. Cinnamon supports a duration only. Transitions are skipped when the user turns animations off in Mint.
 
+### Panel & Menu opacity
+Two sliders on the Panel & Menu tab, 30–100%: **Panel opacity** (default 70%) and **Menu opacity** (default 94%). Menu opacity also covers popups, notifications and OSDs. Cinnamon doesn't blur what's behind, so below 80% the app shows a readability note. GTK app windows stay opaque on purpose.
+
+### Color formats in templates
+Templates never contain literal colors. A solid color is `{{name}}` (hex); a color with opacity is `rgba({{name_rgb}}, alpha)`. When converting Mint-Y, **black with opacity** becomes the **text** color with that opacity, and **white with opacity** becomes the **background** color (or a style highlight), so they flip correctly in dark themes.
+
 ### Panel & Menu shape
 Separate Roundness and Gradient for the **panel** and for its **menus** (main menu, applet popups, calendar, right-click menus). Each has a **Follow Global** switch, on by default.
 
@@ -291,13 +298,14 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 ## 7. Area details
 
 ### Cinnamon panel
+- Panel background at **Panel opacity** (default 70%).
 - Buttons fill the panel's full height; 3px gap between window-list buttons.
 - States: running (`pb_rest`), hover (`pb_hover`), focused (accent, bold label, `accent_fg`), attention (`pb_attention`), progress (`pb_progress` fill from the left).
 - Label weight: **Bold** (default, as in the current theme) or **Regular**, chosen on the Panel & Menu tab.
 - Drawn entirely in CSS. The Mint-X `panel-assets/*.svg` images are retired.
 
 ### Cinnamon menu and popups
-- Menu background `menu_bg` at ~98.5% opacity, `r2` corners, shadow.
+- Menu background `menu_bg` at **Menu opacity** (default 94%), `r2` corners, shadow.
 - The favorites column uses `fav_bg` with `fav_hover`. Categories and apps both use `menu_hover`. The selected category uses `select` with `accent_fg`.
 - The search entry uses the style's entry edge (focused look while the menu is open).
 - The same rules cover the calendar, sound, network and right-click popups, plus notifications, OSD (volume and brightness) and the alt-tab switcher.
