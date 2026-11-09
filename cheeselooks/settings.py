@@ -32,7 +32,7 @@ DEFAULTS: dict[str, Any] = {
     },
     "window_borders": {
         "separate_colors": False, "title_bar": None, "title_text": None, "border": None,
-        "title_bar_height": 44, "border_width": 1,
+        "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
         "button_layout": "right", "button_style": "theme",
     },
     "terminal": {"separate_colors": False, "bg": None, "text": None},
@@ -77,6 +77,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("window_borders", "border"), "color?", None),
     (("window_borders", "title_bar_height"), "int", (30, 56)),
     (("window_borders", "border_width"), "int", (0, 6)),
+    (("window_borders", "title_gradient"), "int", (0, 100)),
     (("window_borders", "button_layout"), "choice", ("right", "left")),
     (("window_borders", "button_style"), "choice", ("theme", "dots", "wide", "circles")),
     (("terminal", "separate_colors"), "bool", None),

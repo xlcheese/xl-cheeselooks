@@ -66,6 +66,7 @@ def apply(theme_name: str, button_layout: str | None = None, activate: bool = Fa
     if button_layout is not None and get(*LAYOUT_KEY) != button_layout:
         if set_value(*LAYOUT_KEY, button_layout):
             log.append(f"button layout set to {button_layout}")
+    refresh_wm = False
     for schema, key, fallback, part in THEME_KEYS:
         if theme_dir is not None and not (theme_dir / part).is_dir():
             log.append(f"{schema} {key}: this version of the theme has no {part}/ yet, left alone")
@@ -79,10 +80,23 @@ def apply(theme_name: str, button_layout: str | None = None, activate: bool = Fa
             time.sleep(pause)
             set_value(schema, key, theme_name)
             log.append(f"reloaded {schema} {key}")
+            if key == "gtk-theme":
+                refresh_wm = True
         elif activate:
             set_value(schema, key, theme_name)
             log.append(f"switched {schema} {key} to {theme_name}")
         else:
             log.append(f"{schema} {key} is '{current}', not {theme_name}: left alone "
                        f"(use --activate to switch)")
+    # Window border themes (ours or Mint-Y's) read their colors from the GTK
+    # theme, but only when they load. Nudge the current one so it picks up the
+    # new colors, unless it was already reloaded above.
+    wm_schema, wm_key = "org.cinnamon.desktop.wm.preferences", "theme"
+    current_wm = get(wm_schema, wm_key)
+    if refresh_wm and current_wm and current_wm != theme_name:
+        other = "Mint-X" if current_wm != "Mint-X" else "Mint-Y"
+        set_value(wm_schema, wm_key, other)
+        time.sleep(pause)
+        set_value(wm_schema, wm_key, current_wm)
+        log.append(f"refreshed window borders ({current_wm}) so title bars pick up the new colors")
     return log

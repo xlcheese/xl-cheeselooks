@@ -108,9 +108,20 @@ class Style:
 # --------------------------------------------------------------------------
 
 def _is_color_ref(value: Any, palette_names: set[str]) -> bool:
+    """A palette color name, #RRGGBB, 'none', or an expression such as
+    "darker(border_strong, 0.1)" or "mix(border_strong, text, 0.2)"."""
     if not isinstance(value, str):
         return False
-    return value in palette_names or pal.is_hex(value) or value in ("none", "transparent")
+    if value in palette_names or pal.is_hex(value) or value in ("none", "transparent"):
+        return True
+    if "(" in value:
+        from . import render
+        try:
+            result = render.evaluate(value, pal.derive("#FA8562", "#F5F5F5", "#303030"))
+        except Exception:
+            return False
+        return pal.is_hex(result)
+    return False
 
 
 def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
@@ -149,7 +160,8 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                 warnings.append(f"{where} is not a known edge part and is ignored")
             elif k == "border":
                 if not _is_color_ref(v, names):
-                    errors.append(f"{where} must be a palette color name, 'none' or #RRGGBB (got {v!r})")
+                    errors.append(f"{where} must be a palette color name, 'none', #RRGGBB, or an expression "
+                                  f"like \"darker(border_strong, 0.1)\" (got {v!r})")
             else:
                 if not isinstance(v, dict):
                     errors.append(f"{where} must be a table like {{ y = 1, color = \"white\", alpha = 0.5 }}")
@@ -276,6 +288,9 @@ def _resolve_color(ref: str, palette: dict[str, str]) -> str:
         return palette[ref]
     if pal.is_hex(ref):
         return pal.normalize(ref)
+    if "(" in ref:
+        from . import render
+        return pal.normalize(render.evaluate(ref, palette))
     raise KeyError(ref)
 
 

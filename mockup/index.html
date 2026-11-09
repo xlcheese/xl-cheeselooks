@@ -101,6 +101,12 @@ header p { margin: 4px 0 0; color: var(--ink-2); max-width: 72ch; }
 .group { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; }
 .group h3 { margin: 0; font-size: 0.95rem; }
 .group .hint { margin: 0; font-size: 0.85rem; color: var(--ink-2); }
+.reset-btn {
+  font: inherit; font-size: 0.88rem; height: 34px; padding: 0 14px; border-radius: 9px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--chip); color: var(--ink);
+}
+.reset-btn:hover:not(:disabled) { border-color: var(--ink-2); }
+.reset-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .presets > .lab { margin-right: 4px; }
 .preset {
@@ -514,6 +520,7 @@ ul.notes b { font-weight: 600; }
     <div class="tabpanel" role="tabpanel" id="tp-panel" aria-labelledby="tab-panel" hidden>
       <label class="toggle-row"><input type="checkbox" id="sw-panel"><span class="tgl"></span>Use separate colors for the panel and menu</label>
       <div class="pickers" id="pk-panel"></div>
+      <div><button type="button" class="reset-btn" id="reset-panel">Reset to Global colors</button></div>
       <div class="presets" id="ps-panel"><span class="lab">Panel presets</span></div>
       <div class="groups">
         <div class="group">
@@ -541,7 +548,9 @@ ul.notes b { font-weight: 600; }
     <div class="tabpanel" role="tabpanel" id="tp-wb" aria-labelledby="tab-wb" hidden>
       <label class="toggle-row"><input type="checkbox" id="sw-wb"><span class="tgl"></span>Use separate title bar colors</label>
       <div class="pickers" id="pk-wb"></div>
+      <div><button type="button" class="reset-btn" id="reset-wb">Reset to Global colors</button></div>
       <div class="pickers">
+        <div class="picker"><label class="lab" for="r-wbg">Title bar gradient</label><div class="range-row">Flat<input type="range" id="r-wbg" min="0" max="100" step="5">Gradient<output id="o-wbg"></output></div></div>
         <div class="picker"><label class="lab" for="r-wbh">Title bar height</label><div class="range-row">Short<input type="range" id="r-wbh" min="30" max="56" step="1">Tall<output id="o-wbh"></output></div></div>
         <div class="picker"><label class="lab" for="r-wbw">Border thickness</label><div class="range-row">None<input type="range" id="r-wbw" min="0" max="6" step="1">Thick<output id="o-wbw"></output></div></div>
       </div>
@@ -571,6 +580,7 @@ ul.notes b { font-weight: 600; }
       <label class="toggle-row"><input type="checkbox" id="sw-term"><span class="tgl"></span>Use separate terminal colors</label>
       <p class="lede">When this is off, the terminal matches the theme: light with a light theme, dark with a dark one. The cursor and prompt use the accent. Terminal profiles with their own custom colors still win over the theme.</p>
       <div class="pickers" id="pk-term"></div>
+      <div><button type="button" class="reset-btn" id="reset-term">Reset to Global colors</button></div>
       <div class="presets" id="ps-term"><span class="lab">Terminal presets</span></div>
     </div>
 
@@ -1041,7 +1051,7 @@ Theme updated. Reloading Cinnamon and open apps…
     panelOn: false, p: null,
     ps: { follow: true, round: 20, grad: 30 },
     ms: { follow: true, round: 20, grad: 30 },
-    wbOn: false, w: null, wbh: 44, wbw: 1, layout: "right", btn: "theme",
+    wbOn: false, w: null, wbg: 30, wbh: 44, wbw: 1, layout: "right", btn: "theme",
     termOn: false, t: { bg: "#2B2B2B", text: "#E4E4E4" }
   };
   var sizes = { compact: [26, 3, 12], normal: [30, 4, 14], large: [36, 6, 16] };
@@ -1144,6 +1154,19 @@ Theme updated. Reloading Cinnamon and open apps…
   onRange("r-mround", function (v) { state.ms.round = v; });
   onRange("r-mgrad", function (v) { state.ms.grad = v; });
   onRange("r-wbh", function (v) { state.wbh = v; });
+  onRange("r-wbg", function (v) { state.wbg = v; });
+  // Reset buttons: copy the Global colors back in, keep the switch on
+  document.getElementById("reset-panel").addEventListener("click", function () {
+    state.p = { accent: state.g.accent, bg: state.g.bg, text: state.g.text }; apply();
+  });
+  document.getElementById("reset-wb").addEventListener("click", function () {
+    var d = derive(state.g.accent, state.g.bg, state.g.text);
+    state.w = { title: d.header, text: d.text, border: d.border }; apply();
+  });
+  document.getElementById("reset-term").addEventListener("click", function () {
+    var d = derive(state.g.accent, state.g.bg, state.g.text);
+    state.t = { bg: d.base, text: d.text }; apply();
+  });
   onRange("r-wbw", function (v) { state.wbw = v; });
   document.getElementById("sw-panel").addEventListener("change", function (e) {
     state.panelOn = e.target.checked;
@@ -1211,7 +1234,7 @@ Theme updated. Reloading Cinnamon and open apps…
     // Window borders
     var w = state.wbOn && state.w ? state.w : { title: dg.header, text: dg.text, border: dg.border };
     var s = stage.style;
-    s.setProperty("--wb-a", lighten(w.title, 0.4 * g));
+    s.setProperty("--wb-a", lighten(w.title, 0.4 * state.wbg / 100));
     s.setProperty("--wb-b", w.title);
     s.setProperty("--wb-text", w.text);
     var unf = state.wbOn ? mix(w.title, dg.bg, 0.5) : dg.bg;
@@ -1255,6 +1278,10 @@ Theme updated. Reloading Cinnamon and open apps…
     setRange("mround", mr, mr + "%");
     setRange("mgrad", Math.round(mg * 100), Math.round(mg * 100) + "%");
     setRange("wbh", state.wbh, state.wbh + " px");
+    setRange("wbg", state.wbg, state.wbg + "%");
+    document.getElementById("reset-panel").disabled = !state.panelOn;
+    document.getElementById("reset-wb").disabled = !state.wbOn;
+    document.getElementById("reset-term").disabled = !state.termOn;
     setRange("wbw", state.wbw, state.wbw + " px");
     document.getElementById("recipe").textContent = recipes[state.style].replace("{DEPTH}", state.depth);
 
@@ -1279,7 +1306,7 @@ Theme updated. Reloading Cinnamon and open apps…
       ["Favorites hover", dp.favHover, "Favorites column + 10% toward text (same step)"],
       [state.wbOn ? "Window borders (separate colors)" : "Window borders (following Global)"],
       ["Title bar", w.title, state.wbOn ? "Your pick" : "Global menubar & toolbar color", state.wbOn ? 1 : 0],
-      ["Title bar top", lighten(w.title, 0.4 * g), "Title bar, lightened by the gradient setting"],
+      ["Title bar top", lighten(w.title, 0.4 * state.wbg / 100), "Title bar, lightened by the Title bar gradient setting"],
       ["Border", w.border, state.wbOn ? "Your pick" : "Global border", state.wbOn ? 1 : 0],
       [state.termOn ? "Terminal (separate colors)" : "Terminal (following Global)"],
       ["Terminal background", tb, state.termOn ? "Your pick" : "Global content area", state.termOn ? 1 : 0],
@@ -1329,7 +1356,7 @@ Theme updated. Reloading Cinnamon and open apps…
       ["size", "style", "layout", "btn"].forEach(function (k) { if (typeof saved[k] === "string") state[k] = saved[k]; });
       if (!sizes[state.size]) state.size = "normal";
       if (!recipes[state.style]) state.style = "cheeselooks";
-      ["round", "grad", "tin", "tout", "depth", "wbh", "wbw"].forEach(function (k) { if (typeof saved[k] === "number") state[k] = saved[k]; });
+      ["round", "grad", "tin", "tout", "depth", "wbg", "wbh", "wbw"].forEach(function (k) { if (typeof saved[k] === "number") state[k] = saved[k]; });
       ["ps", "ms"].forEach(function (k) { if (saved[k] && typeof saved[k].round === "number") state[k] = saved[k]; });
       state.panelOn = !!saved.panelOn && !!state.p;
       state.wbOn = !!saved.wbOn && !!state.w;

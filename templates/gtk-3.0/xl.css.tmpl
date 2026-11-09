@@ -303,7 +303,7 @@ spinbutton:not(.vertical) > button, combobox entry {
 /* --------------------------------------------------------------------------
    Notebook tabs
    -------------------------------------------------------------------------- */
-notebook > header > tabs > tab {
+notebook > header > tabs > tab, notebook > header.top > tabs > tab {
   border-radius: {{r}}px {{r}}px 0 0; }
 notebook > header.bottom > tabs > tab { border-radius: 0 0 {{r}}px {{r}}px; }
 notebook > header.left > tabs > tab { border-radius: {{r}}px 0 0 {{r}}px; }
@@ -459,6 +459,35 @@ vte-terminal, vte-terminal.terminal-screen, terminal-window vte-terminal {
   color: {{term.text}};
   background-color: {{term.bg}};
   caret-color: {{term.cursor}}; }
+
+/* --------------------------------------------------------------------------
+   Named colors that apps and window border themes read from the GTK theme.
+   Muffin's title bars (Mint-Y's window borders, and ours) take their colors
+   from the wm_* names, so they match the headerbars and toolbars.
+   -------------------------------------------------------------------------- */
+@define-color theme_base_color {{base}};
+@define-color base_color {{base}};
+@define-color content_view_bg {{base}};
+@define-color insensitive_base_color {{base}};
+@define-color theme_unfocused_base_color {{base}};
+@define-color insensitive_fg_color {{alpha(text, 0.5)}};
+@define-color wm_title {{wb.text}};
+@define-color wm_title_unfocused {{wb.unfocused_text}};
+@define-color wm_bg {{wb.title}};
+@define-color wm_bg_unfocused {{wb.unfocused}};
+@define-color wm_highlight {{wb.title_top}};
+@define-color wm_border {{wb.border}};
+@define-color wm_border_unfocused {{wb.border}};
+@define-color wm_button_close_bg {{accent}};
+@define-color wm_button_close_hover_bg {{accent_hover}};
+@define-color wm_button_close_active_bg {{accent_press}};
+@define-color wm_icon_close_bg {{accent_fg}};
+@define-color wm_button_hover_bg {{flat_hover}};
+@define-color wm_button_active_bg {{pressed}};
+@define-color wm_icon_bg {{wb.text}};
+@define-color wm_icon_unfocused_bg {{wb.unfocused_text}};
+@define-color wm_icon_hover_bg {{wb.text}};
+@define-color wm_icon_active_bg {{wb.text}};
 
 /* --------------------------------------------------------------------------
    Extra CSS from the style (extra.css), if any

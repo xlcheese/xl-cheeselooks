@@ -75,7 +75,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
                "panel_shape": { "follow_global": true, "roundness": 20, "gradient": 30 },
                "menu_shape":  { "follow_global": true, "roundness": 20, "gradient": 30 } },
   "window_borders": { "separate_colors": false, "title_bar": null, "title_text": null, "border": null,
-                      "title_bar_height": 44, "border_width": 1,
+                      "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
                       "button_layout": "right", "button_style": "theme" },
   "terminal": { "separate_colors": false, "bg": null, "text": null },
   "details": {
@@ -113,7 +113,7 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `button_hover` | `lighter(button, .80 × h)`, or `mix(button, text, .05 × h)` if the button is already white | `mix(button, text, .06 × h)` | |
 | `border_hover` | `mix(border_strong, text, .15 × h)` (darker) | same formula (lighter on dark) | Hovered button borders, as in Mint-Y |
 | `header` | `mix(bg, text, .066)` | same | Menubar, toolbar, title bar (Mint-Y's `#E8E8E8` on the default colors) |
-| `menubar_hover` | `mix(header, text, .12)` | same | **New:** menubar item hover, a bit darker than general hover |
+| `menubar_hover` | `mix(header, text, .09 × h)` | same | **New:** menubar item hover, a bit darker than general hover |
 | `sidebar` | `mix(bg, text, .035)` | `mix(bg, text, .03)` | |
 | `sidebar_hover` | `mix(bg, text, .14)` | `mix(bg, text, .13)` | |
 | `hover` | `mix(bg, text, .07)` | `mix(bg, text, .08)` | General hover (file items, inactive tabs) |
@@ -123,7 +123,7 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `text_dim` | `mix(text, bg, .38)` | same | Secondary and placeholder text |
 | `menu_bg` | `base` | `base` | GTK menus and popovers (near-white, as Mint-Y) |
 | `shell_menu_bg` | `mix(bg, text, .03)` | `mix(bg, text, .04)` | Cinnamon menu and popups (used as `menu_bg` in the Cinnamon templates) |
-| `flat_hover` | `lighter(header, .50 × h)` | `mix(header, text, .08 × h)` | Hover for buttons not drawn at rest (toolbar, title buttons) and unselected tabs: softer than a full button hover |
+| `flat_hover` | `lighter(header, .35 × h)` | `mix(header, text, .06 × h)` | Hover for buttons not drawn at rest (toolbar, title buttons) and unselected tabs: softer than a full button hover |
 | `menu_hover` | `mix(menu_bg, text, .10 × h)` | same | Menu item hovers; `shell_menu_hover` is the same step on `shell_menu_bg` |
 | `fav_bg` / `fav_hover` | `mix(bg, text, .075)` / `mix(fav_bg, text, .10)` | `.09` / same step | Cinnamon menu favorites column |
 | `panel` | `mix(bg, white, .25)` | `mix(bg, text, .03)` | Panel background, ~90% opaque |
@@ -183,7 +183,7 @@ The previous formula was `+30% / −10%`. The new one keeps the overall brightne
 
 **What doesn't:** menubars, toolbars, content areas, entries, troughs.
 
-**Title bar:** `[ top: lighter(header, 0.40 × g),  bottom: header ]`. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
+**Title bar:** `[ top: lighter(title, 0.40 × t),  bottom: title ]`, where `t` is the **Title bar gradient** slider on Window Borders (0–100, default 30), separate from Global Gradient so a contrasting title bar color can be tuned on its own. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
 
 ### Depth (0–100%, Style tab)
 Multiplies the strength of the style's highlights and shadows. At 0 any style draws flat.
@@ -272,6 +272,7 @@ The full file is [`styles/xl-Cheeselooks/style.toml`](../styles/xl-Cheeselooks/s
 
 - **Layers:** `highlight`, `shade`, `inner` (inset), `shadow` (outside), `ring` and `outline` (spread rings). Each takes `x`, `y`, `blur`, `spread`, `width`, `color`, `alpha`, optional `alpha_dark` for dark themes, and `grow = true` to make offset and blur grow with Depth.
 - **Widgets:** `button`, `suggested`, `toolbar_button`, `title_button`, `close_button`, `entry`, `combo`, `tab`, `menu_item`, `menubar_item`, `panel_button`, `check`, `switch`. Widget settings: `like`, `edge`, `hover_edge`, `pressed_edge`, `focus_edge`, `border`, `hover_color`, `tab_kind` (`boxed`/`pills`), `active_marker` (`none`/`accent_top`/`accent_bottom`), `hover_border`.
+- **Colors** can be a palette name, `#RRGGBB`, or an expression built on the palette: `darker(border_strong, 0.1)`, `lighter(border_strong, 0.1)`, `mix(border_strong, text, 0.2)`, `mix(border_strong, accent, 0.3)`.
 - `cheeselooks check-style PATH` lists problems in plain language.
 
 - Alpha values are written for **Depth 50**; Depth scales them (100 doubles them, 0 makes any style flat).
@@ -291,6 +292,7 @@ Cinnamon's CSS allows **one** box shadow per widget and two-color gradients. Whe
   - Active tab: `base` background with a `border_strong` border on top and sides. **No accent line.**
   - Unselected tabs are drawn (unlike Mint-Y): `header` (toolbar color) with a `border` outline, `text_dim`.
   - Hovered unselected tab: lightens to `flat_hover`, like toolbar buttons.
+  - Tabs take the Roundness (top corners for top tabs, and so on).
 - **Menu items (GTK menus):** hover is `menu_hover`, not the accent.
 - **Menubar items:** hover is `menubar_hover`. An open menubar item uses the same color.
 - **Panel buttons:** full panel height, raised (highlight only in Cinnamon), running = `pb_rest`, focused = `pb_focus`.
@@ -327,6 +329,9 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 - **Title text:** `text`, or a user color.
 - **Border color and width:** color follows `border_strong` (the darker border), or a user color; width 0–6 px, default 1. Visual only, since Muffin keeps its own invisible resize area.
 - **Title bar height:** 30–56 px, default 44.
+- **Title bar gradient:** its own slider, 0–100, default 30.
+- **Reset to Global colors:** a button on this tab (and on Panel & Menu and Terminal) that copies the Global colors back in while the switch stays on, so you can keep the theme's colors and change just one thing.
+- **Named colors for any window border theme:** the GTK theme defines `wm_bg`, `wm_bg_unfocused`, `wm_title`, `wm_border` and the other `wm_*` colors from these settings. Window border themes such as Mint-Y's read them, so even Mint-Y's title bars match. `apply` refreshes the window border theme so Muffin picks the colors up.
 - **Button layout:** written to Mint's own setting (`org.cinnamon.desktop.wm.preferences button-layout`).
 - **Implementation:** drawn by `metacity-theme-3.xml` draw operations (rectangles, lines, title) for traditional title bars, and by GTK CSS for headerbar apps. Both use the same tokens so they match.
 - **Button styles:** v1 ships **Theme** only. Dots, Wide and Circles are planned ([§13](#13-roadmap)). Each must be drawn in both the XML and the CSS.

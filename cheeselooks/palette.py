@@ -159,10 +159,10 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
         "button": button,
         "button_hover": pick(lift(button, 0.80), lift(button, 0.06)),
         "header": header,
-        "menubar_hover": mix(header, text, 0.12 * hover),
+        "menubar_hover": mix(header, text, 0.09 * hover),
         # hover for buttons that aren't drawn at rest (toolbar, title buttons) and
         # unselected tabs: lighter than the toolbar, but not as bright as a full button hover
-        "flat_hover": pick(lift(header, 0.50), lift(header, 0.08)),
+        "flat_hover": pick(lift(header, 0.35), lift(header, 0.06)),
         "sidebar": pick(mix(bg, text, 0.035), mix(bg, text, 0.03)),
         "sidebar_hover": pick(mix(bg, text, 0.035 + 0.105 * hover), mix(bg, text, 0.03 + 0.10 * hover)),
         "hover": pick(mix(bg, text, 0.07 * hover), mix(bg, text, 0.08 * hover)),

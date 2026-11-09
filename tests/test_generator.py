@@ -212,6 +212,16 @@ class StyleTests(unittest.TestCase):
         self.assertIn("circle", joined)
         self.assertTrue(any("gizmo" in w for w in warnings))
 
+    def test_color_expressions_in_styles(self):
+        errors, _ = styles.check({"name": "X", "edges": {"raised": {"border": "darker(border_strong, 0.1)"}}})
+        self.assertEqual(errors, [])
+        errors, _ = styles.check({"name": "X", "edges": {"raised": {"border": "darker(nope, 0.1)"}}})
+        self.assertTrue(errors)
+        st = styles.Style(name="X", path=None, edges={"raised": {"border": "darker(border_strong, 0.5)"}})
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        self.assertEqual(t["w.button.border"], palette.darker(p["border_strong"], 0.5))
+
     def test_cli_check_style(self):
         self.assertEqual(cli.main(["check-style", str(DEFAULT_STYLE)]), 0)
 
