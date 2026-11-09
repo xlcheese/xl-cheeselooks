@@ -1,0 +1,9 @@
+{
+  "name": "Accent Bar Panel",
+  "panel": {
+    "separate_colors": true,
+    "accent": "#FFD7C9",
+    "bg": "#C9654A",
+    "text": "#FFFFFF"
+  }
+}

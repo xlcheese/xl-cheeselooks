@@ -15,6 +15,27 @@ It's a throwback to GNOME 2's Clearlooks and its Color Chooser, rebuilt for toda
 - **Details:** tooltips, scrollbars, sliders, switches, focus ring.
 - libadwaita color and accent integration, Flatpak access, presets, and a `cheeselooks` command.
 
+## Trying the generator (developers)
+The generator works today; theme templates are being added piece by piece. From a checkout:
+
+```bash
+./bin/cheeselooks presets
+```
+
+```bash
+./bin/cheeselooks tokens accent
+```
+
+```bash
+./bin/cheeselooks apply --theme-dir /tmp/xl-Cheeselooks --preset "Coral Night" --no-save
+```
+
+```bash
+python3 -m unittest discover tests
+```
+
+`apply` without `--theme-dir` writes to `~/.themes/xl-Cheeselooks` and reloads Cinnamon; add `--activate` to switch your desktop to the theme.
+
 ## Requirements
 Linux Mint 22.x with Cinnamon 6.x. No extra packages: everything uses the Python 3 and GTK that Mint already ships.
 

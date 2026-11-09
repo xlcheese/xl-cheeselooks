@@ -1,0 +1,58 @@
+# Float: an example style. Borderless controls with soft shadows; suggested
+# buttons cast a shadow tinted with the accent so they seem to float.
+# "grow = true" makes a shadow's offset and blur grow with Depth too.
+
+name = "Float"
+author = "xl-Cheeselooks"
+description = "Borderless, softly shadowed controls; accent buttons float on a colored shadow."
+
+[defaults]
+roundness = 45
+gradient = 25
+depth = 60
+
+[edges.raised]
+border    = "none"
+highlight = { y = 1, color = "white", alpha = 0.35, alpha_dark = 0.06 }
+shadow    = { y = 2, blur = 6, color = "black", alpha = 0.10, alpha_dark = 0.35, grow = true }
+
+[edges.lifted]
+border    = "none"
+highlight = { y = 1, color = "white", alpha = 0.35, alpha_dark = 0.06 }
+shadow    = { y = 4, blur = 12, color = "black", alpha = 0.14, alpha_dark = 0.40, grow = true }
+
+[edges.floating_accent]
+border    = "none"
+highlight = { y = 1, color = "white", alpha = 0.25 }
+shadow    = { y = 4, blur = 12, color = "accent", alpha = 0.40, grow = true }
+
+[edges.floating_accent_hover]
+border    = "none"
+highlight = { y = 1, color = "white", alpha = 0.25 }
+shadow    = { y = 6, blur = 18, color = "accent", alpha = 0.50, grow = true }
+
+[edges.sunken]
+border  = "none"
+inner   = { y = 1, blur = 3, color = "black", alpha = 0.08, alpha_dark = 0.35 }
+outline = { width = 1, color = "border", alpha = 0.6, inset = true }
+
+[edges.focus]
+border = "none"
+ring   = { width = 3, color = "accent", alpha = 0.35, inset = false }
+inner  = { y = 1, blur = 3, color = "black", alpha = 0.08, alpha_dark = 0.35 }
+
+[edges.flat]
+border = "none"
+
+[widgets]
+button         = { edge = "raised", hover_edge = "lifted", pressed_edge = "sunken", hover_color = "button_hover" }
+suggested      = { edge = "floating_accent", hover_edge = "floating_accent_hover", pressed_edge = "sunken", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "button" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+tab            = { tab_kind = "pills", active_marker = "none", hover_border = false, hover_color = "hover" }
+menu_item      = { hover_color = "select" }
+menubar_item   = { hover_color = "menubar_hover" }
+panel_button   = { edge = "raised", hover_edge = "lifted", hover_color = "pb_hover" }

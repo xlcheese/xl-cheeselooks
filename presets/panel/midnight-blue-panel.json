@@ -1,0 +1,9 @@
+{
+  "name": "Midnight Blue Panel",
+  "panel": {
+    "separate_colors": true,
+    "accent": "#5B9BEA",
+    "bg": "#18202E",
+    "text": "#DCE4F0"
+  }
+}

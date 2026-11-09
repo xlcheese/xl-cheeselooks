@@ -1,0 +1,8 @@
+{
+  "name": "Midnight Terminal",
+  "terminal": {
+    "separate_colors": true,
+    "bg": "#151A26",
+    "text": "#C9D3E6"
+  }
+}

@@ -232,36 +232,37 @@ TOML, which Python 3.11+ reads with no extra packages. Location:
 
 ```toml
 name = "xl-Cheeselooks"
-author = "xl_cheese"
-defaults = { roundness = 20, gradient = 30, depth = 50 }   # applied when the style is picked
+[defaults]
+roundness = 20
+gradient = 30
+depth = 50
 
-[edges.raised]
+[edges.raised]                                   # a named edge: border + layers
 border    = "border_strong"
-highlight = { y = 1, color = "white", alpha = 0.60 }        # inset, top
-shade     = { y = -1, color = "black", alpha = 0.07 }       # inset, bottom
-shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10 }
+highlight = { y = 1,  color = "white", alpha = 0.60, alpha_dark = 0.07 }
+shade     = { y = -1, color = "black", alpha = 0.07, alpha_dark = 0.20 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
 
 [edges.sunken]
-border    = "border_strong"
-inner     = { y = 1, blur = 2, color = "black", alpha = 0.10 }
+border = "border_strong"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
 
-[edges.flat]
-border    = "none"
-
-[widgets]
-button          = { edge = "raised", pressed = "sunken" }
-suggested       = { edge = "raised", border = "accent_press" }
-toolbar_button  = { edge = "flat", hover = "raised", pressed = "sunken" }
-title_button    = { like = "toolbar_button" }
-entry           = { edge = "sunken", focus = "accent_ring" }
-combo           = { like = "button" }
-tab             = { kind = "boxed", active_marker = "none", hover_border = true }
-menu_item       = { hover = "menu_hover" }        # "select" would use the accent instead
-menubar_item    = { hover = "menubar_hover" }
-panel_button    = { edge = "raised" }             # Cinnamon fallback: highlight only
+[widgets]                                        # which edge each widget uses, per state
+button         = { edge = "raised", hover_edge = "raised", pressed_edge = "sunken", hover_color = "button_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken" }
+title_button   = { like = "toolbar_button" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_border = true }
+menu_item      = { hover_color = "menu_hover" }  # "select" would use the accent instead
 ```
 
-- Alpha values are multiplied by **Depth**.
+The full file is [`styles/xl-Cheeselooks/style.toml`](../styles/xl-Cheeselooks/style.toml); the Float example is in [`docs/examples/float/`](examples/float/style.toml).
+
+- **Layers:** `highlight`, `shade`, `inner` (inset), `shadow` (outside), `ring` and `outline` (spread rings). Each takes `x`, `y`, `blur`, `spread`, `width`, `color`, `alpha`, optional `alpha_dark` for dark themes, and `grow = true` to make offset and blur grow with Depth.
+- **Widgets:** `button`, `suggested`, `toolbar_button`, `title_button`, `close_button`, `entry`, `combo`, `tab`, `menu_item`, `menubar_item`, `panel_button`, `check`, `switch`. Widget settings: `like`, `edge`, `hover_edge`, `pressed_edge`, `focus_edge`, `border`, `hover_color`, `tab_kind` (`boxed`/`pills`), `active_marker` (`none`/`accent_top`/`accent_bottom`), `hover_border`.
+- `cheeselooks check-style PATH` lists problems in plain language.
+
+- Alpha values are written for **Depth 50**; Depth scales them (100 doubles them, 0 makes any style flat).
 - Color names are palette tokens ([§3](#3-color-rules)), `white`/`black`, or `#RRGGBB` for authors who really want fixed colors.
 - Any widget or state left out falls back to a built-in default, so a minimal style is about 30 lines.
 
@@ -395,7 +396,9 @@ cheeselooks revert
 ```
 xl-cheeselooks/
 ├─ app/                    settings app (GTK 3, Python)
-├─ generator/              palette.py, shape.py, styles.py, render.py, reload.py
+├─ cheeselooks/            generator: palette, shape, styles, tokens, render, install, reload, cli
+├─ bin/cheeselooks         run the command from a checkout
+├─ tests/                  unittest suite (python3 -m unittest discover tests)
 ├─ templates/
 │  ├─ cinnamon/cinnamon.css.tmpl  (+ asset SVG templates)
 │  ├─ gtk-3.0/gtk.css.tmpl
@@ -405,6 +408,7 @@ xl-cheeselooks/
 │  └─ index.theme.tmpl
 ├─ styles/xl-Cheeselooks/style.toml
 ├─ presets/                global/, panel/, terminal/
+├─ reference/              the original xl_cheese-Mint-Y-Variable text files
 ├─ docs/
 │  ├─ design-spec.md       (this file)
 │  ├─ creating-styles.md   (style author guide)

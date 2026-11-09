@@ -1,0 +1,85 @@
+"""Tell Cinnamon, GTK apps and the window manager to pick up the new theme.
+
+Rewriting files isn't enough: each part only reloads when its theme setting
+changes. So for each setting that already points at our theme, switch it
+away for a moment and back. That gives one short flicker.
+"""
+
+from __future__ import annotations
+
+import re
+import shutil
+import subprocess
+import time
+
+# (schema, key, theme to switch to briefly)
+THEME_KEYS = (
+    ("org.cinnamon.theme", "name", "Mint-Y"),
+    ("org.cinnamon.desktop.interface", "gtk-theme", "Mint-Y"),
+    ("org.cinnamon.desktop.wm.preferences", "theme", "Mint-Y"),
+)
+LAYOUT_KEY = ("org.cinnamon.desktop.wm.preferences", "button-layout")
+PANEL_HEIGHT_KEY = ("org.cinnamon", "panels-height")
+
+
+def available() -> bool:
+    return shutil.which("gsettings") is not None
+
+
+def _run(*args: str) -> str | None:
+    try:
+        result = subprocess.run(["gsettings", *args], capture_output=True, text=True, timeout=5)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
+def get(schema: str, key: str) -> str | None:
+    value = _run("get", schema, key)
+    if value is None:
+        return None
+    return value.strip("'\"")
+
+
+def set_value(schema: str, key: str, value: str) -> bool:
+    return _run("set", schema, key, value) is not None
+
+
+def panel_height(default: int) -> int:
+    """First panel's height from Cinnamon's Panel settings, e.g. ['1:40']."""
+    if not available():
+        return default
+    raw = _run("get", *PANEL_HEIGHT_KEY)
+    if raw:
+        m = re.search(r"\d+:(\d+)", raw)
+        if m:
+            return int(m.group(1))
+    return default
+
+
+def apply(theme_name: str, button_layout: str | None = None, activate: bool = False,
+          pause: float = 0.3) -> list[str]:
+    """Reload (and optionally switch to) the theme. Returns what was done, for the log."""
+    if not available():
+        return ["gsettings not found: skipped reloading (not running on Cinnamon?)"]
+    log = []
+    if button_layout is not None and get(*LAYOUT_KEY) != button_layout:
+        if set_value(*LAYOUT_KEY, button_layout):
+            log.append(f"button layout set to {button_layout}")
+    for schema, key, fallback in THEME_KEYS:
+        current = get(schema, key)
+        if current is None:
+            log.append(f"{schema} {key}: not available, skipped")
+            continue
+        if current == theme_name:
+            set_value(schema, key, fallback)
+            time.sleep(pause)
+            set_value(schema, key, theme_name)
+            log.append(f"reloaded {schema} {key}")
+        elif activate:
+            set_value(schema, key, theme_name)
+            log.append(f"switched {schema} {key} to {theme_name}")
+        else:
+            log.append(f"{schema} {key} is '{current}', not {theme_name}: left alone "
+                       f"(use --activate to switch)")
+    return log

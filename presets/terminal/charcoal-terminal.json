@@ -1,0 +1,8 @@
+{
+  "name": "Charcoal Terminal",
+  "terminal": {
+    "separate_colors": true,
+    "bg": "#2B2B2B",
+    "text": "#E4E4E4"
+  }
+}

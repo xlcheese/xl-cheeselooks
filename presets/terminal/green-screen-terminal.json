@@ -1,0 +1,8 @@
+{
+  "name": "Green Screen Terminal",
+  "terminal": {
+    "separate_colors": true,
+    "bg": "#0B140D",
+    "text": "#5BFF7A"
+  }
+}
