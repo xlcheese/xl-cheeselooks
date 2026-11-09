@@ -212,7 +212,9 @@ class TokenTests(unittest.TestCase):
         self.assertEqual(t["wb.title_bottom"], t["header"])  # title bar ends on toolbar color
         self.assertEqual(t["term.bg"], t["base"])
         self.assertEqual(t["tooltip.bg"], t["menu_bg"])
-        self.assertEqual(t["switch.r"], "12")  # fully round by default
+        self.assertEqual(t["switch.r"], "11")  # fully round by default (22px tall)
+        self.assertEqual(t["w.tab.active_shadow"], "none")
+        self.assertEqual(t["w.menu_item.hover_fg"], t["text"])
         self.assertTrue(all(isinstance(v, str) for v in t.values()))
 
     def test_separate_panel_colors(self):

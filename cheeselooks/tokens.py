@@ -25,8 +25,9 @@ THEME_NAME = "xl-Cheeselooks"
 GRADIENT_COLORS = (
     "button", "button_hover", "accent", "accent_hover", "select", "hover",
     "sidebar_hover", "menu_hover", "fav_hover", "menubar_hover", "panel",
-    "pb_rest", "pb_hover", "pb_focus", "pb_attention",
+    "pb_rest", "pb_hover", "pb_focus", "pb_attention", "destructive", "pressed",
 )
+ACTIVE_SHADOWS = {"none": "none", "accent_top": "inset 0 2px {c}", "accent_bottom": "inset 0 -2px {c}"}
 
 # libadwaita's named accents (GNOME 47+)
 ADW_ACCENTS = {
@@ -68,8 +69,20 @@ def _add_gradients(tokens: dict[str, str], prefix: str, palette: dict[str, str],
 
 
 def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
-                 palette: dict[str, str], depth: float) -> None:
-    for k, v in sty.widget_tokens(style, palette, depth).items():
+                 palette: dict[str, str], depth: float, amount: float) -> None:
+    wt = sty.widget_tokens(style, palette, depth)
+    for k, v in list(wt.items()):
+        if k.endswith(".hover_color"):
+            base = k[: -len("hover_color")]
+            top, bottom = pal.gradient(v, amount)
+            wt[base + "hover_top"], wt[base + "hover_bottom"] = top, bottom
+            # whichever of text / text-on-accent reads better on the hover color
+            fg = max((palette["text"], palette["accent_fg"]), key=lambda c: pal.contrast(c, v))
+            wt[base + "hover_fg"] = fg
+        elif k.endswith(".active_marker"):
+            wt[k[: -len("active_marker")] + "active_shadow"] = \
+                ACTIVE_SHADOWS[v].format(c=palette["accent"])
+    for k, v in wt.items():
         tokens[prefix + k] = v
 
 
@@ -92,7 +105,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
         t[k] = str(v)
     t["hover_in_ms"] = str(g["hover_in_ms"])
     t["hover_out_ms"] = str(g["hover_out_ms"])
-    _add_widgets(t, "", style, theme, depth)
+    _add_widgets(t, "", style, theme, depth, amount)
     t["style.extra_css"] = style.extra_css
 
     # --- Panel & Menu: shared colors, separate shapes
@@ -108,7 +121,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
 
     _add_colors(t, "panel.", pcolors)
     _add_gradients(t, "panel.", pcolors, p_grad / 100)
-    _add_widgets(t, "panel.", style, pcolors, depth)
+    _add_widgets(t, "panel.", style, pcolors, depth, p_grad / 100)
     t["panel.r"] = str(shape.radius(p_round, panel_height))
     t["panel.height"] = str(panel_height)
     t["panel.label_weight"] = "bold" if p["label_weight"] == "bold" else "normal"
@@ -116,7 +129,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
 
     _add_colors(t, "menu.", pcolors)
     _add_gradients(t, "menu.", pcolors, m_grad / 100)
-    _add_widgets(t, "menu.", style, pcolors, depth)
+    _add_widgets(t, "menu.", style, pcolors, depth, m_grad / 100)
     m_r = shape.radius(m_round, ctl)
     t["menu.r"] = str(m_r)
     t["menu.r2"] = str(shape.window_radius(m_r))
@@ -138,6 +151,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     height = wb["title_bar_height"]
     btn_h = min(ctl, height - 10)
     t["wb.height"] = str(height)
+    t["wb.height_inner"] = str(height - 1)  # GTK min-height excludes the 1px bottom border
     t["wb.border_width"] = str(wb["border_width"])
     t["wb.button_h"] = str(btn_h)
     t["wb.button_w"] = str(round(btn_h * 1.12))
@@ -167,7 +181,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["slider.handle_r"] = str(shape.radius(sl, 16))
     t["slider.track_r"] = str(shape.radius(sl, 4))
     sw = d["switches"]["roundness"] if d["switches"]["custom"] else 100
-    t["switch.r"] = str(shape.radius(sw, 24))
+    t["switch.r"] = str(shape.radius(sw, 22))
     t["switch.knob_r"] = str(shape.radius(sw, 18))
     fr = d["focus_ring"]
     if fr["custom"] and fr["color"]:

@@ -17,7 +17,7 @@ Rules (docs/design-spec.md, "Color formats in templates"):
 - red, green, orange and blue stay fixed (error, success, warning, links)
 - media OSD rules keep their fixed dark colors
 - border radii of 2-4px become {{r}}px, 5-8px become {{r2}}px
-- image assets are left for the hand-written layer to replace (reported)
+- image-based checks, radios, switches and pane handles are removed; xl.css redraws them
 """
 
 from __future__ import annotations
@@ -155,13 +155,18 @@ def radius_value(value: str) -> str:
 DECL_RE = re.compile(r"([-\w]+)(\s*:\s*)([^;{}]*)")
 
 
+ASSET_DECL_RE = re.compile(r'[-\w]+\s*:[^;{}]*url\("assets/[^;{}]*;?[ \t]*\n?')
+
+
 def convert_body(body: str, selector: str) -> str:
+    # image-based checks, radios, switches and pane handles are redrawn in CSS by xl.css
+    body, removed = ASSET_DECL_RE.subn("", body)
+    for _ in range(removed):
+        bump("asset declaration removed")
     def decl(m: re.Match) -> str:
         prop, sep, value = m.group(1).lower(), m.group(2), m.group(3)
         if prop == "border-radius" or prop.endswith("-radius"):
             value = radius_value(value)
-        if "url(" in value:
-            bump("asset reference (left for hand edit)")
         value = COLOR_RE.sub(lambda c: convert(c.group(0), prop, selector), value)
         return m.group(1) + sep + value
 

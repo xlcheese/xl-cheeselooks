@@ -19,6 +19,8 @@ DISPLAY=$display XDG_DATA_HOME=$data GTK_THEME=$name NO_AT_BRIDGE=1 \
   "$py" "$(dirname "$0")/showcase.py" --quit 4 "$@" 2>"$data/log" &
 app=$!
 sleep 3
+# optional: hover the mouse somewhere first, e.g. HOVER="1210 31"
+if [ -n "${HOVER:-}" ]; then DISPLAY=$display xdotool mousemove $HOVER; sleep 0.6; fi
 DISPLAY=$display import -window root "$out"
 wait $app || true
 grep -iE "theme|css|warning|error" "$data/log" | grep -v "dbind" | head -40 || true

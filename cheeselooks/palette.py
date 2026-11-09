@@ -11,6 +11,7 @@ import re
 WHITE = "#FFFFFF"
 BLACK = "#000000"
 ATTENTION_RED = "#E5534B"
+DESTRUCTIVE = "#F04A50"   # Mint-Y's destructive-action red; semantic, so fixed
 
 _HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
@@ -161,6 +162,9 @@ def derive(accent: str, bg: str, text: str) -> dict[str, str]:
         "pb_progress": darker(accent, 0.25),
         "pb_attention": pick(mix(bg, ATTENTION_RED, 0.36), mix(bg, ATTENTION_RED, 0.50)),
         "pb_attention_edge": mix(bg, "#B8322B", 0.6),
+        "knob": pick(WHITE, mix(bg, text, 0.75)),
+        "destructive": DESTRUCTIVE,
+        "destructive_fg": WHITE,
         "white": WHITE,
         "black": BLACK,
     }

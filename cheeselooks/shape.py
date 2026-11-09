@@ -28,7 +28,12 @@ def window_radius(control_radius: int) -> int:
 def shape_tokens(size: str, roundness: float) -> dict[str, int]:
     ctl, pad, glyph = SIZES[size]
     r = radius(roundness, ctl)
+    delta = ctl - SIZES["normal"][0]   # Normal keeps Mint-Y's original sizes
     return {
+        "button_min_h": 22 + delta,
+        "entry_min_h": 20 + delta,
+        "menu_pad": pad + 1,
+        "row_min_h": 30 + delta,
         "ctl": ctl,
         "pad": pad,
         "glyph": glyph,

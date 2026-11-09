@@ -1,1 +1,420 @@
-/* xl-Cheeselooks layer: style edges, shape and details on top of the base. */
+/* ==========================================================================
+   xl-Cheeselooks layer for GTK 3, drawn on top of base.css.
+   Style: {{style_name}}. Edges, shape, gradients, timing and details all
+   come from your settings. See docs/design-spec.md.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Hover timing: hover appears at "Hover in", fades at "Hover out",
+   pressing is always instant.
+   -------------------------------------------------------------------------- */
+button, button.flat, button.sidebar-button, entry, spinbutton, combobox button,
+menuitem, menubar > menuitem, notebook > header > tabs > tab, row, treeview.view,
+iconview, flowboxchild, switch, switch slider, check, radio, scale slider, scrollbar slider,
+.primary-toolbar button, headerbar button, headerbar button.titlebutton, .titlebar button.titlebutton {
+  transition-duration: {{hover_out_ms}}ms;
+  transition-timing-function: ease-out;
+  transition-delay: 0; }
+
+button:hover, button.flat:hover, button.sidebar-button:hover, entry:hover, spinbutton:hover,
+menuitem:hover, menubar > menuitem:hover, notebook > header > tabs > tab:hover, row:hover,
+treeview.view:hover, iconview:hover, flowboxchild:hover, switch:hover, check:hover, radio:hover,
+scale slider:hover, scrollbar slider:hover,
+.primary-toolbar button:hover, headerbar button:hover,
+headerbar button.titlebutton:hover, .titlebar button.titlebutton:hover {
+  transition-duration: {{hover_in_ms}}ms; }
+
+button:active, button:checked, button.flat:active, button.flat:hover:active,
+button.sidebar-button:hover:active, .primary-toolbar button:active, headerbar button:active,
+menuitem:active, row:active, switch:active, check:active, radio:active, scale slider:active {
+  transition: none; }
+
+/* --------------------------------------------------------------------------
+   Buttons: style edges + gradient
+   -------------------------------------------------------------------------- */
+button {
+  min-height: {{button_min_h}}px;
+  border-radius: {{r}}px;
+  border-color: {{w.button.border}};
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+button:hover {
+  border-color: {{w.button.hover_border}};
+  background-color: {{w.button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  box-shadow: {{w.button.hover_shadow}}; }
+button:active, button:checked, button:hover:checked {
+  border-color: {{w.button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
+  box-shadow: {{w.button.pressed_shadow}}; }
+button:disabled {
+  background-image: image({{alpha(button, 0.55)}});
+  box-shadow: none; }
+button:disabled:checked, button:disabled:active {
+  background-image: image({{alpha(pressed, 0.6)}}); }
+
+/* Flat buttons and toolbar / headerbar buttons: flat until hovered */
+button.flat, button.sidebar-button, button.flat:disabled,
+.primary-toolbar button, headerbar button, toolbar button {
+  border-color: {{w.toolbar_button.border}};
+  background-color: transparent;
+  background-image: none;
+  box-shadow: {{w.toolbar_button.shadow}}; }
+button.flat:hover, button.sidebar-button:hover,
+.primary-toolbar button:hover, headerbar button:hover, toolbar button:hover {
+  border-color: {{w.toolbar_button.hover_border}};
+  background-color: {{w.toolbar_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
+  box-shadow: {{w.toolbar_button.hover_shadow}}; }
+button.flat:active, button.flat:checked, button.sidebar-button:active,
+.primary-toolbar button:active, .primary-toolbar button:checked,
+headerbar button:active, headerbar button:checked,
+toolbar button:active, toolbar button:checked {
+  border-color: {{w.toolbar_button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
+  box-shadow: {{w.toolbar_button.pressed_shadow}}; }
+
+/* Grouped buttons in toolbars (path bar, view switchers) stay raised as one group */
+.primary-toolbar .linked > button, headerbar .linked > button, toolbar .linked > button,
+.path-bar button, .nemo-window .path-bar button {
+  border-color: {{w.button.border}};
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+.primary-toolbar .linked > button:hover, headerbar .linked > button:hover, toolbar .linked > button:hover,
+.path-bar button:hover {
+  border-color: {{w.button.hover_border}};
+  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  box-shadow: {{w.button.hover_shadow}}; }
+.primary-toolbar .linked > button:active, .primary-toolbar .linked > button:checked,
+headerbar .linked > button:active, headerbar .linked > button:checked,
+toolbar .linked > button:checked, .path-bar button:checked, .path-bar button:active {
+  border-color: {{w.button.pressed_border}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
+  box-shadow: {{w.button.pressed_shadow}}; }
+
+/* Suggested (accent) and destructive buttons */
+button.suggested-action, headerbar button.suggested-action, .primary-toolbar button.suggested-action {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.border}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  box-shadow: {{w.suggested.shadow}}; }
+button.suggested-action:hover, headerbar button.suggested-action:hover, .primary-toolbar button.suggested-action:hover {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.hover_border}};
+  background-color: {{w.suggested.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
+  box-shadow: {{w.suggested.hover_shadow}}; }
+button.suggested-action:active, button.suggested-action:checked,
+headerbar button.suggested-action:active, .primary-toolbar button.suggested-action:active {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.pressed_border}};
+  background-color: {{accent_press}};
+  background-image: image({{accent_press}});
+  box-shadow: {{w.suggested.pressed_shadow}}; }
+button.suggested-action:disabled {
+  color: {{alpha(accent_fg, 0.6)}};
+  background-image: image({{alpha(accent, 0.5)}});
+  box-shadow: none; }
+
+button.destructive-action, headerbar button.destructive-action, .primary-toolbar button.destructive-action {
+  color: {{destructive_fg}};
+  border-color: {{darker(destructive, 0.14)}};
+  background-color: {{destructive}};
+  background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+button.destructive-action:hover, headerbar button.destructive-action:hover {
+  color: {{destructive_fg}};
+  background-image: linear-gradient(to bottom, {{lighter(destructive_top, 0.12)}}, {{lighter(destructive_bottom, 0.12)}});
+  box-shadow: {{w.button.hover_shadow}}; }
+button.destructive-action:active, headerbar button.destructive-action:active {
+  background-image: image({{darker(destructive, 0.14)}});
+  box-shadow: {{w.button.pressed_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Title bars and headerbars
+   -------------------------------------------------------------------------- */
+headerbar, .titlebar:not(headerbar) {
+  min-height: {{wb.height_inner}}px;
+  color: {{wb.text}};
+  border-color: {{wb.border}};
+  background-color: {{wb.title}};
+  background-image: linear-gradient(to bottom, {{wb.title_top}}, {{wb.title_bottom}}); }
+headerbar:backdrop, .titlebar:not(headerbar):backdrop {
+  color: {{wb.unfocused_text}};
+  background-color: {{wb.unfocused}};
+  background-image: none; }
+headerbar.default-decoration, .titlebar.default-decoration {
+  min-height: {{wb.button_h}}px; }
+window.csd > .titlebar, window.csd > headerbar,
+window.csd > .titlebar:backdrop, window.csd > headerbar:backdrop {
+  border-radius: {{r2}}px {{r2}}px 0 0; }
+.maximized .titlebar, .tiled .titlebar, .fullscreen .titlebar,
+.maximized headerbar, .tiled headerbar, .fullscreen headerbar {
+  border-radius: 0; }
+
+decoration, window.csd decoration {
+  border-radius: {{r2}}px {{r2}}px 0 0;
+  box-shadow: 0 3px 9px 1px rgba(0, 0, 0, 0.35), 0 0 0 {{wb.border_width}}px {{wb.border}}; }
+decoration:backdrop, window.csd decoration:backdrop {
+  box-shadow: 0 3px 9px 1px transparent, 0 2px 6px 2px rgba(0, 0, 0, 0.2), 0 0 0 {{wb.border_width}}px {{wb.border}}; }
+.maximized decoration, .tiled decoration, .fullscreen decoration {
+  border-radius: 0;
+  box-shadow: none; }
+
+/* Title buttons: nothing at rest; the style's button on hover; close fills with the accent */
+headerbar button.titlebutton, .titlebar button.titlebutton {
+  min-width: {{wb.button_w}}px;
+  min-height: {{wb.button_h}}px;
+  padding: 0;
+  margin: 0 1px;
+  border-radius: {{r}}px;
+  color: inherit;
+  border-color: {{w.title_button.border}};
+  background-color: transparent;
+  background-image: none;
+  box-shadow: {{w.title_button.shadow}}; }
+headerbar button.titlebutton:hover, .titlebar button.titlebutton:hover,
+headerbar button.titlebutton:hover:backdrop, .titlebar button.titlebutton:hover:backdrop {
+  color: {{text}};
+  border-color: {{w.title_button.hover_border}};
+  background-color: {{w.title_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
+  box-shadow: {{w.title_button.hover_shadow}}; }
+headerbar button.titlebutton:active, .titlebar button.titlebutton:active {
+  border-color: {{w.title_button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: image({{pressed}});
+  box-shadow: {{w.title_button.pressed_shadow}}; }
+headerbar button.titlebutton.close:hover, .titlebar button.titlebutton.close:hover,
+headerbar button.titlebutton.close:hover:backdrop, .titlebar button.titlebutton.close:hover:backdrop {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{w.close_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
+  box-shadow: {{w.close_button.hover_shadow}}; }
+headerbar button.titlebutton.close:active, .titlebar button.titlebutton.close:active {
+  color: {{accent_fg}};
+  background-color: {{accent_press}};
+  background-image: image({{accent_press}}); }
+headerbar button.titlebutton:backdrop, .titlebar button.titlebutton:backdrop {
+  color: {{wb.unfocused_text}}; }
+
+/* Menubar and toolbar: flat, same color as the bottom of the title bar */
+menubar, .menubar, .primary-toolbar, toolbar.primary-toolbar {
+  background-color: {{header}};
+  background-image: none; }
+
+/* --------------------------------------------------------------------------
+   Menus
+   -------------------------------------------------------------------------- */
+menu, .menu, .context-menu, popover.menu {
+  background-color: {{menu_bg}}; }
+menu menuitem, .menu menuitem {
+  padding: {{menu_pad}}px;
+  border-radius: {{r}}px; }
+menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover {
+  color: {{w.menu_item.hover_fg}};
+  background-color: {{w.menu_item.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+menubar > menuitem:hover, .menubar > menuitem:hover {
+  color: {{w.menubar_item.hover_fg}};
+  box-shadow: none;
+  border-radius: {{r}}px;
+  background-color: {{w.menubar_item.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.menubar_item.hover_top}}, {{w.menubar_item.hover_bottom}}); }
+menubar > menuitem:hover label, .menubar > menuitem:hover label {
+  color: inherit; }
+
+/* --------------------------------------------------------------------------
+   Selection: rows, icons, sidebars
+   -------------------------------------------------------------------------- */
+.view:selected, .view:selected:focus, iconview:selected, iconview:selected:focus,
+treeview.view:selected, treeview.view:selected:focus,
+row:selected, row:selected:focus, flowbox flowboxchild:selected {
+  color: {{accent_fg}};
+  background-color: {{select}};
+  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+selection, *:selected selection, entry selection, textview text selection, label selection {
+  color: {{accent_fg}};
+  background-color: {{select}}; }
+
+.sidebar, placessidebar, placessidebar > viewport, placessidebar list,
+.nemo-window .sidebar, .nemo-places-sidebar {
+  background-color: {{sidebar}}; }
+.sidebar row, placessidebar row, .sidebar .view, .nemo-window .sidebar .view {
+  border-radius: {{r}}px; }
+placessidebar row, .sidebar row { min-height: {{row_min_h}}px; }
+.sidebar row:hover:not(:selected), placessidebar row:hover:not(:selected),
+.sidebar .view:hover:not(:selected), .nemo-window .sidebar .view:hover:not(:selected) {
+  background-color: {{sidebar_hover}};
+  background-image: linear-gradient(to bottom, {{sidebar_hover_top}}, {{sidebar_hover_bottom}}); }
+.sidebar row:selected, placessidebar row:selected, .sidebar .view:selected,
+.nemo-window .sidebar .view:selected {
+  color: {{accent_fg}};
+  background-color: {{select}};
+  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+placessidebar row:selected image, placessidebar row:selected label { color: {{accent_fg}}; }
+
+/* --------------------------------------------------------------------------
+   Entries
+   -------------------------------------------------------------------------- */
+entry, spinbutton:not(.vertical), spinbutton.vertical > entry {
+  min-height: {{entry_min_h}}px;
+  border-radius: {{r}}px;
+  border-color: {{w.entry.border}};
+  box-shadow: {{w.entry.shadow}}; }
+entry:focus, spinbutton:focus:not(.vertical), spinbutton.vertical > entry:focus {
+  border-color: {{w.entry.focus_border}};
+  box-shadow: {{w.entry.focus_shadow}}; }
+spinbutton:not(.vertical) > entry, spinbutton:not(.vertical) > entry:focus,
+spinbutton:not(.vertical) > button, combobox entry {
+  box-shadow: none; }
+
+/* --------------------------------------------------------------------------
+   Notebook tabs
+   -------------------------------------------------------------------------- */
+notebook > header > tabs > tab {
+  border-radius: {{r}}px {{r}}px 0 0; }
+notebook > header.bottom > tabs > tab { border-radius: 0 0 {{r}}px {{r}}px; }
+notebook > header.left > tabs > tab { border-radius: {{r}}px 0 0 {{r}}px; }
+notebook > header.right > tabs > tab { border-radius: 0 {{r}}px {{r}}px 0; }
+notebook > header > tabs > tab:hover:not(:checked) {
+  color: {{w.tab.hover_fg}};
+  border-color: {{w.tab.hover_border}};
+  background-color: {{w.tab.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.tab.hover_top}}, {{w.tab.hover_bottom}}); }
+notebook > header.top > tabs > tab:hover:not(:checked),
+notebook > header.bottom > tabs > tab:hover:not(:checked),
+notebook > header.left > tabs > tab:hover:not(:checked),
+notebook > header.right > tabs > tab:hover:not(:checked) {
+  box-shadow: none; }
+notebook > header > tabs > tab:checked {
+  border-color: {{border_strong}};
+  background-color: {{base}};
+  background-image: none;
+  box-shadow: {{w.tab.active_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Check boxes and radios (drawn in CSS; glyphs recolored from symbolic SVGs)
+   -------------------------------------------------------------------------- */
+check, radio, treeview.check, treeview.radio {
+  min-width: 14px;
+  min-height: 14px;
+  border: 1px solid {{w.check.border}};
+  border-radius: {{r_check}}px;
+  color: transparent;
+  background-color: {{base}};
+  background-image: none;
+  box-shadow: {{w.check.shadow}};
+  -gtk-icon-source: none; }
+radio, treeview.radio { border-radius: 50%; }
+check:hover, radio:hover { border-color: {{accent}}; }
+check:checked, radio:checked, check:indeterminate, radio:indeterminate,
+treeview.check:checked, treeview.radio:checked {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+check:checked, treeview.check:checked { -gtk-icon-source: -gtk-recolor(url("assets/check-symbolic.svg")); }
+check:indeterminate, radio:indeterminate { -gtk-icon-source: -gtk-recolor(url("assets/dash-symbolic.svg")); }
+radio:checked, treeview.radio:checked { -gtk-icon-source: -gtk-recolor(url("assets/bullet-symbolic.svg")); }
+check:disabled, radio:disabled { opacity: 0.5; }
+menu menuitem check, menu menuitem radio, .menu menuitem check, .menu menuitem radio {
+  margin: 0 4px 0 0; }
+row:selected check, row:selected radio, .view:selected check, .view:selected radio {
+  border-color: {{accent_fg}}; }
+
+/* --------------------------------------------------------------------------
+   Switches
+   -------------------------------------------------------------------------- */
+switch {
+  font-size: inherit;
+  min-width: 40px;
+  min-height: 20px;
+  padding: 0;
+  border: 1px solid {{w.switch.border}};
+  border-radius: {{switch.r}}px;
+  color: transparent;
+  background-color: {{trough}};
+  background-image: none;
+  box-shadow: {{w.switch.shadow}}; }
+switch:checked {
+  border-color: {{accent_press}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+switch:disabled { opacity: 0.5; }
+switch slider {
+  min-width: 18px;
+  min-height: 18px;
+  margin: 1px;
+  border: 1px solid {{alpha(black, 0.12)}};
+  border-radius: {{switch.knob_r}}px;
+  background-color: {{knob}};
+  background-image: none;
+  box-shadow: 0 1px 2px {{alpha(black, 0.25)}}; }
+switch:hover slider { background-color: {{lighter(knob, 0.3)}}; }
+
+/* --------------------------------------------------------------------------
+   Sliders and progress bars
+   -------------------------------------------------------------------------- */
+scale trough, scale fill, scale highlight, progressbar trough, progressbar progress {
+  border-radius: {{slider.track_r}}px; }
+scale highlight, progressbar progress, levelbar block.filled {
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  border-color: {{accent_press}}; }
+scale slider {
+  min-width: 16px;
+  min-height: 16px;
+  border: 1px solid {{w.button.border}};
+  border-radius: {{slider.handle_r}}px;
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+scale slider:hover {
+  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  box-shadow: {{w.button.hover_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Scrollbars, panes, tooltips, focus, terminal
+   -------------------------------------------------------------------------- */
+scrollbar slider {
+  min-width: {{scrollbar.width}}px;
+  min-height: {{scrollbar.width}}px;
+  border-radius: {{scrollbar.r}}px; }
+
+paned > separator, paned.horizontal > separator, paned.vertical > separator {
+  min-width: 1px;
+  min-height: 1px;
+  background-image: image({{border}});
+  background-size: 1px 1px; }
+
+tooltip, tooltip.background, .tooltip.background, tooltip.csd.background {
+  color: {{tooltip.text}};
+  background-color: {{tooltip.bg}};
+  background-image: none;
+  border: 1px solid {{mix(tooltip.bg, tooltip.text, 0.2)}};
+  border-radius: {{r2}}px; }
+tooltip label, tooltip.background label { color: {{tooltip.text}}; }
+
+*:focus, button:focus, button:hover:focus, entry:focus, check:focus, radio:focus, switch:focus,
+notebook > header > tabs > tab:focus, row:focus, .view:focus {
+  outline-color: {{focus.ring}};
+  outline-style: solid;
+  outline-width: {{focus.width}}px;
+  -gtk-outline-radius: {{r}}px; }
+
+vte-terminal, vte-terminal.terminal-screen, terminal-window vte-terminal {
+  color: {{term.text}};
+  background-color: {{term.bg}};
+  caret-color: {{term.cursor}}; }
+
+/* --------------------------------------------------------------------------
+   Extra CSS from the style (extra.css), if any
+   -------------------------------------------------------------------------- */
+{{style.extra_css}}
