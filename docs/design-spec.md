@@ -123,7 +123,7 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `text_dim` | `mix(text, bg, .38)` | same | Secondary and placeholder text |
 | `menu_bg` | `base` | `base` | GTK menus and popovers (near-white, as Mint-Y) |
 | `shell_menu_bg` | `mix(bg, text, .03)` | `mix(bg, text, .04)` | Cinnamon menu and popups (used as `menu_bg` in the Cinnamon templates) |
-| `flat_hover` | `lighter(header, .35 × h)` | `mix(header, text, .06 × h)` | Hover for buttons not drawn at rest (toolbar, title buttons) and unselected tabs: softer than a full button hover |
+| `flat_hover` | `lighter(header, .50 × h)` | `mix(header, text, .08 × h)` | Hover for buttons not drawn at rest (toolbar, title buttons) and unselected tabs: softer than a full button hover |
 | `menu_hover` | `mix(menu_bg, text, .10 × h)` | same | Menu item hovers; `shell_menu_hover` is the same step on `shell_menu_bg` |
 | `fav_bg` / `fav_hover` | `mix(bg, text, .075)` / `mix(fav_bg, text, .10)` | `.09` / same step | Cinnamon menu favorites column |
 | `panel` | `mix(bg, white, .25)` | `mix(bg, text, .03)` | Panel background, ~90% opaque |
