@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xl-Cheeselooks Mockup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Ubuntu:wght@400;500;700&family=Ubuntu+Mono&display=swap">
+<style>
+/* Layout: a tabbed settings card (like the old GNOME Color Chooser), a true-to-size Cinnamon desktop scaled to fit, then the derived palette. */
+:root {
+  --page: #eceef2;
+  --card: #ffffff;
+  --ink: #1b2028;
+  --ink-2: #5a626e;
+  --line: #d6dbe2;
+  --chip: #f3f5f8;
+  --warn-bg: #fff3dd;
+  --warn-ink: #7a4a00;
+  --ok-ink: #1d6f47;
+  --focus: #2f6fe4;
+  --f-ui: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mock: "Ubuntu", "Noto Sans", "DejaVu Sans", sans-serif;
+  --f-term: "Ubuntu Mono", "DejaVu Sans Mono", monospace;
+  --f-mono: "JetBrains Mono", ui-monospace, "DejaVu Sans Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #121417; --card: #1b1e23; --ink: #e8eaee; --ink-2: #9aa2ad; --line: #2c3139;
+    --chip: #23272e; --warn-bg: #3a2c12; --warn-ink: #f3c87a; --ok-ink: #7fd3a6; --focus: #7aa7ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #121417; --card: #1b1e23; --ink: #e8eaee; --ink-2: #9aa2ad; --line: #2c3139;
+  --chip: #23272e; --warn-bg: #3a2c12; --warn-ink: #f3c87a; --ok-ink: #7fd3a6; --focus: #7aa7ff;
+  color-scheme: dark;
+}
+/* Registered so hover gradients can fade smoothly, the way GTK and Cinnamon fade between states. */
+@property --ga { syntax: "<color>"; inherits: false; initial-value: rgba(0, 0, 0, 0); }
+@property --gb { syntax: "<color>"; inherits: false; initial-value: rgba(0, 0, 0, 0); }
+
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; }
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 22px;
+  --r: 6px; --r2: 8px; --ctl: 30px; --pad: 4px; --glyph: 14px; --t-in: 60ms; --t-out: 250ms;
+}
+header h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--ink-2); max-width: 72ch; }
+
+/* ---------- Settings card with tabs ---------- */
+.controls { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.tabs { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 10px 0; border-bottom: 1px solid var(--line); background: var(--chip); }
+.tab {
+  font: inherit; font-size: 0.92rem; font-weight: 600; padding: 8px 14px; border: 1px solid transparent; border-bottom: 0;
+  border-radius: 9px 9px 0 0; background: transparent; color: var(--ink-2); cursor: pointer; margin-bottom: -1px;
+}
+.tab[aria-selected="true"] { background: var(--card); color: var(--ink); border-color: var(--line); }
+.tab:disabled { cursor: default; opacity: 0.55; }
+.tab small { font-weight: 500; }
+.tabpanel { padding: 18px; display: grid; gap: 16px; }
+.tabpanel[hidden] { display: none; }
+.lede { margin: 0; color: var(--ink-2); font-size: 0.92rem; max-width: 76ch; }
+.pickers { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: flex-end; }
+[aria-disabled="true"] { opacity: 0.45; }
+.picker { display: grid; gap: 6px; }
+.lab { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.lab small { text-transform: none; letter-spacing: 0; font-weight: 500; }
+.picker .row { display: flex; align-items: center; gap: 8px; }
+.picker input[type="color"] { width: 46px; height: 38px; padding: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--chip); cursor: pointer; }
+.picker input[type="text"] {
+  width: 104px; height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--chip); color: var(--ink); font-family: var(--f-mono); font-size: 0.9rem;
+}
+.picker input:disabled, .seg button:disabled { cursor: not-allowed; }
+.picker input[type="text"][aria-invalid="true"] { border-color: #d64545; }
+.picker input[type="range"] { width: 150px; accent-color: var(--ink); height: 38px; }
+.range-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--ink-2); }
+.range-row output { font-family: var(--f-mono); min-width: 6ch; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; min-height: 38px; }
+.seg button { font: inherit; font-size: 0.9rem; padding: 0 12px; border: 0; background: var(--chip); color: var(--ink); cursor: pointer; min-height: 38px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--card); font-weight: 600; }
+.seg button small { font-weight: 500; opacity: 0.7; }
+.toggle-row { display: flex; align-items: center; gap: 12px; font-weight: 600; cursor: pointer; width: fit-content; }
+.toggle-row.small { font-weight: 500; font-size: 0.9rem; gap: 10px; }
+.toggle-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tgl { width: 44px; height: 24px; border-radius: 12px; background: var(--line); position: relative; flex: none; transition: background 120ms; }
+.tgl::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: left 120ms; }
+.toggle-row.small .tgl { width: 36px; height: 20px; }
+.toggle-row.small .tgl::after { width: 14px; height: 14px; }
+.toggle-row input:checked + .tgl { background: var(--ok-ink); }
+.toggle-row input:checked + .tgl::after { left: 23px; }
+.toggle-row.small input:checked + .tgl::after { left: 19px; }
+.toggle-row input:focus-visible + .tgl { outline: 2px solid var(--focus); outline-offset: 2px; }
+.groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+.group { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; align-content: start; }
+.group h3 { margin: 0; font-size: 0.95rem; }
+.group .hint { margin: 0; font-size: 0.85rem; color: var(--ink-2); }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.presets > .lab { margin-right: 4px; }
+.preset {
+  display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px 0 6px;
+  border: 1px solid var(--line); border-radius: 99px; background: var(--chip); color: var(--ink);
+  font: inherit; font-size: 0.88rem; cursor: pointer;
+}
+.preset:hover:not(:disabled) { border-color: var(--ink-2); }
+.preset:disabled { cursor: not-allowed; }
+.preset .dots { display: inline-flex; }
+.preset .dots i { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--chip); margin-left: -6px; display: block; }
+.preset .dots i:first-child { margin-left: 0; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.status { display: flex; flex-wrap: wrap; gap: 8px; min-height: 30px; padding: 0 18px 14px; }
+.note { font-size: 0.86rem; padding: 4px 10px; border-radius: 8px; background: var(--warn-bg); color: var(--warn-ink); }
+.note.ok { background: transparent; color: var(--ok-ink); padding-left: 0; }
+
+/* Style tab: live widget strip + recipe */
+.style-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 900px) { .style-grid { grid-template-columns: minmax(0, 1fr); } }
+.mock-surface {
+  font-family: var(--f-mock); font-size: 13px; color: var(--m-text); background: var(--m-bg);
+  border-radius: 12px; padding: 22px; display: grid; gap: 18px; border: 1px solid var(--line); min-width: 0;
+}
+.strip { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.recipe {
+  margin: 0; font-family: var(--f-mono); font-size: 0.8rem; line-height: 1.55; background: var(--chip); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 12px; padding: 14px; overflow-x: auto; white-space: pre; min-width: 0;
+}
+
+/* ---------- Shared interactive behaviour (hover in fast, hover out slow, press instant) ---------- */
+.tb, .tbtn, .pathbar span, .mbi, .sidebar a, .fitem, .fitem .lbl, .gmi, .btnlook, .fav, .cat, .app, .pbtn, .switch, .tabd {
+  background-image: linear-gradient(var(--ga), var(--gb));
+  transition: --ga var(--t-out) ease-out, --gb var(--t-out) ease-out, border-color var(--t-out) ease-out,
+              box-shadow var(--t-out) ease-out, color var(--t-out) ease-out;
+}
+:is(.tb, .tbtn, .pathbar span, .mbi, .sidebar a, .fitem, .fitem .lbl, .gmi, .btnlook, .fav, .cat, .app, .pbtn, .switch, .tabd):hover { transition-duration: var(--t-in); }
+:is(.tb, .tbtn, .pathbar span, .mbi, .sidebar a, .fitem, .fitem .lbl, .gmi, .btnlook, .fav, .cat, .app, .pbtn, .switch, .tabd):active { transition-duration: 0s; }
+
+/* Buttons: edges come from the style (border, highlight, shade, shadow) */
+.btnlook {
+  --ga: var(--m-btn-a); --gb: var(--m-btn-b);
+  border: 1px solid var(--e-btn-border); box-shadow: var(--e-btn-shadow);
+  border-radius: var(--r); color: var(--m-text);
+  height: var(--ctl); padding: 0 16px; display: inline-grid; place-items: center; font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.btnlook:hover { --ga: var(--m-btnh-a); --gb: var(--m-btnh-b); box-shadow: var(--e-btn-hover); }
+.btnlook:active, .btnlook.pressed { --ga: var(--m-pressed); --gb: var(--m-pressed); box-shadow: var(--e-btn-press); }
+.btnlook.suggested { --ga: var(--m-acc-a); --gb: var(--m-acc-b); border-color: var(--e-acc-border); box-shadow: var(--e-acc-shadow); color: var(--m-accent-fg); }
+.btnlook.suggested:hover { --ga: var(--m-acch-a); --gb: var(--m-acch-b); box-shadow: var(--e-acc-hover); }
+.btnlook.suggested:active { --ga: var(--m-accent-press); --gb: var(--m-accent-press); box-shadow: var(--e-btn-press); }
+.btnlook.disabled { opacity: 0.5; pointer-events: none; }
+.btnlook.icon { padding: 0; width: calc(var(--ctl) * 1.12); }
+.btnlook svg { width: 16px; height: 16px; }
+.combo { display: inline-flex; gap: 18px; justify-content: space-between; }
+.entry {
+  height: var(--ctl); display: flex; align-items: center; gap: 4px; padding: 0 10px; border-radius: var(--r);
+  background: var(--m-base); color: var(--m-text);
+  border: 1px solid var(--e-entry-focus-border); box-shadow: var(--e-entry-focus);
+}
+.entry.rest { border-color: var(--e-entry-border); box-shadow: var(--e-entry-shadow); color: var(--m-text-dim); }
+.entry .sel { background: var(--m-select); color: var(--m-accent-fg); }
+.entry .caret { width: 1px; height: 16px; background: var(--m-text); margin-left: -3px; }
+.entry svg { width: 14px; height: 14px; }
+
+/* Tabs: two styles show the difference */
+.tabsd { display: flex; gap: 2px; border-bottom: 1px solid var(--e-btn-border-solid); }
+.tabd { padding: calc(var(--pad) + 3px) 14px; border: 1px solid transparent; border-bottom: 0; border-radius: var(--r) var(--r) 0 0; margin-bottom: -1px; cursor: pointer; color: var(--m-text-dim); }
+.tabd:hover { --ga: var(--m-hov-a); --gb: var(--m-hov-b); color: var(--m-text); }
+.tabd.on { --ga: var(--m-base); --gb: var(--m-base); border-color: var(--e-btn-border-solid); color: var(--m-text); box-shadow: inset 0 2px var(--m-accent); font-weight: 500; }
+[data-style="float"] .tabsd { border-bottom: 0; background: var(--m-trough); padding: 3px; border-radius: calc(var(--r) + 3px); gap: 3px; width: fit-content; }
+[data-style="float"] .tabd { border: 0; margin: 0; border-radius: var(--r); padding: calc(var(--pad) + 2px) 14px; }
+[data-style="float"] .tabd.on { --ga: var(--m-btn-a); --gb: var(--m-btn-b); box-shadow: var(--e-btn-shadow); }
+
+/* Switch, checks, radios */
+.switch {
+  --ga: var(--m-trough); --gb: var(--m-trough);
+  width: 44px; height: 24px; border-radius: var(--rs); border: 1px solid var(--e-entry-border); box-shadow: var(--e-entry-shadow);
+  position: relative; flex: none; cursor: pointer;
+}
+.switch::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+  border-radius: calc(var(--rs) * 0.75); background: var(--m-base); box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: left 120ms;
+}
+.switch.on { --ga: var(--m-acc-a); --gb: var(--m-acc-b); border-color: var(--e-acc-border); box-shadow: var(--e-acc-shadow); }
+.switch.on::after { left: 22px; background: #ffffff; }
+.checks { display: flex; gap: 18px; }
+.check { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.box { width: 17px; height: 17px; border-radius: min(5px, var(--r)); border: 1px solid var(--e-entry-border); box-shadow: var(--e-entry-shadow); background: var(--m-base); display: grid; place-items: center; }
+.box.round { border-radius: 50%; }
+.check.on .box { background: linear-gradient(var(--m-acc-a), var(--m-acc-b)); border-color: var(--e-acc-border); box-shadow: var(--e-acc-shadow); color: var(--m-accent-fg); }
+.box svg { width: 11px; height: 11px; opacity: 0; }
+.check.on .box svg { opacity: 1; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--m-accent-fg); opacity: 0; }
+.check.on .dot { opacity: 1; }
+.progress { height: 6px; border-radius: min(3px, var(--r)); background: var(--m-trough); overflow: hidden; }
+.progress i { display: block; height: 100%; width: 62%; background: linear-gradient(var(--m-acc-a), var(--m-acc-b)); }
+
+/* ---------- Stage ---------- */
+.stage-frame { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--card); }
+.stage-scaler { position: relative; width: 100%; }
+.stage {
+  --panel-h: 40px; --rp: 8px;
+  position: absolute; top: 0; left: 0; width: 1180px; height: 800px;
+  transform-origin: 0 0; overflow: hidden;
+  font-family: var(--f-mock); font-size: 13px; color: var(--m-text);
+  background:
+    radial-gradient(1200px 600px at 85% 10%, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(900px 700px at 10% 100%, rgba(0,0,0,0.35), transparent 60%),
+    linear-gradient(135deg, var(--m-wall-a), var(--m-wall-b));
+  user-select: none;
+}
+.stage svg { display: block; }
+
+/* Windows and their borders (Window Borders tab) */
+.win {
+  position: absolute; background: var(--m-bg);
+  border: var(--wb-bw) solid var(--wb-border);
+  border-radius: var(--r2) var(--r2) calc(var(--r2) * 0.4) calc(var(--r2) * 0.4);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25), 0 14px 40px rgba(0,0,0,0.35);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.win.focused { box-shadow: 0 2px 8px rgba(0,0,0,0.30), 0 20px 56px rgba(0,0,0,0.45); }
+.titlebar {
+  position: relative; display: flex; align-items: center; gap: 6px; height: var(--wb-h); padding: 0 7px;
+  background: var(--wb-unfocused); color: var(--wb-unfocused-text); flex: none;
+}
+/* Only the title bar gets the gradient; it ends on the menubar/toolbar color so stacked bars blend. */
+.win.focused .titlebar { background: linear-gradient(var(--wb-a), var(--wb-b)); color: var(--wb-text); }
+.titlebar.solo { border-bottom: 1px solid var(--m-border); }
+.titlebar .title { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; pointer-events: none; }
+.tbuttons { display: flex; gap: 4px; margin-left: auto; position: relative; align-items: center; }
+.stage.layout-left .tbuttons { margin-left: 0; margin-right: auto; order: -1; }
+.stage.layout-left .tb.close { order: -1; }
+.hb-left { position: relative; }
+.stage.layout-left .hb-left { order: 2; margin-left: auto; }
+.tb {
+  --ga: transparent; --gb: transparent;
+  width: calc(min(var(--ctl), var(--wb-h) - 10px) * 1.12); height: min(var(--ctl), var(--wb-h) - 10px);
+  display: grid; place-items: center; border: 1px solid transparent; color: inherit; padding: 0; cursor: default; border-radius: var(--r);
+}
+.tb svg { width: var(--glyph); height: var(--glyph); }
+.tb:hover { --ga: var(--m-btn-a); --gb: var(--m-btn-b); border-color: var(--e-btn-border); box-shadow: var(--e-btn-shadow); color: var(--m-text); }
+.tb:active { --ga: var(--m-pressed); --gb: var(--m-pressed); box-shadow: var(--e-btn-press); }
+.tb.close:hover { --ga: var(--m-acc-a); --gb: var(--m-acc-b); border-color: var(--e-acc-border); box-shadow: var(--e-acc-shadow); color: var(--m-accent-fg); }
+/* Button style: Dots */
+.stage[data-btn="dots"] .tbuttons { gap: 8px; padding: 0 4px; }
+.stage[data-btn="dots"] .tb { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.14); box-shadow: none; color: rgba(0,0,0,0.6); }
+.stage[data-btn="dots"] .tb svg { width: 9px; height: 9px; opacity: 0; transition: opacity 100ms; }
+.stage[data-btn="dots"] .tbuttons:hover .tb svg { opacity: 1; }
+.stage[data-btn="dots"] .tb.close, .stage[data-btn="dots"] .tb.close:hover { --ga: #EF6A5F; --gb: #E2554B; }
+.stage[data-btn="dots"] .tb.min, .stage[data-btn="dots"] .tb.min:hover { --ga: #F2C04F; --gb: #E6AE33; }
+.stage[data-btn="dots"] .tb.max, .stage[data-btn="dots"] .tb.max:hover { --ga: #6BC46A; --gb: #55B054; }
+.stage[data-btn="dots"] .win:not(.focused) .tb { --ga: var(--m-trough); --gb: var(--m-trough); }
+.stage[data-btn="dots"] .tb:hover, .stage[data-btn="dots"] .tb.close:hover { border-color: rgba(0,0,0,0.14); box-shadow: none; color: rgba(0,0,0,0.6); }
+/* Button style: Wide */
+.stage[data-btn="wide"] .titlebar { padding-right: 0; }
+.stage.layout-left[data-btn="wide"] .titlebar { padding-left: 0; padding-right: 7px; }
+.stage[data-btn="wide"] .tbuttons { gap: 0; align-self: stretch; }
+.stage[data-btn="wide"] .tb { width: 46px; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+.stage[data-btn="wide"] .tb:hover { --ga: var(--m-hov-a); --gb: var(--m-hov-b); border: 0; box-shadow: none; }
+.stage[data-btn="wide"] .tb.close:hover { --ga: #D9443B; --gb: #D9443B; color: #ffffff; box-shadow: none; }
+/* Button style: Circles */
+.stage[data-btn="circles"] .tbuttons { gap: 7px; padding: 0 3px; }
+.stage[data-btn="circles"] .tb { width: 20px; height: 20px; border-radius: 50%; --ga: var(--m-pressed); --gb: var(--m-pressed); border: 0; box-shadow: none; }
+.stage[data-btn="circles"] .tb svg { width: 10px; height: 10px; }
+.stage[data-btn="circles"] .tb:hover { --ga: var(--m-btnh-a); --gb: var(--m-btnh-b); border: 0; box-shadow: none; }
+.stage[data-btn="circles"] .tb.close { --ga: var(--m-acc-a); --gb: var(--m-acc-b); color: var(--m-accent-fg); }
+.stage[data-btn="circles"] .tb.close:hover { --ga: var(--m-acch-a); --gb: var(--m-acch-b); border: 0; box-shadow: none; }
+
+/* Nemo window */
+#win-files { left: 410px; top: 18px; width: 750px; height: 512px; }
+.menubar { display: flex; gap: 2px; padding: 2px 6px; background: var(--m-header); flex: none; position: relative; }
+.win:not(.focused) .menubar, .win:not(.focused) .toolbar { background: var(--m-bg); }
+.mbi { padding: calc(var(--pad) + 1px) 9px; border-radius: var(--r); cursor: pointer; }
+.mbi:hover { --ga: var(--m-hov-a); --gb: var(--m-hov-b); }
+.mbi.open { --ga: var(--m-sel-a); --gb: var(--m-sel-b); color: var(--m-accent-fg); }
+.toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--m-header); border-bottom: 1px solid var(--m-border); flex: none; }
+.tbtn {
+  --ga: transparent; --gb: transparent;
+  height: var(--ctl); min-width: calc(var(--ctl) * 1.12); padding: 0 8px; display: grid; place-items: center;
+  border-radius: var(--r); color: var(--m-text); border: 1px solid transparent;
+}
+.tbtn:hover { --ga: var(--m-btn-a); --gb: var(--m-btn-b); border-color: var(--e-btn-border); box-shadow: var(--e-btn-shadow); }
+.tbtn.on { --ga: var(--m-pressed); --gb: var(--m-pressed); border-color: var(--e-btn-border); box-shadow: var(--e-btn-press); }
+.tbtn svg { width: 16px; height: 16px; }
+.pathbar { display: flex; margin-left: 6px; border: 1px solid var(--e-btn-border); box-shadow: var(--e-btn-shadow); border-radius: var(--r); overflow: hidden; height: var(--ctl); }
+.pathbar span { --ga: var(--m-btn-a); --gb: var(--m-btn-b); display: flex; align-items: center; gap: 6px; padding: 0 12px; color: var(--m-text); }
+.pathbar span:hover { --ga: var(--m-btnh-a); --gb: var(--m-btnh-b); }
+.pathbar span + span { border-left: 1px solid var(--m-border); }
+.pathbar span.on { --ga: var(--m-pressed); --gb: var(--m-pressed); font-weight: 700; }
+.pathbar svg { width: 14px; height: 14px; }
+.files-body { flex: 1; display: flex; min-height: 0; position: relative; }
+.sidebar { width: 186px; flex: none; background: var(--m-sidebar); border-right: 1px solid var(--m-border); padding: 8px 0; overflow: hidden; }
+.sidebar h4 { margin: 4px 12px; font-size: 1em; font-weight: 700; color: var(--m-text); }
+/* Rows run edge to edge (no side margin) and still take the radius. */
+.sidebar a { display: flex; align-items: center; gap: 9px; padding: var(--pad) 14px var(--pad) 22px; color: var(--m-text); text-decoration: none; border-radius: var(--r); }
+.sidebar a svg { width: 16px; height: 16px; flex: none; }
+.sidebar a:hover, .sidebar a.hov { --ga: var(--m-sbh-a); --gb: var(--m-sbh-b); }
+.sidebar a.sel { --ga: var(--m-sel-a); --gb: var(--m-sel-b); color: var(--m-accent-fg); }
+.grid { flex: 1; background: var(--m-base); padding: 18px 14px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px 6px; align-content: start; }
+.fitem { display: grid; justify-items: center; gap: 6px; padding: 6px 4px; border-radius: min(var(--r), 12px); text-align: center; color: var(--m-text); }
+.fitem svg { width: 60px; height: 50px; }
+.fitem .lbl { padding: 1px 7px; border-radius: min(var(--r), 10px); line-height: 1.3; }
+.fitem:hover { --ga: var(--m-hov-a); --gb: var(--m-hov-b); }
+.fitem.sel .lbl { --ga: var(--m-sel-a); --gb: var(--m-sel-b); color: var(--m-accent-fg); }
+.statusbar { display: flex; align-items: center; gap: 12px; padding: 4px 10px; height: calc(var(--ctl) + 2px); flex: none; background: var(--m-bg); border-top: 1px solid var(--m-border); color: var(--m-text); }
+.statusbar .msg { flex: 1; text-align: center; font-size: 0.95em; }
+.mini-slider { width: 90px; height: 4px; border-radius: 2px; background: var(--m-trough); position: relative; }
+.mini-slider::before { content: ""; position: absolute; inset: 0 40% 0 0; background: var(--m-accent); border-radius: 2px; }
+.mini-slider::after { content: ""; position: absolute; left: 60%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--m-base); border: 1px solid var(--m-border-strong); box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.gmenu {
+  position: absolute; left: 150px; top: 0; width: 210px; z-index: 4;
+  background: var(--m-base); border: 1px solid var(--m-border-strong); border-radius: 0 0 min(var(--r2), 10px) min(var(--r2), 10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28); padding: 4px; display: grid; gap: 1px; color: var(--m-text);
+}
+.gmenu[hidden] { display: none; }
+.gmi { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: var(--pad) 10px; border-radius: min(var(--r), 8px); }
+.gmi kbd { font: inherit; font-size: 0.9em; color: var(--m-text-dim); }
+.gmi:hover, .gmi.hl { --ga: var(--m-sel-a); --gb: var(--m-sel-b); color: var(--m-accent-fg); }
+.gmi:hover kbd, .gmi.hl kbd { color: inherit; opacity: 0.85; }
+.gsep { height: 1px; background: var(--m-border); margin: 3px 6px; }
+
+/* Settings (headerbar) window */
+#win-settings { left: 22px; top: 14px; width: 372px; }
+.settings-body { padding: 14px 16px; display: grid; gap: calc(var(--pad) * 3); align-content: start; flex: 1; background: var(--m-bg); }
+.srow { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--m-text); }
+.srow .sub { color: var(--m-text-dim); font-size: 0.92em; }
+.btnrow { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+
+/* Terminal window */
+#win-term { left: 590px; top: 546px; width: 570px; height: 196px; }
+.term { flex: 1; padding: 8px 10px; font-family: var(--f-term); font-size: 14px; line-height: 1.35; background: var(--t-bg); color: var(--t-fg); overflow: hidden; white-space: pre; }
+.term .p { color: var(--t-prompt); font-weight: 700; }
+.term .d { color: var(--t-dir); font-weight: 700; }
+.term .cur { background: var(--t-cursor); color: var(--t-bg); }
+
+/* Cinnamon menu */
+.menu {
+  position: absolute; left: 6px; bottom: calc(var(--panel-h) + 6px); width: 520px; min-height: 388px;
+  background: var(--m-menu-bg); border: 1px solid var(--m-menu-border); border-radius: var(--r2);
+  box-shadow: 0 3px 9px 1px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.15);
+  display: flex; padding: 10px; color: var(--m-text); z-index: 5;
+}
+.menu[hidden] { display: none !important; }
+.favs { width: 52px; flex: none; display: flex; flex-direction: column; gap: 4px; padding: 6px 4px; border-radius: var(--r); background: var(--m-fav-bg); margin-right: 10px; }
+.favs .spacer { flex: 1; }
+.fav { width: 44px; height: 38px; display: grid; place-items: center; border-radius: var(--r); }
+.fav:hover, .fav.hl { --ga: var(--m-fh-a); --gb: var(--m-fh-b); }
+.fav svg { width: 26px; height: 26px; }
+.fav.sys svg { width: 18px; height: 18px; color: var(--m-text); }
+.menu-main { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.menu .entry svg { color: var(--m-text-dim); }
+.menu-cols { flex: 1; display: flex; gap: 8px; min-height: 0; }
+.cats { width: 170px; flex: none; display: grid; gap: 2px; align-content: start; }
+.cat, .app { display: flex; align-items: center; gap: 9px; padding: var(--pad) 7px; border-radius: var(--r); }
+.cat svg { width: 20px; height: 20px; flex: none; }
+.app svg { width: 22px; height: 22px; flex: none; }
+.cat:hover, .cat.hl, .app:hover, .app.hl { --ga: var(--m-mh-a); --gb: var(--m-mh-b); }
+.cat.sel { --ga: var(--m-sel-a); --gb: var(--m-sel-b); color: var(--m-accent-fg); }
+.apps { flex: 1; display: grid; gap: 2px; align-content: start; border-left: 1px solid var(--m-border); padding-left: 8px; }
+.menu-foot { padding: 2px 4px 0; text-align: right; }
+.menu-foot b { display: block; }
+.menu-foot span { color: var(--m-text-dim); font-size: 0.92em; }
+
+/* Panel: height comes from Cinnamon's Panel settings; buttons fill it */
+.panel {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--panel-h);
+  display: flex; align-items: stretch; gap: 3px; padding: 0 3px;
+  background: linear-gradient(var(--m-panel-a), var(--m-panel-b));
+  box-shadow: 0 0 2px 2px rgba(0,0,0,0.35); color: var(--m-text); z-index: 6;
+}
+.pbtn {
+  --ga: transparent; --gb: transparent;
+  height: 100%; display: flex; align-items: center; gap: 8px; padding: 0 10px;
+  border-radius: var(--rp); border: 1px solid transparent; cursor: pointer; position: relative; overflow: hidden;
+  color: inherit; font: inherit;
+}
+.pbtn svg { width: 22px; height: 22px; flex: none; position: relative; }
+.pbtn .lbl { position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pbtn.menu-btn { padding: 0 9px; }
+.pbtn.menu-btn:hover, .pbtn.menu-btn.open, .tray .pbtn:hover { --ga: var(--m-pb-hover-a); --gb: var(--m-pb-hover-b); border-color: var(--e-pb-border); box-shadow: var(--e-panel); }
+.wl { display: flex; gap: 3px; flex: 1; min-width: 0; }
+.wl .pbtn { width: 150px; justify-content: flex-start; }
+.wl .pbtn.running { --ga: var(--m-pb-rest-a); --gb: var(--m-pb-rest-b); border-color: var(--e-pb-border); box-shadow: var(--e-panel); }
+.wl .pbtn.running:hover { --ga: var(--m-pb-hover-a); --gb: var(--m-pb-hover-b); }
+.wl .pbtn.focused, .wl .pbtn.focused:hover { --ga: var(--m-pb-focus-a); --gb: var(--m-pb-focus-b); border-color: var(--e-pbf-border); box-shadow: var(--e-panel); color: var(--m-accent-fg); font-weight: 700; }
+.wl .pbtn.attention { --ga: var(--m-pb-attn-a); --gb: var(--m-pb-attn-b); border-color: var(--m-pb-attn-edge); }
+.wl .pbtn .prog { position: absolute; left: 0; top: 0; bottom: 0; width: 46%; background: var(--m-pb-progress); opacity: 0.8; }
+.tray { display: flex; align-items: stretch; gap: 1px; }
+.tray .pbtn { padding: 0 7px; }
+.tray .pbtn svg { width: 18px; height: 18px; }
+.clock { padding: 0 10px; display: flex; align-items: center; font-weight: 700; white-space: nowrap; }
+
+/* ---------- Lower cards ---------- */
+.two { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.panel-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.panel-card h2 { margin: 0 0 4px; font-size: 1.1rem; }
+.panel-card > p { margin: 0 0 14px; color: var(--ink-2); font-size: 0.92rem; }
+.tbl-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th { text-align: left; font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+tr.group td { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; padding-top: 14px; }
+td.sw { width: 40px; }
+td.sw i { display: block; width: 28px; height: 20px; border-radius: 5px; border: 1px solid rgba(127,127,127,0.35); }
+td.hex { font-family: var(--f-mono); font-size: 0.82rem; white-space: nowrap; color: var(--ink-2); }
+td.src { color: var(--ink-2); font-size: 0.84rem; }
+tr.input td:nth-child(2) { font-weight: 700; }
+ul.notes { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 0.92rem; }
+ul.notes b { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap" id="app" data-style="cheeselooks">
+  <header>
+    <h1>xl-Cheeselooks mockup</h1>
+    <p>Set colors, shape, style and window borders in the tabs below. Everything in the desktop is calculated from those settings, the same way the real theme will be. Hover things to feel the transition timing, and click windows, panel buttons, the menu button and the View menu to see their states.</p>
+  </header>
+
+  <section class="controls" aria-label="Theme settings">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-global" aria-controls="tp-global" aria-selected="true" type="button">Global</button>
+      <button class="tab" role="tab" id="tab-style" aria-controls="tp-style" aria-selected="false" type="button">Style</button>
+      <button class="tab" role="tab" id="tab-panel" aria-controls="tp-panel" aria-selected="false" type="button">Panel &amp; Menu</button>
+      <button class="tab" role="tab" id="tab-wb" aria-controls="tp-wb" aria-selected="false" type="button">Window Borders</button>
+      <button class="tab" role="tab" id="tab-term" aria-controls="tp-term" aria-selected="false" type="button">Terminal</button>
+      <button class="tab" type="button" disabled>Icons <small>· later</small></button>
+    </div>
+
+    <!-- Global -->
+    <div class="tabpanel" role="tabpanel" id="tp-global" aria-labelledby="tab-global">
+      <div class="pickers" id="pk-global"></div>
+      <div class="pickers">
+        <div class="picker">
+          <span class="lab" id="size-label">Size</span>
+          <div class="seg" role="group" aria-labelledby="size-label" id="size-seg">
+            <button type="button" data-size="compact" aria-pressed="false">Compact</button>
+            <button type="button" data-size="normal" aria-pressed="true">Normal</button>
+            <button type="button" data-size="large" aria-pressed="false">Large</button>
+          </div>
+        </div>
+        <div class="picker">
+          <label class="lab" for="r-round">Roundness</label>
+          <div class="range-row">Square<input type="range" id="r-round" min="0" max="100" step="5">Round<output id="o-round"></output></div>
+        </div>
+        <div class="picker">
+          <label class="lab" for="r-grad">Gradient</label>
+          <div class="range-row">Flat<input type="range" id="r-grad" min="0" max="100" step="5">Gradient<output id="o-grad"></output></div>
+        </div>
+      </div>
+      <div class="pickers">
+        <div class="picker">
+          <label class="lab" for="r-tin">Hover in</label>
+          <div class="range-row">Fast<input type="range" id="r-tin" min="0" max="300" step="10">Slow<output id="o-tin"></output></div>
+        </div>
+        <div class="picker">
+          <label class="lab" for="r-tout">Hover out</label>
+          <div class="range-row">Fast<input type="range" id="r-tout" min="0" max="800" step="10">Slow<output id="o-tout"></output></div>
+        </div>
+      </div>
+      <p class="lede">Size changes spacing and control heights, not text size, which stays with Mint's Font settings. Hover timing affects hover only: clicks always respond instantly.</p>
+      <div class="presets" id="ps-global"><span class="lab">Presets</span></div>
+    </div>
+
+    <!-- Style -->
+    <div class="tabpanel" role="tabpanel" id="tp-style" aria-labelledby="tab-style" hidden>
+      <div class="pickers">
+        <div class="picker">
+          <span class="lab" id="style-label">Style</span>
+          <div class="seg" role="group" aria-labelledby="style-label" id="style-seg">
+            <button type="button" data-style="cheeselooks" aria-pressed="true">xl-Cheeselooks</button>
+            <button type="button" data-style="float" aria-pressed="false">Float <small>· example</small></button>
+          </div>
+        </div>
+        <div class="picker">
+          <label class="lab" for="r-depth">Depth</label>
+          <div class="range-row">Flat<input type="range" id="r-depth" min="0" max="100" step="5">Deep<output id="o-depth"></output></div>
+        </div>
+      </div>
+      <p class="lede">A style decides how edges are drawn: borders, the inner highlight, the inner shade and the drop shadow, for each kind of widget and state. Roundness, gradient and hover timing still come from Global. Depth scales the highlights and shadows of whichever style you pick. Float is a second style to show the borderless, floating look.</p>
+      <div class="style-grid">
+        <div class="mock-surface">
+          <div class="strip">
+            <div class="btnlook">Button</div>
+            <div class="btnlook suggested">Suggested</div>
+            <div class="btnlook pressed">Toggled</div>
+            <div class="btnlook disabled">Disabled</div>
+            <div class="btnlook icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg></div>
+            <div class="btnlook suggested icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg></div>
+          </div>
+          <div class="strip">
+            <div class="entry rest" style="width:190px"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2L14 14"/></svg>Search…</div>
+            <div class="entry" style="width:190px">Focused <span class="caret" style="margin-left:0"></span></div>
+            <div class="btnlook combo">Coral <span aria-hidden="true">▾</span></div>
+          </div>
+          <div class="strip">
+            <div class="tabsd"><div class="tabd on">General</div><div class="tabd">Colors</div><div class="tabd">Advanced</div></div>
+            <div class="switch on" data-toggle></div>
+            <div class="check on" data-toggle><span class="box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 6.5l2.3 2.3L9.5 3.5"/></svg></span>Check</div>
+            <div class="check on"><span class="box round"><span class="dot"></span></span>Radio</div>
+          </div>
+        </div>
+        <pre class="recipe" id="recipe" aria-label="Style recipe"></pre>
+      </div>
+    </div>
+
+    <!-- Panel & Menu -->
+    <div class="tabpanel" role="tabpanel" id="tp-panel" aria-labelledby="tab-panel" hidden>
+      <label class="toggle-row"><input type="checkbox" id="sw-panel"><span class="tgl"></span>Use separate colors for the panel and menu</label>
+      <div class="pickers" id="pk-panel"></div>
+      <div class="presets" id="ps-panel"><span class="lab">Panel presets</span></div>
+      <div class="groups">
+        <div class="group">
+          <h3>Panel shape</h3>
+          <label class="toggle-row small"><input type="checkbox" id="fl-panel"><span class="tgl"></span>Follow Global</label>
+          <div id="shape-panel" class="pickers">
+            <div class="picker"><label class="lab" for="r-proud">Roundness</label><div class="range-row">Square<input type="range" id="r-proud" min="0" max="100" step="5">Round<output id="o-proud"></output></div></div>
+            <div class="picker"><label class="lab" for="r-pgrad">Gradient</label><div class="range-row">Flat<input type="range" id="r-pgrad" min="0" max="100" step="5">Gradient<output id="o-pgrad"></output></div></div>
+          </div>
+          <p class="hint">Panel height and icon sizes come from Cinnamon's own Panel settings (40 px shown). The theme controls what's inside: button shape, padding and spacing.</p>
+        </div>
+        <div class="group">
+          <h3>Menu shape</h3>
+          <label class="toggle-row small"><input type="checkbox" id="fl-menu"><span class="tgl"></span>Follow Global</label>
+          <div id="shape-menu" class="pickers">
+            <div class="picker"><label class="lab" for="r-mround">Roundness</label><div class="range-row">Square<input type="range" id="r-mround" min="0" max="100" step="5">Round<output id="o-mround"></output></div></div>
+            <div class="picker"><label class="lab" for="r-mgrad">Gradient</label><div class="range-row">Flat<input type="range" id="r-mgrad" min="0" max="100" step="5">Gradient<output id="o-mgrad"></output></div></div>
+          </div>
+          <p class="hint">Covers the main menu and every panel popup: calendar, sound, network and right-click menus. Global Size sets their spacing.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window Borders -->
+    <div class="tabpanel" role="tabpanel" id="tp-wb" aria-labelledby="tab-wb" hidden>
+      <label class="toggle-row"><input type="checkbox" id="sw-wb"><span class="tgl"></span>Use separate title bar colors</label>
+      <div class="pickers" id="pk-wb"></div>
+      <div class="pickers">
+        <div class="picker"><label class="lab" for="r-wbh">Title bar height</label><div class="range-row">Short<input type="range" id="r-wbh" min="30" max="56" step="1">Tall<output id="o-wbh"></output></div></div>
+        <div class="picker"><label class="lab" for="r-wbw">Border thickness</label><div class="range-row">None<input type="range" id="r-wbw" min="0" max="6" step="1">Thick<output id="o-wbw"></output></div></div>
+      </div>
+      <div class="pickers">
+        <div class="picker">
+          <span class="lab" id="layout-label">Button layout</span>
+          <div class="seg" role="group" aria-labelledby="layout-label" id="layout-seg">
+            <button type="button" data-layout="right" aria-pressed="true">Right</button>
+            <button type="button" data-layout="left" aria-pressed="false">Left</button>
+          </div>
+        </div>
+        <div class="picker">
+          <span class="lab" id="btn-label">Button style</span>
+          <div class="seg" role="group" aria-labelledby="btn-label" id="btn-seg">
+            <button type="button" data-btn="theme" aria-pressed="true">Theme</button>
+            <button type="button" data-btn="dots" aria-pressed="false">Dots <small>· later</small></button>
+            <button type="button" data-btn="wide" aria-pressed="false">Wide <small>· later</small></button>
+            <button type="button" data-btn="circles" aria-pressed="false">Circles <small>· later</small></button>
+          </div>
+        </div>
+      </div>
+      <p class="lede">Button layout is really Mint's own setting (System Settings → Windows); the app would just change it for you. Borders are visual only, since Cinnamon keeps an invisible grab area for resizing. Window shadows are drawn by Cinnamon and can't be themed.</p>
+    </div>
+
+    <!-- Terminal -->
+    <div class="tabpanel" role="tabpanel" id="tp-term" aria-labelledby="tab-term" hidden>
+      <label class="toggle-row"><input type="checkbox" id="sw-term"><span class="tgl"></span>Use separate terminal colors</label>
+      <p class="lede">When this is off, the terminal matches the theme: light with a light theme, dark with a dark one. The cursor and prompt use the accent. Terminal profiles with their own custom colors still win over the theme.</p>
+      <div class="pickers" id="pk-term"></div>
+      <div class="presets" id="ps-term"><span class="lab">Terminal presets</span></div>
+    </div>
+
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
+
+  <div class="stage-frame">
+    <div class="stage-scaler" id="scaler">
+      <div class="stage" id="stage" data-btn="theme">
+
+        <!-- Nemo-style window -->
+        <div class="win" id="win-files" data-win="files">
+          <div class="titlebar">
+            <div class="title">Home</div>
+            <div class="tbuttons">
+              <button class="tb min" type="button" tabindex="-1" aria-label="Minimize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11.5h8"/></svg></button>
+              <button class="tb max" type="button" tabindex="-1" aria-label="Maximize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.25" y="4.25" width="7.5" height="7.5" rx="0.5"/></svg></button>
+              <button class="tb close" type="button" tabindex="-1" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
+            </div>
+          </div>
+          <div class="menubar">
+            <span class="mbi">File</span><span class="mbi">Edit</span><span class="mbi open" id="mb-view">View</span><span class="mbi">Go</span><span class="mbi">Bookmarks</span><span class="mbi">Help</span>
+          </div>
+          <div class="toolbar">
+            <div class="tbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg></div>
+            <div class="tbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".45"><path d="M6 3l5 5-5 5"/></svg></div>
+            <div class="tbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10l5-5 5 5"/></svg></div>
+            <div class="pathbar">
+              <span class="on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 7.5L8 3l5.5 4.5V13h-3.5V9.5h-4V13H2.5z"/></svg>wes</span>
+              <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg>Downloads</span>
+            </div>
+            <div style="flex:1"></div>
+            <div class="tbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2L14 14"/></svg></div>
+            <div class="tbtn on"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg></div>
+            <div class="tbtn"><svg viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="2" height="2"/><rect x="6" y="3" width="8" height="2"/><rect x="2" y="7" width="2" height="2"/><rect x="6" y="7" width="8" height="2"/><rect x="2" y="11" width="2" height="2"/><rect x="6" y="11" width="8" height="2"/></svg></div>
+          </div>
+          <div class="files-body">
+            <div class="gmenu" id="gmenu">
+              <div class="gmi">Reload <kbd>Ctrl+R</kbd></div>
+              <div class="gmi">Show Hidden Files <kbd>Ctrl+H</kbd></div>
+              <div class="gsep"></div>
+              <div class="gmi hl">Icons <kbd>Ctrl+1</kbd></div>
+              <div class="gmi">List <kbd>Ctrl+2</kbd></div>
+              <div class="gmi">Compact <kbd>Ctrl+3</kbd></div>
+              <div class="gsep"></div>
+              <div class="gmi">Zoom In <kbd>Ctrl++</kbd></div>
+              <div class="gmi">Zoom Out <kbd>Ctrl+-</kbd></div>
+            </div>
+            <nav class="sidebar">
+              <h4>My Computer</h4>
+              <a class="sel"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 7.5L8 3l5.5 4.5V13h-3.5V9.5h-4V13H2.5z"/></svg>Home</a>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="8" rx="1"/><path d="M6 14h4"/></svg>Desktop</a>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 2h5l3 3v9H4z"/></svg>Documents</a>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="5" cy="12" r="2"/><path d="M7 12V3l6-1v8"/><circle cx="11" cy="10.5" r="2"/></svg>Music</a>
+              <a class="hov"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1"/><path d="M2 11l4-4 3 3 2-2 3 3"/></svg>Pictures</a>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg>Downloads</a>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 4h10M6 4V2.5h4V4M4.5 4l.8 9.5h5.4l.8-9.5"/></svg>Trash</a>
+              <h4 style="margin-top:12px">Devices</h4>
+              <a><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="4" width="12" height="8" rx="1.5"/><circle cx="11" cy="8" r="0.8" fill="currentColor"/></svg>1.0 TB Volume</a>
+            </nav>
+            <div class="grid" id="grid"></div>
+          </div>
+          <div class="statusbar">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="10" rx="1"/><path d="M6 3v10"/></svg>
+            <div class="msg">"Downloads" selected (containing 875 items), Free space: 108.8 GB</div>
+            <div class="mini-slider" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <!-- GTK headerbar-style window -->
+        <div class="win" id="win-settings" data-win="settings">
+          <div class="titlebar solo">
+            <div class="hb-left"><div class="btnlook icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg></div></div>
+            <div class="title">Appearance</div>
+            <div class="tbuttons">
+              <button class="tb min" type="button" tabindex="-1" aria-label="Minimize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11.5h8"/></svg></button>
+              <button class="tb max" type="button" tabindex="-1" aria-label="Maximize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.25" y="4.25" width="7.5" height="7.5" rx="0.5"/></svg></button>
+              <button class="tb close" type="button" tabindex="-1" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
+            </div>
+          </div>
+          <div class="settings-body">
+            <div class="srow"><div>Show desktop icons<div class="sub">Home, Trash and mounted drives</div></div><div class="switch on" data-toggle></div></div>
+            <div class="srow"><div>Snap windows to edges</div><div class="switch" data-toggle></div></div>
+            <div class="checks">
+              <div class="check on" data-toggle><span class="box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 6.5l2.3 2.3L9.5 3.5"/></svg></span>Animations</div>
+              <div class="check" data-toggle><span class="box"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 6.5l2.3 2.3L9.5 3.5"/></svg></span>Tooltips</div>
+            </div>
+            <div class="checks" data-radio>
+              <div class="check on"><span class="box round"><span class="dot"></span></span>Light</div>
+              <div class="check"><span class="box round"><span class="dot"></span></span>Dark</div>
+              <div class="check"><span class="box round"><span class="dot"></span></span>Auto</div>
+            </div>
+            <div class="entry">Theme name: <span class="sel">xl-Cheeselooks</span><span class="caret"></span></div>
+            <div><div class="srow" style="margin-bottom:6px"><span class="sub">Generating theme files…</span><span class="sub">62%</span></div><div class="progress"><i></i></div></div>
+            <div class="btnrow"><div class="btnlook">Cancel</div><div class="btnlook suggested">Apply</div></div>
+          </div>
+        </div>
+
+        <!-- Terminal window -->
+        <div class="win" id="win-term" data-win="term">
+          <div class="titlebar solo">
+            <div class="title">wes@desktop: ~</div>
+            <div class="tbuttons">
+              <button class="tb min" type="button" tabindex="-1" aria-label="Minimize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11.5h8"/></svg></button>
+              <button class="tb max" type="button" tabindex="-1" aria-label="Maximize"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4.25" y="4.25" width="7.5" height="7.5" rx="0.5"/></svg></button>
+              <button class="tb close" type="button" tabindex="-1" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg></button>
+            </div>
+          </div>
+          <div class="term"><span class="p">wes@desktop</span>:<span class="d">~</span>$ ls ~/.themes
+Adara   Mint-Y-ALT   Orchis   Qogir-Light   xl-Cheeselooks   Yaru-cinnamon
+<span class="p">wes@desktop</span>:<span class="d">~</span>$ cheeselooks apply --preset "Coral"
+Theme updated. Reloading Cinnamon and open apps…
+<span class="p">wes@desktop</span>:<span class="d">~</span>$ <span class="cur"> </span></div>
+        </div>
+
+        <!-- Cinnamon menu -->
+        <div class="menu" id="menu">
+          <div class="favs">
+            <div class="fav" id="fav-slot"></div>
+            <div class="spacer"></div>
+            <div class="fav sys"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="7" width="9" height="7" rx="1"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></div>
+            <div class="fav sys"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H3v10h6M7 8h7M11.5 5.5L14 8l-2.5 2.5"/></svg></div>
+            <div class="fav sys"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v6M4.6 4.2a5 5 0 1 0 6.8 0"/></svg></div>
+          </div>
+          <div class="menu-main">
+            <div class="entry"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2L14 14"/></svg><span style="color:var(--m-text-dim)">Type to search…</span></div>
+            <div class="menu-cols">
+              <div class="cats" id="cats"></div>
+              <div class="apps" id="apps"></div>
+            </div>
+            <div class="menu-foot"><b>Image Viewer</b><span>Browse and rotate images</span></div>
+          </div>
+        </div>
+
+        <!-- Bottom panel -->
+        <div class="panel" id="panel">
+          <button class="pbtn menu-btn open" id="menu-btn" type="button" aria-label="Menu">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="var(--m-accent)"/><path d="M7 16V9.5a2 2 0 0 1 4 0V16M11 11.5a2 2 0 0 1 4 0V16" fill="none" stroke="var(--m-accent-fg)" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <div class="wl" id="wl"></div>
+          <div class="tray">
+            <div class="pbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 11.5a3 3 0 0 1 .4-6 4 4 0 0 1 7.4 1.2A2.4 2.4 0 0 1 12 11.5z"/></svg><span class="lbl" style="font-weight:700">62 °F</span></div>
+            <div class="pbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 6a9.5 9.5 0 0 1 13 0M3.8 8.5a6.2 6.2 0 0 1 8.4 0M6 11a3 3 0 0 1 4 0"/><circle cx="8" cy="13" r=".9" fill="currentColor"/></svg></div>
+            <div class="pbtn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6h3l4-3v10l-4-3H2zM11.5 5.5a3.5 3.5 0 0 1 0 5M13 3.5a6 6 0 0 1 0 9"/></svg></div>
+            <div class="clock">Sun, 8 Nov 2026 3:42 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two">
+    <section class="panel-card">
+      <h2>What your settings become</h2>
+      <p>Every shade below is worked out from your picks. Bold rows are the colors you chose.</p>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th></th><th>Color</th><th>Value</th><th>Worked out from</th></tr></thead>
+        <tbody id="derived"></tbody>
+      </table></div>
+    </section>
+    <section class="panel-card">
+      <h2>What changed in this version</h2>
+      <p>Based on your notes.</p>
+      <ul class="notes">
+        <li><b>Style tab</b> with xl-Cheeselooks and a second example style, Float: borderless, softly shaded, with a shadow tinted by the button's own color. <b>Depth</b> scales the highlights and shadows of either style.</li>
+        <li><b>Hover in / Hover out</b> sliders on Global. Hover appears and releases at different speeds; clicks stay instant.</li>
+        <li><b>Panel &amp; Menu</b> has separate Roundness and Gradient for the panel and for its menus, each following Global until you switch them off.</li>
+        <li><b>Panel height</b> stays fixed, as it would on a real desktop, since Cinnamon's Panel settings own it. Size no longer changes text size anywhere.</li>
+        <li><b>Nemo sidebar</b> rows run edge to edge with no margin and still take the radius.</li>
+        <li><b>Window Borders tab:</b> separate title bar colors, height, border thickness, button layout, and four button styles. Theme is planned for v1, the other three for later.</li>
+        <li><b>GTK 2</b> is gone from the plan.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Color math ---------- */
+  function hexToRgb(h) {
+    h = h.replace("#", "");
+    if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+    var n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function rgbToHex(r) {
+    return "#" + r.map(function (v) {
+      v = Math.max(0, Math.min(255, Math.round(v)));
+      return (v < 16 ? "0" : "") + v.toString(16);
+    }).join("").toUpperCase();
+  }
+  function mix(a, b, t) {
+    var x = hexToRgb(a), y = hexToRgb(b);
+    return rgbToHex([0, 1, 2].map(function (i) { return x[i] + (y[i] - x[i]) * t; }));
+  }
+  function lighten(c, t) { return mix(c, "#FFFFFF", t); }
+  function darken(c, t) { return mix(c, "#000000", t); }
+  function rgba(c, a) { var r = hexToRgb(c); return "rgba(" + r[0] + ", " + r[1] + ", " + r[2] + ", " + (+a.toFixed(3)) + ")"; }
+  function lum(c) {
+    var r = hexToRgb(c).map(function (v) {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r[0] + 0.7152 * r[1] + 0.0722 * r[2];
+  }
+  function contrast(a, b) {
+    var x = lum(a), y = lum(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  }
+  function grad(c, g) { return [lighten(c, 0.30 * g), darken(c, 0.10 * g)]; }
+
+  /* ---------- Palette ---------- */
+  function derive(A, B, T) {
+    var dark = lum(B) < lum(T);
+    var accentFg = "#FFFFFF";
+    if (lum(A) > 0.55) accentFg = dark ? darken(B, 0.2) : mix(T, "#000000", 0.3);
+    var select = A, steps = 0;
+    if (accentFg === "#FFFFFF") {
+      while (contrast(select, "#FFFFFF") < 2.6 && steps < 8) { select = darken(select, 0.04); steps++; }
+    }
+    var menuBg = mix(B, T, dark ? 0.04 : 0.03);
+    var favBg = mix(B, T, dark ? 0.09 : 0.075);
+    var button = dark ? mix(B, T, 0.08) : mix(B, "#FFFFFF", 0.6);
+    return {
+      dark: dark, accent: A, bg: B, text: T, accentFg: accentFg,
+      accentHover: lighten(A, 0.12), accentPress: darken(A, 0.14), select: select,
+      base: dark ? darken(B, 0.18) : mix(B, "#FFFFFF", 0.75),
+      button: button, buttonHover: dark ? mix(button, T, 0.06) : lighten(button, 0.5),
+      header: mix(B, T, dark ? 0.06 : 0.05),
+      sidebar: mix(B, T, dark ? 0.03 : 0.035),
+      sidebarHover: mix(B, T, dark ? 0.13 : 0.14),
+      hover: mix(B, T, dark ? 0.08 : 0.07),
+      pressed: mix(B, T, dark ? 0.15 : 0.13),
+      border: mix(B, T, dark ? 0.16 : 0.2),
+      borderStrong: mix(B, T, dark ? 0.26 : 0.3),
+      trough: mix(B, T, dark ? 0.14 : 0.12),
+      textDim: mix(T, B, 0.38),
+      panel: dark ? mix(B, T, 0.03) : mix(B, "#FFFFFF", 0.25),
+      pbRest: mix(B, T, dark ? 0.13 : 0.15),
+      pbHover: dark ? mix(B, T, 0.22) : lighten(B, 0.5),
+      pbEdge: dark ? darken(B, 0.45) : mix(B, T, 0.35),
+      pbProgress: darken(A, 0.25),
+      pbAttn: mix(B, "#E5534B", dark ? 0.5 : 0.36),
+      pbAttnEdge: mix(B, "#B8322B", 0.6),
+      menuBg: menuBg, menuBorder: mix(B, T, dark ? 0.2 : 0.25), favBg: favBg,
+      menuHover: mix(menuBg, T, 0.10), favHover: mix(favBg, T, 0.10),
+      folder: A, folderBack: darken(A, 0.16),
+      wallA: dark ? darken(A, 0.55) : mix(A, B, 0.35),
+      wallB: dark ? darken(B, 0.3) : mix(A, "#2B2B33", 0.55)
+    };
+  }
+
+  function varsFor(d, g) {
+    var gg = Math.max(g, 0.05);
+    var out = {
+      "--m-accent": d.accent, "--m-bg": d.bg, "--m-text": d.text, "--m-accent-fg": d.accentFg,
+      "--m-accent-hover": d.accentHover, "--m-accent-press": d.accentPress, "--m-select": d.select,
+      "--m-base": d.base, "--m-header": d.header, "--m-sidebar": d.sidebar, "--m-pressed": d.pressed,
+      "--m-border": d.border, "--m-border-strong": d.borderStrong, "--m-trough": d.trough, "--m-text-dim": d.textDim,
+      "--m-pb-progress": d.pbProgress, "--m-pb-attn-edge": d.pbAttnEdge,
+      "--m-menu-bg": rgba(d.menuBg, 0.985), "--m-menu-border": d.menuBorder, "--m-fav-bg": d.favBg,
+      "--m-folder": d.folder, "--m-folder-back": d.folderBack
+    };
+    function P(name, pair) { out["--m-" + name + "-a"] = pair[0]; out["--m-" + name + "-b"] = pair[1]; }
+    P("btn", grad(d.button, g)); P("btnh", grad(d.buttonHover, g));
+    P("acc", grad(d.accent, g)); P("acch", grad(d.accentHover, g));
+    P("sel", grad(d.select, g)); P("hov", grad(d.hover, g));
+    P("sbh", grad(d.sidebarHover, g)); P("mh", grad(d.menuHover, g)); P("fh", grad(d.favHover, g));
+    var pnl = grad(d.panel, g * 0.8);
+    out["--m-panel-a"] = rgba(pnl[0], 0.9); out["--m-panel-b"] = rgba(pnl[1], 0.94);
+    P("pb-rest", grad(d.pbRest, gg)); P("pb-hover", grad(d.pbHover, gg));
+    P("pb-focus", grad(d.accent, gg)); P("pb-attn", grad(d.pbAttn, g));
+    return out;
+  }
+
+  /* ---------- Styles: how edges are drawn. Colors are always relative to the palette. ---------- */
+  function edges(d, style, dep) {
+    var dk = d.dark;
+    function drop(y, b, c, a) { return "0 " + (+y.toFixed(1)) + "px " + (+b.toFixed(1)) + "px " + rgba(c, a); }
+    if (style === "float") {
+      var hi = "inset 0 1px " + rgba("#FFFFFF", (dk ? 0.06 : 0.35) * dep);
+      return {
+        "--e-btn-border": "transparent",
+        "--e-btn-border-solid": d.border,
+        "--e-btn-shadow": hi + ", " + drop(1 + 3 * dep, 3 + 10 * dep, "#000000", (dk ? 0.22 : 0.06) + (dk ? 0.25 : 0.12) * dep),
+        "--e-btn-hover": hi + ", " + drop(2 + 5 * dep, 5 + 16 * dep, "#000000", (dk ? 0.26 : 0.08) + (dk ? 0.3 : 0.16) * dep),
+        "--e-btn-press": "inset 0 1px 2px " + rgba("#000000", dk ? 0.3 : 0.1) + ", " + drop(0, 1, "#000000", 0.08),
+        "--e-acc-border": "transparent",
+        "--e-acc-shadow": "inset 0 1px " + rgba("#FFFFFF", 0.25 * dep) + ", " + drop(2 + 4 * dep, 5 + 14 * dep, d.accent, 0.2 + 0.35 * dep),
+        "--e-acc-hover": "inset 0 1px " + rgba("#FFFFFF", 0.25 * dep) + ", " + drop(3 + 6 * dep, 8 + 18 * dep, d.accent, 0.25 + 0.4 * dep),
+        "--e-entry-border": "transparent",
+        "--e-entry-shadow": "inset 0 1px 3px " + rgba("#000000", (dk ? 0.35 : 0.08) * dep + 0.02) + ", 0 0 0 1px " + rgba(d.border, 0.6),
+        "--e-entry-focus-border": "transparent",
+        "--e-entry-focus": "0 0 0 3px " + rgba(d.accent, 0.35) + ", 0 0 0 1px " + d.accent,
+        "--e-panel": "inset 0 1px " + rgba("#FFFFFF", (dk ? 0.05 : 0.3) * dep),
+        "--e-pb-border": "transparent",
+        "--e-pbf-border": "transparent"
+      };
+    }
+    var hl = rgba("#FFFFFF", (dk ? 0.07 : 0.6) * dep);
+    var lo = rgba("#000000", (dk ? 0.2 : 0.07) * dep);
+    return {
+      "--e-btn-border": d.borderStrong,
+      "--e-btn-border-solid": d.borderStrong,
+      "--e-btn-shadow": "inset 0 1px " + hl + ", inset 0 -1px " + lo + ", " + drop(1, 2, "#000000", (dk ? 0.3 : 0.1) * dep),
+      "--e-btn-hover": "inset 0 1px " + hl + ", inset 0 -1px " + lo + ", " + drop(1, 3, "#000000", (dk ? 0.35 : 0.15) * dep),
+      "--e-btn-press": "inset 0 1px 3px " + rgba("#000000", (dk ? 0.35 : 0.16) * dep + 0.04),
+      "--e-acc-border": d.accentPress,
+      "--e-acc-shadow": "inset 0 1px " + rgba("#FFFFFF", 0.35 * dep) + ", " + drop(1, 2, "#000000", (dk ? 0.3 : 0.12) * dep),
+      "--e-acc-hover": "inset 0 1px " + rgba("#FFFFFF", 0.35 * dep) + ", " + drop(1, 3, "#000000", (dk ? 0.35 : 0.16) * dep),
+      "--e-entry-border": d.borderStrong,
+      "--e-entry-shadow": "inset 0 1px 2px " + rgba("#000000", (dk ? 0.3 : 0.1) * dep),
+      "--e-entry-focus-border": d.accent,
+      "--e-entry-focus": "inset 0 0 0 1px " + d.accent + ", inset 0 1px 2px " + rgba("#000000", (dk ? 0.3 : 0.1) * dep),
+      "--e-panel": "inset 0 1px " + rgba("#FFFFFF", (dk ? 0.06 : 0.45) * dep),
+      "--e-pb-border": rgba(d.pbEdge, 0.7),
+      "--e-pbf-border": d.accentPress
+    };
+  }
+  var recipes = {
+    cheeselooks:
+      "name: xl-Cheeselooks\n" +
+      "edges:\n" +
+      "  raised:\n" +
+      "    border:    mix(bg, text, 30%)\n" +
+      "    highlight: inset 0 1px  white @ 60% × depth\n" +
+      "    shade:     inset 0 -1px black @ 7% × depth\n" +
+      "    shadow:    0 1px 2px    black @ 10% × depth\n" +
+      "  sunken:\n" +
+      "    border:    mix(bg, text, 30%)\n" +
+      "    shade_top: inset 0 1px 2px black @ 10% × depth\n" +
+      "  flat:\n" +
+      "    border:    none\n" +
+      "widgets:\n" +
+      "  button:         raised, pressed: sunken\n" +
+      "  suggested:      raised, border: accent − 14%\n" +
+      "  toolbar-button: flat, hover: raised\n" +
+      "  title-button:   like toolbar-button\n" +
+      "  entry:          sunken, focus: accent ring\n" +
+      "  tab:            boxed, selected: accent top line\n" +
+      "  panel-button:   raised (highlight only)\n" +
+      "depth: {DEPTH}%",
+    float:
+      "name: Float  (example)\n" +
+      "edges:\n" +
+      "  raised:\n" +
+      "    border:    none\n" +
+      "    highlight: inset 0 1px white @ 35% × depth\n" +
+      "    shadow:    0 1–4px 3–13px black @ 6–18%\n" +
+      "  floating-accent:\n" +
+      "    border:    none\n" +
+      "    shadow:    0 2–6px 5–19px accent @ 20–55%\n" +
+      "                 ↑ tinted with the button's own color\n" +
+      "  sunken:\n" +
+      "    border:    none\n" +
+      "    shade_top: inset 0 1px 3px black @ 8% × depth\n" +
+      "    outline:   0 0 0 1px border @ 60%\n" +
+      "widgets:\n" +
+      "  button:         raised, hover: shadow grows\n" +
+      "  suggested:      floating-accent\n" +
+      "  toolbar-button: flat, hover: raised\n" +
+      "  entry:          sunken, focus: accent glow 3px\n" +
+      "  tab:            pills in a trough\n" +
+      "  panel-button:   borderless (highlight only)\n" +
+      "depth: {DEPTH}%"
+  };
+
+  function setVars(el, map) { Object.keys(map).forEach(function (k) { el.style.setProperty(k, map[k]); }); }
+
+  /* ---------- Static content ---------- */
+  var folders = ["anaconda3", "Desktop", "Documents", "Downloads", "Dropbox", "logs", "Music", "Pictures", "Public", "Templates"];
+  var cats = [["All Applications"], ["Accessories", false, true], ["Graphics", true], ["Internet"], ["Office"], ["Programming"], ["Sound & Video"], ["Administration"], ["Preferences"]];
+  var apps = [["Drawing", "#E2A33B"], ["GIMP Image Editor", "#7D6E5D"], ["Document Scanner", "#4E8FD8"], ["Image Viewer", "#3FA77A", true], ["Inkscape", "#2F2F33"], ["Screenshot", "#B05BC4"], ["Color Picker", "#D9534F"], ["Font Viewer", "#5B6B7F"]];
+  var palette = ["#E25D5D", "#4E8FD8", "#3FA77A", "#E2A33B", "#8E6CD9", "#3BAFC4", "#D9709B", "#6B7A8C", "#C98546", "#5DA35D"];
+  function folderSvg() {
+    return '<svg viewBox="0 0 64 52" aria-hidden="true"><path d="M4 9a4 4 0 0 1 4-4h15l6 6h27a4 4 0 0 1 4 4v5H4z" fill="var(--m-folder-back)"/>' +
+      '<rect x="4" y="15" width="56" height="33" rx="4" fill="var(--m-folder)"/><rect x="4" y="15" width="56" height="3" rx="1.5" fill="rgba(255,255,255,0.25)"/></svg>';
+  }
+  function appIcon(color, letter) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="' + color + '"/>' +
+      '<text x="12" y="16.2" text-anchor="middle" font-size="11" font-weight="700" font-family="Ubuntu, sans-serif" fill="#fff">' + letter + '</text></svg>';
+  }
+  function catIcon(i) { return '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="16" rx="4" fill="' + palette[i % palette.length] + '" opacity="0.9"/></svg>'; }
+  document.getElementById("grid").innerHTML = folders.map(function (f) {
+    return '<div class="fitem' + (f === "Downloads" ? " sel" : "") + '">' + folderSvg() + '<span class="lbl">' + f + "</span></div>";
+  }).join("");
+  document.getElementById("cats").innerHTML = cats.map(function (c, i) {
+    return '<div class="cat' + (c[1] ? " sel" : "") + (c[2] ? " hl" : "") + '">' + catIcon(i) + c[0] + "</div>";
+  }).join("");
+  document.getElementById("apps").innerHTML = apps.map(function (a) {
+    return '<div class="app' + (a[2] ? " hl" : "") + '">' + appIcon(a[1], a[0][0]) + a[0] + "</div>";
+  }).join("");
+  document.getElementById("fav-slot").outerHTML =
+    ["#4E8FD8|W", "#E2A33B|F|hl", "#3FA77A|T", "#8E6CD9|S", "#D9534F|M"].map(function (s) {
+      var p = s.split("|");
+      return '<div class="fav' + (p[2] ? " hl" : "") + '">' + appIcon(p[0], p[1]) + "</div>";
+    }).join("");
+
+  /* ---------- Window list + focus ---------- */
+  var wlItems = [
+    { id: "files", label: "Home", icon: appIcon("#E2A33B", "F") },
+    { id: "settings", label: "Appearance", icon: appIcon("#8E6CD9", "S") },
+    { id: "term", label: "wes@desktop: ~", icon: appIcon("#2F3540", ">") },
+    { id: "upd", label: "Update Manager", icon: appIcon("#3BAFC4", "U"), attention: true },
+    { id: "dl", label: "Downloading…", icon: appIcon("#3FA77A", "↓"), progress: true }
+  ];
+  var focused = "files";
+  var wl = document.getElementById("wl");
+  function renderWl() {
+    wl.innerHTML = wlItems.map(function (w) {
+      var cls = "pbtn running";
+      if (w.id === focused) cls = "pbtn focused";
+      else if (w.attention) cls += " attention";
+      return '<button type="button" class="' + cls + '" data-focus="' + w.id + '">' +
+        (w.progress && w.id !== focused ? '<span class="prog"></span>' : "") + w.icon + '<span class="lbl">' + w.label + "</span></button>";
+    }).join("");
+  }
+  function setFocus(id) {
+    focused = id;
+    document.querySelectorAll(".win").forEach(function (w) {
+      var on = w.dataset.win === id;
+      w.classList.toggle("focused", on);
+      w.style.zIndex = on ? 3 : 2;
+    });
+    renderWl();
+  }
+  wl.addEventListener("click", function (e) { var b = e.target.closest("[data-focus]"); if (b) setFocus(b.dataset.focus); });
+  document.querySelectorAll(".win").forEach(function (w) { w.addEventListener("mousedown", function () { setFocus(w.dataset.win); }); });
+
+  var menu = document.getElementById("menu"), menuBtn = document.getElementById("menu-btn");
+  menuBtn.addEventListener("click", function () { menu.hidden = !menu.hidden; menuBtn.classList.toggle("open", !menu.hidden); });
+  var gmenu = document.getElementById("gmenu"), mbView = document.getElementById("mb-view");
+  mbView.addEventListener("click", function () { gmenu.hidden = !gmenu.hidden; mbView.classList.toggle("open", !gmenu.hidden); });
+  gmenu.addEventListener("mouseover", function () { gmenu.querySelectorAll(".hl").forEach(function (x) { x.classList.remove("hl"); }); });
+  document.querySelectorAll("[data-toggle]").forEach(function (el) { el.addEventListener("click", function () { el.classList.toggle("on"); }); });
+  document.querySelectorAll("[data-radio]").forEach(function (group) {
+    group.addEventListener("click", function (e) {
+      var c = e.target.closest(".check"); if (!c) return;
+      group.querySelectorAll(".check").forEach(function (x) { x.classList.toggle("on", x === c); });
+    });
+  });
+
+  /* ---------- Tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab[role="tab"]'));
+  function showTab(t) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { showTab(t); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      var n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      showTab(n); n.focus();
+    });
+  });
+
+  /* ---------- State ---------- */
+  var state = {
+    g: { accent: "#FA8562", bg: "#F0F0F0", text: "#303030" },
+    size: "normal", round: 20, grad: 30, tin: 60, tout: 250,
+    style: "cheeselooks", depth: 50,
+    panelOn: false, p: null,
+    ps: { follow: true, round: 20, grad: 30 },
+    ms: { follow: true, round: 20, grad: 30 },
+    wbOn: false, w: null, wbh: 44, wbw: 1, layout: "right", btn: "theme",
+    termOn: false, t: { bg: "#2B2B2B", text: "#E4E4E4" }
+  };
+  var sizes = { compact: [26, 3, 12], normal: [30, 4, 14], large: [36, 6, 16] };
+  var PANEL_H = 40;
+
+  /* ---------- Pickers ---------- */
+  var pickers = {};
+  function makePicker(group, key, label, host) {
+    var id = group + "-" + key;
+    var wrap = document.createElement("div");
+    wrap.className = "picker";
+    wrap.innerHTML = '<label class="lab" for="c-' + id + '">' + label + '</label><div class="row">' +
+      '<input type="color" id="c-' + id + '"><input type="text" id="t-' + id + '" spellcheck="false" aria-label="' + label + ' hex"></div>';
+    host.appendChild(wrap);
+    var c = wrap.querySelector('input[type="color"]'), t = wrap.querySelector('input[type="text"]');
+    function setVal(v) { state[group][key] = v; apply(); }
+    c.addEventListener("input", function () { setVal(c.value.toUpperCase()); });
+    t.addEventListener("input", function () {
+      var v = t.value.trim();
+      if (v[0] !== "#") v = "#" + v;
+      if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) {
+        if (v.length === 4) v = "#" + v[1] + v[1] + v[2] + v[2] + v[3] + v[3];
+        setVal(v.toUpperCase());
+      } else t.setAttribute("aria-invalid", "true");
+    });
+    t.addEventListener("blur", function () { t.removeAttribute("aria-invalid"); apply(); });
+    pickers[id] = { c: c, t: t };
+  }
+  ["accent", "bg", "text"].forEach(function (k, i) {
+    var label = ["Accent", "Background", "Text"][i];
+    makePicker("g", k, label, document.getElementById("pk-global"));
+    makePicker("p", k, label, document.getElementById("pk-panel"));
+  });
+  makePicker("w", "title", "Title bar", document.getElementById("pk-wb"));
+  makePicker("w", "text", "Title text", document.getElementById("pk-wb"));
+  makePicker("w", "border", "Border", document.getElementById("pk-wb"));
+  makePicker("t", "bg", "Background", document.getElementById("pk-term"));
+  makePicker("t", "text", "Text", document.getElementById("pk-term"));
+  function syncPicker(id, v, disabled) {
+    var p = pickers[id];
+    p.c.value = v.toLowerCase();
+    if (document.activeElement !== p.t) p.t.value = v;
+    p.c.disabled = p.t.disabled = !!disabled;
+  }
+
+  /* ---------- Presets ---------- */
+  function addPresets(hostId, list, onPick) {
+    var host = document.getElementById(hostId);
+    list.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "preset";
+      b.innerHTML = '<span class="dots">' + p.slice(1).map(function (c) { return '<i style="background:' + c + '"></i>'; }).join("") + "</span>" + p[0];
+      b.addEventListener("click", function () { onPick(p); });
+      host.appendChild(b);
+    });
+  }
+  addPresets("ps-global", [
+    ["Coral (your theme)", "#F0F0F0", "#FA8562", "#303030"],
+    ["Coral Night", "#2B2B2B", "#FA8562", "#E4E4E4"],
+    ["Sea Glass", "#E9F0EF", "#2E9E92", "#1F2D2B"],
+    ["Midnight Violet", "#1E1B2B", "#A78BFA", "#E6E1F4"],
+    ["Marigold", "#F7F2E8", "#E09B1F", "#3A3226"],
+    ["Steel Blue", "#22272E", "#4C8DDC", "#D7DEE8"],
+    ["Ocean Float", "#EEF1F5", "#2F7DE1", "#2A3140"],
+    ["Anything goes", "#FF2DA6", "#39FF14", "#1A1AFF"]
+  ], function (p) { state.g = { bg: p[1], accent: p[2], text: p[3] }; apply(); });
+  addPresets("ps-panel", [
+    ["Coral Night", "#2B2B2B", "#FA8562", "#E4E4E4"],
+    ["Charcoal", "#1F2023", "#9AA3AE", "#E8E8E8"],
+    ["Midnight Blue", "#18202E", "#5B9BEA", "#DCE4F0"],
+    ["Frosted Light", "#F4F4F4", "#FA8562", "#2A2A2A"],
+    ["Accent Bar", "#C9654A", "#FFD7C9", "#FFFFFF"]
+  ], function (p) { state.p = { bg: p[1], accent: p[2], text: p[3] }; apply(); });
+  addPresets("ps-term", [
+    ["Charcoal", "#2B2B2B", "#E4E4E4"],
+    ["Paper", "#FAFAF7", "#303030"],
+    ["Midnight", "#151A26", "#C9D3E6"],
+    ["Green Screen", "#0B140D", "#5BFF7A"]
+  ], function (p) { state.t = { bg: p[1], text: p[2] }; apply(); });
+
+  /* ---------- Control wiring ---------- */
+  function onSeg(id, attr, key) {
+    document.getElementById(id).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b || b.disabled) return;
+      state[key] = b.dataset[attr]; apply();
+    });
+  }
+  onSeg("size-seg", "size", "size");
+  onSeg("style-seg", "style", "style");
+  onSeg("layout-seg", "layout", "layout");
+  onSeg("btn-seg", "btn", "btn");
+  function onRange(id, set) { document.getElementById(id).addEventListener("input", function (e) { set(+e.target.value); apply(); }); }
+  onRange("r-round", function (v) { state.round = v; });
+  onRange("r-grad", function (v) { state.grad = v; });
+  onRange("r-tin", function (v) { state.tin = v; });
+  onRange("r-tout", function (v) { state.tout = v; });
+  onRange("r-depth", function (v) { state.depth = v; });
+  onRange("r-proud", function (v) { state.ps.round = v; });
+  onRange("r-pgrad", function (v) { state.ps.grad = v; });
+  onRange("r-mround", function (v) { state.ms.round = v; });
+  onRange("r-mgrad", function (v) { state.ms.grad = v; });
+  onRange("r-wbh", function (v) { state.wbh = v; });
+  onRange("r-wbw", function (v) { state.wbw = v; });
+  document.getElementById("sw-panel").addEventListener("change", function (e) {
+    state.panelOn = e.target.checked;
+    if (state.panelOn && !state.p) state.p = { accent: state.g.accent, bg: state.g.bg, text: state.g.text };
+    apply();
+  });
+  [["fl-panel", "ps"], ["fl-menu", "ms"]].forEach(function (x) {
+    document.getElementById(x[0]).addEventListener("change", function (e) {
+      var s = state[x[1]];
+      s.follow = e.target.checked;
+      if (!s.follow) { s.round = state.round; s.grad = state.grad; }
+      apply();
+    });
+  });
+  document.getElementById("sw-wb").addEventListener("change", function (e) {
+    state.wbOn = e.target.checked;
+    if (state.wbOn && !state.w) {
+      var d = derive(state.g.accent, state.g.bg, state.g.text);
+      state.w = { title: d.header, text: d.text, border: d.border };
+    }
+    apply();
+  });
+  document.getElementById("sw-term").addEventListener("change", function (e) { state.termOn = e.target.checked; apply(); });
+
+  /* ---------- Apply ---------- */
+  var app = document.getElementById("app");
+  var stage = document.getElementById("stage");
+  var panelEl = document.getElementById("panel");
+  function setRange(id, v, text) { document.getElementById("r-" + id).value = v; document.getElementById("o-" + id).textContent = text; }
+  function disable(id, off) {
+    var el = document.getElementById(id);
+    el.setAttribute("aria-disabled", String(off));
+    el.querySelectorAll("input, button").forEach(function (x) { x.disabled = off; });
+  }
+
+  function apply() {
+    var g = state.grad / 100, dep = state.depth / 100;
+    var z = sizes[state.size];
+    var dg = derive(state.g.accent, state.g.bg, state.g.text);
+    var pc = state.panelOn && state.p ? state.p : state.g;
+    var dp = derive(pc.accent, pc.bg, pc.text);
+    var rad = function (pct, h) { return Math.round(pct / 100 * h / 2); };
+
+    app.dataset.style = state.style;
+    setVars(app, varsFor(dg, g));
+    setVars(app, edges(dg, state.style, dep));
+    var a = app.style;
+    a.setProperty("--ctl", z[0] + "px"); a.setProperty("--pad", z[1] + "px"); a.setProperty("--glyph", z[2] + "px");
+    a.setProperty("--r", rad(state.round, z[0]) + "px");
+    a.setProperty("--r2", Math.min(14, Math.round(rad(state.round, z[0]) * 1.4)) + "px");
+    a.setProperty("--rs", Math.round(state.round / 100 * 12) + "px");
+    a.setProperty("--t-in", state.tin + "ms"); a.setProperty("--t-out", state.tout + "ms");
+    stage.style.setProperty("--m-wall-a", dg.wallA);
+    stage.style.setProperty("--m-wall-b", dg.wallB);
+
+    // Panel and menu: own palette (if on) and own shape (if not following Global)
+    var pr = state.ps.follow ? state.round : state.ps.round, pg = (state.ps.follow ? state.grad : state.ps.grad) / 100;
+    var mr = state.ms.follow ? state.round : state.ms.round, mg = (state.ms.follow ? state.grad : state.ms.grad) / 100;
+    setVars(panelEl, varsFor(dp, pg)); setVars(panelEl, edges(dp, state.style, dep));
+    panelEl.style.setProperty("--rp", rad(pr, PANEL_H) + "px");
+    setVars(menu, varsFor(dp, mg)); setVars(menu, edges(dp, state.style, dep));
+    menu.style.setProperty("--r", rad(mr, z[0]) + "px");
+    menu.style.setProperty("--r2", Math.min(14, Math.round(rad(mr, z[0]) * 1.4)) + "px");
+
+    // Window borders
+    var w = state.wbOn && state.w ? state.w : { title: dg.header, text: dg.text, border: dg.border };
+    var s = stage.style;
+    s.setProperty("--wb-a", lighten(w.title, 0.4 * g));
+    s.setProperty("--wb-b", w.title);
+    s.setProperty("--wb-text", w.text);
+    var unf = state.wbOn ? mix(w.title, dg.bg, 0.5) : dg.bg;
+    s.setProperty("--wb-unfocused", unf);
+    s.setProperty("--wb-unfocused-text", mix(w.text, unf, 0.4));
+    s.setProperty("--wb-border", w.border);
+    s.setProperty("--wb-h", state.wbh + "px");
+    s.setProperty("--wb-bw", state.wbw + "px");
+    stage.dataset.btn = state.btn;
+    stage.classList.toggle("layout-left", state.layout === "left");
+
+    // Terminal
+    var tb = state.termOn ? state.t.bg : dg.base, tf = state.termOn ? state.t.text : dg.text, tDark = lum(tb) < lum(tf);
+    s.setProperty("--t-bg", tb); s.setProperty("--t-fg", tf); s.setProperty("--t-cursor", dg.accent);
+    s.setProperty("--t-prompt", tDark ? lighten(dg.accent, 0.1) : darken(dg.accent, 0.25));
+    s.setProperty("--t-dir", tDark ? "#7FB0F0" : "#2F63B8");
+
+    // Controls
+    ["accent", "bg", "text"].forEach(function (k) { syncPicker("g-" + k, state.g[k], false); syncPicker("p-" + k, pc[k], !state.panelOn); });
+    syncPicker("w-title", w.title, !state.wbOn); syncPicker("w-text", w.text, !state.wbOn); syncPicker("w-border", w.border, !state.wbOn);
+    syncPicker("t-bg", tb, !state.termOn); syncPicker("t-text", tf, !state.termOn);
+    disable("pk-panel", !state.panelOn); disable("ps-panel", !state.panelOn);
+    disable("pk-wb", !state.wbOn);
+    disable("pk-term", !state.termOn); disable("ps-term", !state.termOn);
+    disable("shape-panel", state.ps.follow); disable("shape-menu", state.ms.follow);
+    document.getElementById("sw-panel").checked = state.panelOn;
+    document.getElementById("sw-wb").checked = state.wbOn;
+    document.getElementById("sw-term").checked = state.termOn;
+    document.getElementById("fl-panel").checked = state.ps.follow;
+    document.getElementById("fl-menu").checked = state.ms.follow;
+    [["size-seg", "size"], ["style-seg", "style"], ["layout-seg", "layout"], ["btn-seg", "btn"]].forEach(function (x) {
+      document.querySelectorAll("#" + x[0] + " button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset[x[1]] === state[x[1]])); });
+    });
+    setRange("round", state.round, state.round + "%");
+    setRange("grad", state.grad, state.grad + "%");
+    setRange("tin", state.tin, state.tin + " ms");
+    setRange("tout", state.tout, state.tout + " ms");
+    setRange("depth", state.depth, state.depth + "%");
+    setRange("proud", pr, pr + "%");
+    setRange("pgrad", Math.round(pg * 100), Math.round(pg * 100) + "%");
+    setRange("mround", mr, mr + "%");
+    setRange("mgrad", Math.round(mg * 100), Math.round(mg * 100) + "%");
+    setRange("wbh", state.wbh, state.wbh + " px");
+    setRange("wbw", state.wbw, state.wbw + " px");
+    document.getElementById("recipe").textContent = recipes[state.style].replace("{DEPTH}", state.depth);
+
+    // Derived table
+    var rows = [
+      ["Global"],
+      ["Accent", dg.accent, "Your pick", 1], ["Background", dg.bg, "Your pick", 1], ["Text", dg.text, "Your pick", 1],
+      ["Text on accent", dg.accentFg, "White or dark, whichever reads better on the accent"],
+      ["Selection", dg.select, "Accent, darkened until white text is readable"],
+      ["Content area", dg.base, "Background, lightened (light) or darkened (dark)"],
+      ["Buttons", dg.button, "Background, lightened (light) or blended toward text (dark)"],
+      ["Menubar & toolbar", dg.header, "Background blended 5–6% toward text (no gradient)"],
+      ["Sidebar hover", dg.sidebarHover, "Background blended 13–14% toward text"],
+      ["Hover", dg.hover, "Background blended 7–8% toward text"],
+      ["Borders", dg.borderStrong, "Background blended 26–30% toward text"],
+      ["Dimmed text", dg.textDim, "Text blended 38% toward background"],
+      [state.panelOn ? "Panel & Menu (separate colors)" : "Panel & Menu (following Global)"],
+      ["Panel", dp.panel, "Panel background, lightened slightly"],
+      ["Running app button", dp.pbRest, "Panel background blended 13–15% toward text"],
+      ["Menu background", dp.menuBg, "Panel background blended 3–4% toward text"],
+      ["Menu hover", dp.menuHover, "Menu background + 10% toward text"],
+      ["Favorites hover", dp.favHover, "Favorites column + 10% toward text (same step)"],
+      [state.wbOn ? "Window borders (separate colors)" : "Window borders (following Global)"],
+      ["Title bar", w.title, state.wbOn ? "Your pick" : "Global menubar & toolbar color", state.wbOn ? 1 : 0],
+      ["Title bar top", lighten(w.title, 0.4 * g), "Title bar, lightened by the gradient setting"],
+      ["Border", w.border, state.wbOn ? "Your pick" : "Global border", state.wbOn ? 1 : 0],
+      [state.termOn ? "Terminal (separate colors)" : "Terminal (following Global)"],
+      ["Terminal background", tb, state.termOn ? "Your pick" : "Global content area", state.termOn ? 1 : 0],
+      ["Terminal text", tf, state.termOn ? "Your pick" : "Global text", state.termOn ? 1 : 0]
+    ];
+    document.getElementById("derived").innerHTML = rows.map(function (r) {
+      if (r.length === 1) return '<tr class="group"><td colspan="4">' + r[0] + "</td></tr>";
+      return '<tr class="' + (r[3] ? "input" : "") + '"><td class="sw"><i style="background:' + r[1] + '"></i></td><td>' + r[0] +
+        '</td><td class="hex">' + r[1] + '</td><td class="src">' + r[2] + "</td></tr>";
+    }).join("");
+
+    // Readability notes
+    var notes = [];
+    var ct = contrast(dg.text, dg.bg);
+    if (ct < 4.5) notes.push("Theme text is hard to read on its background (contrast " + ct.toFixed(1) + ":1, aim for 4.5 or more).");
+    if (contrast(dg.accent, dg.bg) < 1.5) notes.push("The accent nearly disappears against the background.");
+    if (contrast(dg.accentFg, dg.select) < 2.5) notes.push("Text on selected items is faint.");
+    if (state.panelOn && contrast(dp.text, dp.bg) < 4.5) notes.push("Panel text is hard to read on the panel background.");
+    if (state.wbOn && contrast(w.text, w.title) < 4.5) notes.push("Title text is hard to read on the title bar.");
+    if (state.termOn && contrast(tf, tb) < 4.5) notes.push("Terminal text is hard to read on the terminal background.");
+    document.getElementById("status").innerHTML = notes.length
+      ? notes.map(function (n) { return '<span class="note">' + n + "</span>"; }).join("")
+      : '<span class="note ok">Readable: text contrast ' + ct.toFixed(1) + ":1. This is a " + (dg.dark ? "dark" : "light") + " theme" +
+        (state.panelOn ? " with a " + (dp.dark ? "dark" : "light") + " panel" : "") + ".</span>";
+
+    try { localStorage.setItem("xlc-mockup-4", JSON.stringify(state)); } catch (e) {}
+  }
+
+  /* ---------- Scale the stage to fit ---------- */
+  var scaler = document.getElementById("scaler");
+  function fit() {
+    var k = scaler.clientWidth / 1180;
+    stage.style.transform = "scale(" + k + ")";
+    scaler.style.height = Math.round(800 * k) + "px";
+  }
+  window.addEventListener("resize", fit);
+
+  try {
+    var saved = JSON.parse(localStorage.getItem("xlc-mockup-4") || "null");
+    var hex = /^#[0-9A-F]{6}$/i;
+    var okCol = function (o, keys) { return o && keys.every(function (k) { return hex.test(o[k] || ""); }); };
+    if (saved) {
+      if (okCol(saved.g, ["accent", "bg", "text"])) state.g = saved.g;
+      if (okCol(saved.p, ["accent", "bg", "text"])) state.p = saved.p;
+      if (okCol(saved.w, ["title", "text", "border"])) state.w = saved.w;
+      if (okCol(saved.t, ["bg", "text"])) state.t = saved.t;
+      ["size", "style", "layout", "btn"].forEach(function (k) { if (typeof saved[k] === "string") state[k] = saved[k]; });
+      if (!sizes[state.size]) state.size = "normal";
+      if (!recipes[state.style]) state.style = "cheeselooks";
+      ["round", "grad", "tin", "tout", "depth", "wbh", "wbw"].forEach(function (k) { if (typeof saved[k] === "number") state[k] = saved[k]; });
+      ["ps", "ms"].forEach(function (k) { if (saved[k] && typeof saved[k].round === "number") state[k] = saved[k]; });
+      state.panelOn = !!saved.panelOn && !!state.p;
+      state.wbOn = !!saved.wbOn && !!state.w;
+      state.termOn = !!saved.termOn;
+    }
+  } catch (e) {}
+
+  renderWl();
+  setFocus("files");
+  apply();
+  fit();
+})();
+</script>
