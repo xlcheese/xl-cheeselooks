@@ -232,6 +232,15 @@ class TokenTests(unittest.TestCase):
         self.assertEqual(t["menu.r"], "0")
         self.assertEqual(t["panel.pb_rest_top"], t["panel.pb_rest_bottom"])
 
+    def test_opacity(self):
+        t = tokens.build(defaults(), self.style)
+        self.assertEqual((t["panel.opacity"], t["menu.opacity"]), ("0.7", "0.94"))
+        s = defaults()
+        s["panel"]["menu_opacity"] = 60
+        self.assertTrue(any("see-through" in n for n in tokens.warnings(s)))
+        with self.assertRaises(settings.SettingsError):
+            settings.from_dict({"panel": {"panel_opacity": 10}})
+
     def test_layout_and_accent_name(self):
         s = defaults()
         s["window_borders"]["button_layout"] = "left"

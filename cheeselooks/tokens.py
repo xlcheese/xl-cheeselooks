@@ -112,6 +112,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["panel.r"] = str(shape.radius(p_round, panel_height))
     t["panel.height"] = str(panel_height)
     t["panel.label_weight"] = "bold" if p["label_weight"] == "bold" else "normal"
+    t["panel.opacity"] = f"{p['panel_opacity'] / 100:g}"
 
     _add_colors(t, "menu.", pcolors)
     _add_gradients(t, "menu.", pcolors, m_grad / 100)
@@ -119,6 +120,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     m_r = shape.radius(m_round, ctl)
     t["menu.r"] = str(m_r)
     t["menu.r2"] = str(shape.window_radius(m_r))
+    t["menu.opacity"] = f"{p['menu_opacity'] / 100:g}"
 
     # --- Window borders
     wb = settings["window_borders"]
@@ -189,6 +191,8 @@ def warnings(settings: dict) -> list[str]:
     if p["separate_colors"]:
         pc = pal.derive(p["accent"] or g["accent"], p["bg"] or g["bg"], p["text"] or g["text"])
         notes += pal.readability_warnings(pc, "Panel")
+    if p["menu_opacity"] < 80:
+        notes.append("Menus are quite see-through; window text behind them may make menu text harder to read.")
     wb = settings["window_borders"]
     if wb["separate_colors"] and wb["title_bar"] and wb["title_text"]:
         if pal.contrast(wb["title_bar"], wb["title_text"]) < 4.5:

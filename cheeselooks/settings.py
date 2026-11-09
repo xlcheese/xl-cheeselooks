@@ -26,6 +26,7 @@ DEFAULTS: dict[str, Any] = {
     "panel": {
         "separate_colors": False, "accent": None, "bg": None, "text": None,
         "label_weight": "bold",
+        "panel_opacity": 70, "menu_opacity": 94,
         "panel_shape": {"follow_global": True, "roundness": 20, "gradient": 30},
         "menu_shape": {"follow_global": True, "roundness": 20, "gradient": 30},
     },
@@ -61,6 +62,8 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("panel", "bg"), "color?", None),
     (("panel", "text"), "color?", None),
     (("panel", "label_weight"), "choice", ("bold", "regular")),
+    (("panel", "panel_opacity"), "int", (30, 100)),
+    (("panel", "menu_opacity"), "int", (30, 100)),
     (("panel", "panel_shape", "follow_global"), "bool", None),
     (("panel", "panel_shape", "roundness"), "int", (0, 100)),
     (("panel", "panel_shape", "gradient"), "int", (0, 100)),
