@@ -312,10 +312,12 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
         border = _resolve_color(border_ref, palette)
     layers = {k: _layer_css(k, edge[k], palette, depth, dark) for k in LAYER_KINDS if k in edge}
     gtk = [layers[k] for k in LAYER_KINDS if layers.get(k)]
+    inset = [layers[k] for k in LAYER_KINDS if layers.get(k) and layers[k].startswith("inset")]
     st = next((layers[k] for k in ST_PRIORITY if layers.get(k)), None)
     return {
         "border": border,
         "shadow": ", ".join(gtk) if gtk else "none",
+        "inset_shadow": ", ".join(inset) if inset else "none",
         "st_shadow": st or "none",
     }
 
@@ -354,6 +356,7 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
             prefix = f"w.{wname}." + ("" if state == "rest" else f"{state}_")
             tokens[prefix + "border"] = css["border"]
             tokens[prefix + "shadow"] = css["shadow"]
+            tokens[prefix + "inset_shadow"] = css["inset_shadow"]
             tokens[prefix + "st_shadow"] = css["st_shadow"]
         hover_color = spec.get("hover_color")
         if hover_color:

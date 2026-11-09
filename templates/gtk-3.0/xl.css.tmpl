@@ -77,24 +77,32 @@ toolbar button:active, toolbar button:checked {
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.toolbar_button.pressed_shadow}}; }
 
-/* Grouped buttons in toolbars (path bar, view switchers) stay raised as one group */
+/* Grouped (linked) buttons: inside edges only. Drop shadows would overlap the
+   neighbouring button and make one look bigger than the others. Grouped buttons
+   in toolbars (path bar, view switchers) stay raised as one group. */
+.linked > button, .linked > combobox > box > button.combo, spinbutton > button {
+  box-shadow: {{w.button.inset_shadow}}; }
+.linked > button:hover, .linked > combobox > box > button.combo:hover, spinbutton > button:hover {
+  box-shadow: {{w.button.hover_inset_shadow}}; }
+.linked > button:active, .linked > button:checked, spinbutton > button:active {
+  box-shadow: {{w.button.pressed_inset_shadow}}; }
 .primary-toolbar .linked > button, headerbar .linked > button, toolbar .linked > button,
 .path-bar button, .nemo-window .path-bar button {
   border-color: {{w.button.border}};
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
-  box-shadow: {{w.button.shadow}}; }
+  box-shadow: {{w.button.inset_shadow}}; }
 .primary-toolbar .linked > button:hover, headerbar .linked > button:hover, toolbar .linked > button:hover,
 .path-bar button:hover {
   border-color: {{w.button.hover_border}};
   background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
-  box-shadow: {{w.button.hover_shadow}}; }
+  box-shadow: {{w.button.hover_inset_shadow}}; }
 .primary-toolbar .linked > button:active, .primary-toolbar .linked > button:checked,
 headerbar .linked > button:active, headerbar .linked > button:checked,
 toolbar .linked > button:checked, .path-bar button:checked, .path-bar button:active {
   border-color: {{w.button.pressed_border}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
-  box-shadow: {{w.button.pressed_shadow}}; }
+  box-shadow: {{w.button.pressed_inset_shadow}}; }
 
 /* Suggested (accent) and destructive buttons */
 button.suggested-action, headerbar button.suggested-action, .primary-toolbar button.suggested-action {
@@ -147,7 +155,7 @@ headerbar, .titlebar:not(headerbar) {
 headerbar:backdrop, .titlebar:not(headerbar):backdrop {
   color: {{wb.unfocused_text}};
   background-color: {{wb.unfocused}};
-  background-image: none; }
+  background-image: image({{wb.unfocused}}); }
 headerbar.default-decoration, .titlebar.default-decoration {
   min-height: {{wb.button_h}}px; }
 window.csd > .titlebar, window.csd > headerbar,
@@ -205,7 +213,8 @@ headerbar button.titlebutton:backdrop, .titlebar button.titlebutton:backdrop {
   color: {{wb.unfocused_text}}; }
 
 /* Menubar and toolbar: flat, same color as the bottom of the title bar */
-menubar, .menubar, .primary-toolbar, toolbar.primary-toolbar {
+menubar, .menubar, .primary-toolbar, toolbar.primary-toolbar,
+.primary-toolbar:not(.libreoffice-toolbar), .primary-toolbar toolbar, .primary-toolbar .inline-toolbar {
   background-color: {{header}};
   background-image: none; }
 
@@ -246,8 +255,12 @@ selection, *:selected selection, entry selection, textview text selection, label
 .sidebar, placessidebar, placessidebar > viewport, placessidebar list,
 .nemo-window .sidebar, .nemo-places-sidebar {
   background-color: {{sidebar}}; }
-.sidebar row, placessidebar row, .sidebar .view, .nemo-window .sidebar .view {
+.sidebar row, placessidebar row {
   border-radius: {{r}}px; }
+/* Tree-view sidebars (Nemo) draw each cell separately; rounded corners would
+   leave little dots between the icon and the name, so their rows stay square. */
+.sidebar .view, .nemo-window .sidebar .view, .sidebar treeview.view {
+  border-radius: 0; }
 placessidebar row, .sidebar row { min-height: {{row_min_h}}px; }
 .sidebar row:hover:not(:selected), placessidebar row:hover:not(:selected),
 .sidebar .view:hover:not(:selected), .nemo-window .sidebar .view:hover:not(:selected) {

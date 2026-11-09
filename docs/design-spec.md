@@ -111,7 +111,7 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `base` | `mix(bg, white, .75)` | `darker(bg, .18)` | Content areas: file view, entries, lists |
 | `button` | `mix(bg, white, .60)` | `mix(bg, text, .08)` | Button face |
 | `button_hover` | `lighter(button, .50)` | `mix(button, text, .06)` | |
-| `header` | `mix(bg, text, .05)` | `mix(bg, text, .06)` | Menubar, toolbar, bottom of title bar |
+| `header` | `mix(bg, text, .066)` | same | Menubar, toolbar, title bar (Mint-Y's `#E8E8E8` on the default colors) |
 | `menubar_hover` | `mix(header, text, .12)` | same | **New:** menubar item hover, a bit darker than general hover |
 | `sidebar` | `mix(bg, text, .035)` | `mix(bg, text, .03)` | |
 | `sidebar_hover` | `mix(bg, text, .14)` | `mix(bg, text, .13)` | |
@@ -217,7 +217,7 @@ Separate Roundness and Gradient for the **panel** and for its **menus** (main me
 | Selected | `select` with `accent_fg` text (rows, labels) |
 | Focused (keyboard) | Visible focus ring: 2 px accent at 50% opacity by default, defined by the style, overridable on the Details tab; never removed |
 | Disabled | 50% opacity text and edges, no shadow |
-| Unfocused window | Title bar flat `bg` (or the area color mixed 50% with `bg`), dimmed title and glyphs; accent widgets keep their color |
+| Unfocused window | Title bar keeps its color with the gradient removed, so it still matches the menubar and toolbar; dimmed title and glyphs; accent widgets keep their color |
 
 **Title bar buttons** (minimize / maximize / close), for both window-manager title bars and GTK headerbars:
 - **At rest:** no background, no border, no shadow, glyph only.
@@ -313,13 +313,14 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 ### GTK apps (Nemo and friends)
 - **Stacking:** title bar (gradient) → menubar (flat `header`) → toolbar (flat `header`, bottom border).
 - Path bar: one raised group, current folder `pressed`.
-- Sidebar: `sidebar` background, rows edge to edge, `sidebar_hover`, selected `select`.
+- Sidebar: `sidebar` background, rows edge to edge, `sidebar_hover`, selected `select`. Rows take the roundness in list-based sidebars; Nemo's sidebar is a tree view that draws each cell separately, so its rows stay square (rounded cells leave dots between icon and name).
+- Grouped (linked) buttons use only the style's inner edges (highlight, shade), never a drop shadow, so neighbours don't overlap.
 - File view: `base`, labels selected with `select`, item hover `hover`.
 
 ### Window borders
 - **Title bar color:** follows `header`, or a user color.
 - **Title text:** `text`, or a user color.
-- **Border color and width:** 0–6 px, default 1. Visual only, since Muffin keeps its own invisible resize area.
+- **Border color and width:** color follows `border_strong` (the darker border), or a user color; width 0–6 px, default 1. Visual only, since Muffin keeps its own invisible resize area.
 - **Title bar height:** 30–56 px, default 44.
 - **Button layout:** written to Mint's own setting (`org.cinnamon.desktop.wm.preferences button-layout`).
 - **Implementation:** drawn by `metacity-theme-3.xml` draw operations (rectangles, lines, title) for traditional title bars, and by GTK CSS for headerbar apps. Both use the same tokens so they match.

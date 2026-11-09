@@ -124,7 +124,7 @@ def derive(accent: str, bg: str, text: str) -> dict[str, str]:
                 break
             select = darker(select, 0.04)
 
-    header = pick(mix(bg, text, 0.05), mix(bg, text, 0.06))
+    header = mix(bg, text, 0.066)   # Mint-Y's toolbar shade: #E8E8E8 on the default colors
     button = pick(mix(bg, WHITE, 0.60), mix(bg, text, 0.08))
     menu_bg = pick(mix(bg, text, 0.03), mix(bg, text, 0.04))
     fav_bg = pick(mix(bg, text, 0.075), mix(bg, text, 0.09))

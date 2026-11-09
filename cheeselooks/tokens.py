@@ -140,9 +140,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     sep = wb["separate_colors"]
     title = (wb["title_bar"] if sep and wb["title_bar"] else theme["header"])
     title_text = (wb["title_text"] if sep and wb["title_text"] else theme["text"])
-    border = (wb["border"] if sep and wb["border"] else theme["border"])
+    border = (wb["border"] if sep and wb["border"] else theme["border_strong"])
     top, bottom = pal.title_gradient(title, amount)
-    unfocused = pal.mix(title, theme["bg"], 0.5) if sep else theme["bg"]
+    unfocused = title  # unfocused: same color, gradient removed, so it matches menubar/toolbar
     _add_colors(t, "wb.", {
         "title": title, "title_top": top, "title_bottom": bottom, "text": title_text,
         "border": border, "unfocused": unfocused,
