@@ -121,8 +121,10 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `border` / `border_strong` | `mix(bg, text, .20 / .30)` | `mix(bg, text, .16 / .26)` | |
 | `trough` | `mix(bg, text, .12)` | `mix(bg, text, .14)` | Switch, progress and scale troughs |
 | `text_dim` | `mix(text, bg, .38)` | same | Secondary and placeholder text |
-| `menu_bg` | `mix(bg, text, .03)` | `mix(bg, text, .04)` | Cinnamon menu and popups, GTK menus |
-| `menu_hover` | `mix(menu_bg, text, .10)` | same | **All** menu item hovers (see below) |
+| `menu_bg` | `base` | `base` | GTK menus and popovers (near-white, as Mint-Y) |
+| `shell_menu_bg` | `mix(bg, text, .03)` | `mix(bg, text, .04)` | Cinnamon menu and popups (used as `menu_bg` in the Cinnamon templates) |
+| `flat_hover` | `lighter(header, .50 × h)` | `mix(header, text, .08 × h)` | Hover for buttons not drawn at rest (toolbar, title buttons) and unselected tabs: softer than a full button hover |
+| `menu_hover` | `mix(menu_bg, text, .10 × h)` | same | Menu item hovers; `shell_menu_hover` is the same step on `shell_menu_bg` |
 | `fav_bg` / `fav_hover` | `mix(bg, text, .075)` / `mix(fav_bg, text, .10)` | `.09` / same step | Cinnamon menu favorites column |
 | `panel` | `mix(bg, white, .25)` | `mix(bg, text, .03)` | Panel background, ~90% opaque |
 | `pb_rest` | `mix(bg, text, .15)` | `mix(bg, text, .13)` | Running app button |
@@ -181,7 +183,7 @@ The previous formula was `+30% / −10%`. The new one keeps the overall brightne
 
 **What doesn't:** menubars, toolbars, content areas, entries, troughs.
 
-**Title bar:** `[ top: lighter(header, 0.20 × g),  bottom: header ]`. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
+**Title bar:** `[ top: lighter(header, 0.40 × g),  bottom: header ]`. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
 
 ### Depth (0–100%, Style tab)
 Multiplies the strength of the style's highlights and shadows. At 0 any style draws flat.
@@ -287,8 +289,8 @@ Cinnamon's CSS allows **one** box shadow per widget and two-color gradients. Whe
 - **Entries:** sunken, with a 1px accent ring and accent border on focus.
 - **Tabs (in-app notebooks, not the settings app's own tabs):**
   - Active tab: `base` background with a `border_strong` border on top and sides. **No accent line.**
-  - Inactive tabs: no border, `text_dim`.
-  - Hovered inactive tab: `hover` background **and side and top borders** in `border`.
+  - Unselected tabs are drawn (unlike Mint-Y): `header` (toolbar color) with a `border` outline, `text_dim`.
+  - Hovered unselected tab: lightens to `flat_hover`, like toolbar buttons.
 - **Menu items (GTK menus):** hover is `menu_hover`, not the accent.
 - **Menubar items:** hover is `menubar_hover`. An open menubar item uses the same color.
 - **Panel buttons:** full panel height, raised (highlight only in Cinnamon), running = `pb_rest`, focused = `pb_focus`.
@@ -370,6 +372,8 @@ Notes:
 | GTK buttons, entries, tabs, switches, check/radio boxes | CSS. Checkmark from GTK's recolorable built-in icon |
 | Window title bar and buttons | Metacity draw ops (no images) |
 | Cinnamon switches, checkboxes, radios | **Generated SVGs** (Cinnamon CSS can't draw a knob or check). Rewritten on every apply |
+| Check and radio items in GTK popover menus | **Generated SVGs**: GTK draws these only as an image, with no CSS box |
+| Buttons in info bars and selected rows | Keep Mint-Y's see-through look so their light text stays readable |
 | Everything else | CSS |
 
 No hand-made bitmap images remain in the theme.
@@ -380,6 +384,7 @@ No hand-made bitmap images remain in the theme.
 
 - A Python + GTK 3 app called **Cheeselooks Settings**, with a menu entry and the `cheeselooks-settings` command.
 - **Tabs:** Global · Style · Panel & Menu · Window Borders · Terminal · Details · *Icons (later)*.
+- **Style picker:** not toggle buttons (there may be 20+ styles). A list with a small live preview of each style (buttons, entry, tabs), its name and author, a search box once the list is long, plus *Open styles folder* and *Import style…*. Picking a style moves Roundness, Gradient and Depth to the style's `[defaults]`.
 - **Accent from wallpaper:** a button on the Global tab reads the current wallpaper and offers 5–6 accent suggestions as swatches. One click applies one to the Accent picker (preview only until Apply). Implementation: downscale the image, cluster the colors, drop near-greys and colors too close to the background, and rank by how often they appear and how saturated they are. Python standard library plus GdkPixbuf only.
 - **Live preview inside the app:** generated CSS loaded into a preview area. The desktop changes only on **Apply**.
 - **Buttons:** **Apply**, **Revert** (restore the last applied settings), **Reset to defaults**.
@@ -489,6 +494,7 @@ xl-cheeselooks/
 |---|---|
 | **v1** | Generator + templates; Global (colors, size, roundness, gradient, hover in/out); Style tab with **xl-Cheeselooks** and Depth; Panel & Menu (colors, panel shape, menu shape, label weight); Window Borders (colors, height, border width, layout, **Theme** buttons); Terminal; Details (tooltips, scrollbars, sliders, switches, focus ring); libadwaita colors and accent; Flatpak access button; presets; CLI; README; `creating-styles.md`; `AGENTS.md` |
 | **v1.x** | Accent from wallpaper. Window button styles: Dots, Wide, Circles. Float shipped as a selectable style. Import/export polish |
+| **Release** | A **Claude** preset: a theme designed by Claude, any way it likes, shipped alongside the other presets |
 | **v2** | Icons tab (recolor the user's Yaru-based folders with the accent); more original styles; in-app style editor |
 
 ---

@@ -97,7 +97,7 @@ def gradient(color: str, amount: float) -> tuple[str, str]:
 
 def title_gradient(color: str, amount: float) -> tuple[str, str]:
     """Title bar: lighter top, bottom exactly the menubar/toolbar color."""
-    return lighter(color, 0.20 * amount), color
+    return lighter(color, 0.40 * amount), color
 
 
 # --------------------------------------------------------------------------
@@ -142,7 +142,9 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
     # light buttons rest a little below white so hover has room to go lighter
     button = pick(mix(bg, WHITE, 0.30), mix(bg, text, 0.08))
     border_strong = pick(mix(bg, text, 0.30), mix(bg, text, 0.26))
-    menu_bg = pick(mix(bg, text, 0.03), mix(bg, text, 0.04))
+    base = pick(mix(bg, WHITE, 0.75), darker(bg, 0.18))
+    menu_bg = base                                             # GTK menus: content color, as Mint-Y
+    shell_menu_bg = pick(mix(bg, text, 0.03), mix(bg, text, 0.04))  # Cinnamon menus and popups
     fav_bg = pick(mix(bg, text, 0.075), mix(bg, text, 0.09))
 
     return {
@@ -153,11 +155,14 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
         "select": select,
         "accent_hover": lighter(accent, 0.12),
         "accent_press": darker(accent, 0.14),
-        "base": pick(mix(bg, WHITE, 0.75), darker(bg, 0.18)),
+        "base": base,
         "button": button,
         "button_hover": pick(lift(button, 0.80), lift(button, 0.06)),
         "header": header,
         "menubar_hover": mix(header, text, 0.12 * hover),
+        # hover for buttons that aren't drawn at rest (toolbar, title buttons) and
+        # unselected tabs: lighter than the toolbar, but not as bright as a full button hover
+        "flat_hover": pick(lift(header, 0.50), lift(header, 0.08)),
         "sidebar": pick(mix(bg, text, 0.035), mix(bg, text, 0.03)),
         "sidebar_hover": pick(mix(bg, text, 0.035 + 0.105 * hover), mix(bg, text, 0.03 + 0.10 * hover)),
         "hover": pick(mix(bg, text, 0.07 * hover), mix(bg, text, 0.08 * hover)),
@@ -170,6 +175,8 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
         "text_dim": mix(text, bg, 0.38),
         "menu_bg": menu_bg,
         "menu_hover": mix(menu_bg, text, 0.10 * hover),
+        "shell_menu_bg": shell_menu_bg,
+        "shell_menu_hover": mix(shell_menu_bg, text, 0.10 * hover),
         "fav_bg": fav_bg,
         "fav_hover": mix(fav_bg, text, 0.10 * hover),
         "panel": pick(mix(bg, WHITE, 0.25), mix(bg, text, 0.03)),

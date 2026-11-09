@@ -41,12 +41,12 @@ border = "none"
 [widgets]
 button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
-toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "flat_hover" }
 title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }
 combo          = { like = "button" }
-tab            = { tab_kind = "boxed", active_marker = "none", hover_border = true, hover_color = "hover" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_border = true, hover_color = "flat_hover" }
 menu_item      = { hover_color = "menu_hover" }
 menubar_item   = { hover_color = "menubar_hover" }
 panel_button   = { edge = "raised", hover_edge = "raised_hover", hover_color = "pb_hover" }

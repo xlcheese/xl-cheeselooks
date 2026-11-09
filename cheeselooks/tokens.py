@@ -128,9 +128,12 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["panel.label_weight"] = "bold" if p["label_weight"] == "bold" else "normal"
     t["panel.opacity"] = f"{p['panel_opacity'] / 100:g}"
 
-    _add_colors(t, "menu.", pcolors)
-    _add_gradients(t, "menu.", pcolors, m_grad / 100)
-    _add_widgets(t, "menu.", style, pcolors, depth, m_grad / 100)
+    # Cinnamon menus use the shell menu colors under the same names, so a
+    # style's "menu_hover" means the right thing in GTK and in Cinnamon.
+    mcolors = dict(pcolors, menu_bg=pcolors["shell_menu_bg"], menu_hover=pcolors["shell_menu_hover"])
+    _add_colors(t, "menu.", mcolors)
+    _add_gradients(t, "menu.", mcolors, m_grad / 100)
+    _add_widgets(t, "menu.", style, mcolors, depth, m_grad / 100)
     m_r = shape.radius(m_round, ctl)
     t["menu.r"] = str(m_r)
     t["menu.r2"] = str(shape.window_radius(m_r))

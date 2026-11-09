@@ -104,6 +104,13 @@ toolbar .linked > button:checked, .path-bar button:checked, .path-bar button:act
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.button.pressed_inset_shadow}}; }
 
+/* Buttons on colored backgrounds (info bars, selected rows, selection mode):
+   keep the see-through look so their light text stays readable */
+infobar.info button, infobar.question button, infobar.warning button, infobar.error button,
+row:selected button, headerbar.selection-mode button, .selection-mode.primary-toolbar button {
+  background-image: none;
+  box-shadow: none; }
+
 /* Suggested (accent) and destructive buttons */
 button.suggested-action, headerbar button.suggested-action, .primary-toolbar button.suggested-action {
   color: {{accent_fg}};
@@ -230,6 +237,11 @@ menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover {
   color: {{w.menu_item.hover_fg}};
   background-color: {{w.menu_item.hover_color}};
   background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+popover modelbutton.flat:hover, popover modelbutton.flat:selected,
+menuitem.button.flat:hover, menuitem.button.flat:selected {
+  color: {{w.menu_item.hover_fg}};
+  background-color: {{w.menu_item.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
 menubar > menuitem:hover, .menubar > menuitem:hover {
   color: {{w.menubar_item.hover_fg}};
   box-shadow: none;
@@ -296,6 +308,11 @@ notebook > header > tabs > tab {
 notebook > header.bottom > tabs > tab { border-radius: 0 0 {{r}}px {{r}}px; }
 notebook > header.left > tabs > tab { border-radius: {{r}}px 0 0 {{r}}px; }
 notebook > header.right > tabs > tab { border-radius: 0 {{r}}px {{r}}px 0; }
+notebook > header > tabs > tab:not(:checked) {
+  color: {{text_dim}};
+  border-color: {{border}};
+  background-color: {{header}};
+  background-image: none; }
 notebook > header > tabs > tab:hover:not(:checked) {
   color: {{w.tab.hover_fg}};
   border-color: {{w.tab.hover_border}};
@@ -337,6 +354,22 @@ check:checked, treeview.check:checked { -gtk-icon-source: -gtk-recolor(url("asse
 check:indeterminate, radio:indeterminate { -gtk-icon-source: -gtk-recolor(url("assets/dash-symbolic.svg")); }
 radio:checked, treeview.radio:checked { -gtk-icon-source: -gtk-recolor(url("assets/bullet-symbolic.svg")); }
 check:disabled, radio:disabled { opacity: 0.5; }
+/* Check and radio items in popover menus are drawn by GTK only as an image
+   (no CSS background or border), so they use small generated images. */
+modelbutton.flat check, menuitem.button.flat check,
+modelbutton.flat radio, menuitem.button.flat radio {
+  min-width: 16px;
+  min-height: 16px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  -gtk-icon-source: url("assets/check-off.svg"); }
+modelbutton.flat check:checked, menuitem.button.flat check:checked { -gtk-icon-source: url("assets/check-on.svg"); }
+modelbutton.flat check:indeterminate, menuitem.button.flat check:indeterminate { -gtk-icon-source: url("assets/check-mixed.svg"); }
+modelbutton.flat radio, menuitem.button.flat radio { -gtk-icon-source: url("assets/radio-off.svg"); }
+modelbutton.flat radio:checked, menuitem.button.flat radio:checked { -gtk-icon-source: url("assets/radio-on.svg"); }
+modelbutton.flat radio:indeterminate, menuitem.button.flat radio:indeterminate { -gtk-icon-source: url("assets/radio-mixed.svg"); }
+
 menu menuitem check, menu menuitem radio, .menu menuitem check, .menu menuitem radio {
   margin: 0 4px 0 0; }
 row:selected check, row:selected radio, .view:selected check, .view:selected radio {

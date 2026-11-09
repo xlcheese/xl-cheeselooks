@@ -9,6 +9,7 @@ theme you want to see:
 
 Options:
     --menu      also open the View menu with an item highlighted
+    --popover   also open the headerbar's popover menu (check and radio items)
     --quit N    close after N seconds (for screenshots)
 """
 
@@ -82,6 +83,12 @@ def files_window() -> tuple[Gtk.Window, Gtk.MenuItem]:
         toolbar.pack_end(icon_button(name, toggle=True, active=active), False, False, 0)
     box.pack_start(toolbar, False, False, 0)
 
+    info = Gtk.InfoBar(message_type=Gtk.MessageType.WARNING)
+    info.get_content_area().add(Gtk.Label(label="The file settings.json changed on disk."))
+    info.add_button("Reload", 1)
+    info.add_button("Cancel", 2)
+    box.pack_start(info, False, False, 0)
+
     paned = Gtk.Paned()
     sidebar = Gtk.PlacesSidebar()
     sidebar.set_size_request(190, -1)
@@ -125,7 +132,26 @@ def widgets_window() -> Gtk.Window:
     hb = Gtk.HeaderBar(title="Appearance", show_close_button=True)
     hb.set_decoration_layout("menu:minimize,maximize,close")
     hb.pack_start(icon_button("go-previous-symbolic"))
+    menu_button = Gtk.MenuButton()
+    menu_button.set_image(Gtk.Image.new_from_icon_name("open-menu-symbolic", Gtk.IconSize.BUTTON))
+    popover = Gtk.Popover()
+    pbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=8)
+    for text, role, active in (("Toolbar", Gtk.ButtonRole.CHECK, True), ("Statusbar", Gtk.ButtonRole.CHECK, False),
+                               ("Word wrap", Gtk.ButtonRole.CHECK, True), (None, None, None),
+                               ("style.toml", Gtk.ButtonRole.RADIO, True), ("settings.json", Gtk.ButtonRole.RADIO, False),
+                               (None, None, None), ("Preferences", Gtk.ButtonRole.NORMAL, False)):
+        if text is None:
+            pbox.pack_start(Gtk.Separator(), False, False, 4)
+            continue
+        mb = Gtk.ModelButton(text=text, role=role)
+        mb.set_property("active", active)
+        pbox.pack_start(mb, False, False, 0)
+    pbox.show_all()
+    popover.add(pbox)
+    menu_button.set_popover(popover)
+    hb.pack_end(menu_button)
     win.set_titlebar(hb)
+    win.popover = popover
 
     nb = Gtk.Notebook()
     grid = Gtk.Grid(row_spacing=12, column_spacing=12)
@@ -240,6 +266,8 @@ def main() -> int:
             menu.select_item(children[2])
             return False
         GLib.timeout_add(600, open_menu)
+    if "--popover" in args:
+        GLib.timeout_add(700, lambda: widgets.popover.popup() or False)
     if "--quit" in args:
         seconds = float(args[args.index("--quit") + 1])
         GLib.timeout_add(int(seconds * 1000), Gtk.main_quit)
