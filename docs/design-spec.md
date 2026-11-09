@@ -66,7 +66,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
 ```jsonc
 {
   "version": 1,
-  "global":  { "accent": "#FA8562", "bg": "#F0F0F0", "text": "#303030",
+  "global":  { "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
                "size": "normal", "roundness": 20, "gradient": 30,
                "hover_in_ms": 60, "hover_out_ms": 250 },
   "style":   { "name": "xl-Cheeselooks", "depth": 50 },

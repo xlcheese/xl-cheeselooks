@@ -36,7 +36,7 @@ class PaletteTests(unittest.TestCase):
         self.assertAlmostEqual(palette.contrast("#777777", "#777777"), 1.0)
 
     def test_light_theme(self):
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         self.assertFalse(palette.is_dark(p))
         self.assertEqual(p["accent_fg"], "#FFFFFF")
         # selection is darkened until white text reaches 2.6:1
@@ -51,17 +51,17 @@ class PaletteTests(unittest.TestCase):
         self.assertLess(palette.luminance(p["base"]), palette.luminance(p["bg"]))
 
     def test_very_light_accent_gets_dark_text(self):
-        p = palette.derive("#FFE680", "#F0F0F0", "#303030")
+        p = palette.derive("#FFE680", "#F5F5F5", "#303030")
         self.assertNotEqual(p["accent_fg"], "#FFFFFF")
 
     def test_menu_hover_steps_match(self):
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         a = palette.contrast(p["menu_hover"], p["menu_bg"])
         b = palette.contrast(p["fav_hover"], p["fav_bg"])
         self.assertAlmostEqual(a, b, delta=0.06)
 
     def test_menubar_hover_darker_than_general_hover(self):
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         self.assertLess(palette.luminance(p["menubar_hover"]), palette.luminance(p["hover"]))
 
     def test_gradient_skews_darker(self):
@@ -76,13 +76,13 @@ class PaletteTests(unittest.TestCase):
         self.assertGreater(palette.luminance(top), palette.luminance(bottom))
 
     def test_terminal_follows_theme(self):
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = palette.terminal_colors(p, None, None)
         self.assertEqual(t["bg"], p["base"])
         self.assertEqual(t["text"], p["text"])
 
     def test_readability_warnings(self):
-        good = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        good = palette.derive("#FA8562", "#F5F5F5", "#303030")
         self.assertEqual(palette.readability_warnings(good), [])
         bad = palette.derive("#39FF14", "#FF2DA6", "#1A1AFF")
         self.assertTrue(palette.readability_warnings(bad))
@@ -108,7 +108,7 @@ class SettingsTests(unittest.TestCase):
     def test_partial_file_is_merged(self):
         s = settings.from_dict({"global": {"accent": "2e9e92"}})
         self.assertEqual(s["global"]["accent"], "#2E9E92")
-        self.assertEqual(s["global"]["bg"], "#F0F0F0")
+        self.assertEqual(s["global"]["bg"], "#F5F5F5")
 
     def test_bad_values_are_reported(self):
         with self.assertRaises(settings.SettingsError) as ctx:
@@ -139,7 +139,7 @@ class StyleTests(unittest.TestCase):
 
     def test_raised_edge_has_all_layers_for_gtk_one_for_cinnamon(self):
         st = styles.load(DEFAULT_STYLE)
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = styles.widget_tokens(st, p, 50)
         self.assertEqual(t["w.button.shadow"].count("rgba("), 3)
         self.assertEqual(t["w.button.st_shadow"].count("rgba("), 1)
@@ -147,7 +147,7 @@ class StyleTests(unittest.TestCase):
 
     def test_title_buttons_have_nothing_at_rest(self):
         st = styles.load(DEFAULT_STYLE)
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = styles.widget_tokens(st, p, 50)
         self.assertEqual(t["w.title_button.border"], "transparent")
         self.assertEqual(t["w.title_button.shadow"], "none")
@@ -156,13 +156,13 @@ class StyleTests(unittest.TestCase):
 
     def test_depth_zero_is_flat(self):
         st = styles.load(DEFAULT_STYLE)
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = styles.widget_tokens(st, p, 0)
         self.assertEqual(t["w.button.shadow"], "none")
 
     def test_depth_scales_alpha(self):
         st = styles.load(DEFAULT_STYLE)
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         lo = styles.widget_tokens(st, p, 25)["w.button.shadow"]
         hi = styles.widget_tokens(st, p, 100)["w.button.shadow"]
         self.assertIn("0.3)", lo)   # highlight 0.6 × 0.5
@@ -176,7 +176,7 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(t["w.suggested.border"], "transparent")
 
     def test_menu_item_hover_color(self):
-        p = palette.derive("#FA8562", "#F0F0F0", "#303030")
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         cheese = styles.widget_tokens(styles.load(DEFAULT_STYLE), p, 50)
         flt = styles.widget_tokens(styles.load(FLOAT_STYLE), p, 50)
         self.assertEqual(cheese["w.menu_item.hover_color"], p["menu_hover"])
@@ -221,7 +221,7 @@ class TokenTests(unittest.TestCase):
         t = tokens.build(s, self.style)
         self.assertEqual(t["panel.bg"], "#2B2B2B")
         self.assertEqual(t["menu.bg"], "#2B2B2B")
-        self.assertEqual(t["bg"], "#F0F0F0")
+        self.assertEqual(t["bg"], "#F5F5F5")
 
     def test_panel_and_menu_shapes(self):
         s = defaults()

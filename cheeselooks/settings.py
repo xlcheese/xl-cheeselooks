@@ -18,7 +18,7 @@ SETTINGS_VERSION = 1
 DEFAULTS: dict[str, Any] = {
     "version": SETTINGS_VERSION,
     "global": {
-        "accent": "#FA8562", "bg": "#F0F0F0", "text": "#303030",
+        "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
         "size": "normal", "roundness": 20, "gradient": 30,
         "hover_in_ms": 60, "hover_out_ms": 250,
     },

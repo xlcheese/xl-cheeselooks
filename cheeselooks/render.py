@@ -1,8 +1,19 @@
 """Fill templates with tokens.
 
-Templates are ordinary theme files with {{token}} placeholders. Files ending
-in .tmpl are filled and saved without the suffix; every other file is copied
-as-is. An unknown token is an error, so a typo never ships a broken theme.
+Templates are ordinary theme files with {{...}} placeholders. A placeholder
+is either a token name or a small color expression:
+
+    {{accent}}                      a token
+    {{alpha(text, 0.87)}}           rgba() of a color at an opacity
+    {{mix(bg, text, 0.23)}}         blend from the first color toward the second
+    {{lighter(accent, 0.1)}}        blend toward white
+    {{darker(header, 0.05)}}        blend toward black
+
+Arguments can be token names, #RRGGBB colors, numbers, or other expressions.
+All math happens here in Python, so the same expressions work in GTK and
+Cinnamon CSS. Files ending in .tmpl are filled and saved without the
+suffix; every other file is copied as-is. An unknown token or a bad
+expression is an error, so a typo never ships a broken theme.
 """
 
 from __future__ import annotations
@@ -11,8 +22,11 @@ import re
 import shutil
 from pathlib import Path
 
-TOKEN_RE = re.compile(r"\{\{\s*([A-Za-z0-9_.\-]+)\s*\}\}")
+from . import palette as pal
+
+PLACEHOLDER_RE = re.compile(r"\{\{\s*(.+?)\s*\}\}")
 TEMPLATE_SUFFIX = ".tmpl"
+_TOKEN_CHARS = re.compile(r"[A-Za-z0-9_.\-#]")
 
 
 class TemplateError(ValueError):
@@ -21,21 +35,109 @@ class TemplateError(ValueError):
         self.problems = problems
 
 
+class _ExprError(ValueError):
+    pass
+
+
+def _color(value: object) -> str:
+    if isinstance(value, str) and pal.is_hex(value):
+        return pal.normalize(value)
+    raise _ExprError(f"expected a color, got {value!r}")
+
+
+def _number(value: object) -> float:
+    if isinstance(value, float):
+        return value
+    raise _ExprError(f"expected a number, got {value!r}")
+
+
+FUNCTIONS = {
+    "alpha": lambda c, a: pal.rgba(_color(c), _number(a)),
+    "mix": lambda a, b, t: pal.mix(_color(a), _color(b), _number(t)),
+    "lighter": lambda c, t: pal.lighter(_color(c), _number(t)),
+    "darker": lambda c, t: pal.darker(_color(c), _number(t)),
+}
+
+
+def evaluate(expr: str, tokens: dict[str, str]) -> str:
+    """Evaluate a placeholder: a token name or a function call."""
+    pos = 0
+
+    def skip() -> None:
+        nonlocal pos
+        while pos < len(expr) and expr[pos].isspace():
+            pos += 1
+
+    def parse() -> object:
+        nonlocal pos
+        skip()
+        start = pos
+        while pos < len(expr) and _TOKEN_CHARS.match(expr[pos]):
+            pos += 1
+        word = expr[start:pos]
+        if not word:
+            raise _ExprError(f"unexpected '{expr[pos:pos + 1] or 'end'}'")
+        skip()
+        if pos < len(expr) and expr[pos] == "(":
+            if word not in FUNCTIONS:
+                raise _ExprError(f"unknown function '{word}' (known: {', '.join(FUNCTIONS)})")
+            pos += 1
+            args = []
+            skip()
+            if pos < len(expr) and expr[pos] == ")":
+                pos += 1
+            else:
+                while True:
+                    args.append(parse())
+                    skip()
+                    if pos < len(expr) and expr[pos] == ",":
+                        pos += 1
+                        continue
+                    if pos < len(expr) and expr[pos] == ")":
+                        pos += 1
+                        break
+                    raise _ExprError("expected ',' or ')'")
+            try:
+                return FUNCTIONS[word](*args)
+            except TypeError:
+                raise _ExprError(f"wrong number of arguments for {word}()") from None
+        if re.fullmatch(r"-?\d+(\.\d+)?", word):
+            return float(word)
+        if word.startswith("#"):
+            return _color(word)
+        if word in tokens:
+            return tokens[word]
+        raise _ExprError(f"unknown token '{word}'")
+
+    value = parse()
+    skip()
+    if pos != len(expr):
+        raise _ExprError(f"unexpected text after expression: '{expr[pos:]}'")
+    if isinstance(value, float):
+        return f"{value:g}"
+    return str(value)
+
+
 def render_text(text: str, tokens: dict[str, str], source: str = "<text>") -> str:
-    missing: dict[str, int] = {}
+    problems: list[str] = []
+    cache: dict[str, str] = {}
 
     def sub(m: re.Match) -> str:
-        name = m.group(1)
-        if name in tokens:
-            return tokens[name]
-        line = text.count("\n", 0, m.start()) + 1
-        missing.setdefault(name, line)
-        return m.group(0)
+        expr = m.group(1)
+        if expr in cache:
+            return cache[expr]
+        try:
+            value = evaluate(expr, tokens)
+        except _ExprError as exc:
+            line = text.count("\n", 0, m.start()) + 1
+            problems.append(f"{source}:{line}: {{{{{expr}}}}}: {exc}")
+            return m.group(0)
+        cache[expr] = value
+        return value
 
-    out = TOKEN_RE.sub(sub, text)
-    if missing:
-        raise TemplateError([f"{source}:{line}: unknown token '{{{{{name}}}}}'"
-                             for name, line in missing.items()])
+    out = PLACEHOLDER_RE.sub(sub, text)
+    if problems:
+        raise TemplateError(problems)
     return out
 
 
