@@ -19,6 +19,13 @@ highlight = { y = 1,  color = "white", alpha = 0.60, alpha_dark = 0.07 }
 shade     = { y = -1, color = "black", alpha = 0.07, alpha_dark = 0.20 }
 shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
 
+# Hover: same layers, darker border (lighter on dark themes), as Mint-Y does
+[edges.raised_hover]
+border    = "border_hover"
+highlight = { y = 1,  color = "white", alpha = 0.60, alpha_dark = 0.07 }
+shade     = { y = -1, color = "black", alpha = 0.07, alpha_dark = 0.20 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+
 [edges.sunken]
 border = "border_strong"
 inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
@@ -32,9 +39,9 @@ inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
 border = "none"
 
 [widgets]
-button         = { edge = "raised", hover_edge = "raised", pressed_edge = "sunken", hover_color = "button_hover" }
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
-toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "button" }
+toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
 title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }
@@ -42,4 +49,4 @@ combo          = { like = "button" }
 tab            = { tab_kind = "boxed", active_marker = "none", hover_border = true, hover_color = "hover" }
 menu_item      = { hover_color = "menu_hover" }
 menubar_item   = { hover_color = "menubar_hover" }
-panel_button   = { edge = "raised", hover_edge = "raised", hover_color = "pb_hover" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", hover_color = "pb_hover" }

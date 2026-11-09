@@ -20,7 +20,7 @@ DEFAULTS: dict[str, Any] = {
     "global": {
         "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
         "size": "normal", "roundness": 20, "gradient": 30,
-        "hover_in_ms": 60, "hover_out_ms": 250,
+        "hover_in_ms": 60, "hover_out_ms": 250, "hover_strength": 50,
     },
     "style": {"name": "xl-Cheeselooks", "depth": 50},
     "panel": {
@@ -56,6 +56,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("global", "gradient"), "int", (0, 100)),
     (("global", "hover_in_ms"), "int", (0, 300)),
     (("global", "hover_out_ms"), "int", (0, 800)),
+    (("global", "hover_strength"), "int", (0, 100)),
     (("style", "depth"), "int", (0, 100)),
     (("panel", "separate_colors"), "bool", None),
     (("panel", "accent"), "color?", None),

@@ -104,13 +104,27 @@ def title_gradient(color: str, amount: float) -> tuple[str, str]:
 # Palette
 # --------------------------------------------------------------------------
 
-def derive(accent: str, bg: str, text: str) -> dict[str, str]:
-    """Work out the full palette from the three picks."""
+def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str]:
+    """Work out the full palette from the three picks.
+
+    hover scales every hover step together (Hover strength slider / 50):
+    1.0 is the default, 0 means hovers don't change color, 2.0 doubles them.
+    """
     accent, bg, text = normalize(accent), normalize(bg), normalize(text)
     dark = luminance(bg) < luminance(text)
 
     def pick(light_value: str, dark_value: str) -> str:
         return dark_value if dark else light_value
+
+    def lift(surface: str, amount: float) -> str:
+        """Hover for raised surfaces. Light themes go lighter (as Mint-Y does);
+        a surface already at white has no room, so it goes slightly darker.
+        Dark themes go toward the text color, which is lighter there."""
+        if dark:
+            return mix(surface, text, amount * hover)
+        if luminance(surface) > 0.97:
+            return mix(surface, text, 0.05 * hover)
+        return mix(surface, WHITE, min(1.0, amount * hover))
 
     if luminance(accent) > 0.55:
         accent_fg = darker(bg, 0.2) if dark else mix(text, BLACK, 0.3)
@@ -125,7 +139,9 @@ def derive(accent: str, bg: str, text: str) -> dict[str, str]:
             select = darker(select, 0.04)
 
     header = mix(bg, text, 0.066)   # Mint-Y's toolbar shade: #E8E8E8 on the default colors
-    button = pick(mix(bg, WHITE, 0.60), mix(bg, text, 0.08))
+    # light buttons rest a little below white so hover has room to go lighter
+    button = pick(mix(bg, WHITE, 0.30), mix(bg, text, 0.08))
+    border_strong = pick(mix(bg, text, 0.30), mix(bg, text, 0.26))
     menu_bg = pick(mix(bg, text, 0.03), mix(bg, text, 0.04))
     fav_bg = pick(mix(bg, text, 0.075), mix(bg, text, 0.09))
 
@@ -139,24 +155,26 @@ def derive(accent: str, bg: str, text: str) -> dict[str, str]:
         "accent_press": darker(accent, 0.14),
         "base": pick(mix(bg, WHITE, 0.75), darker(bg, 0.18)),
         "button": button,
-        "button_hover": pick(lighter(button, 0.50), mix(button, text, 0.06)),
+        "button_hover": pick(lift(button, 0.80), lift(button, 0.06)),
         "header": header,
-        "menubar_hover": mix(header, text, 0.12),
+        "menubar_hover": mix(header, text, 0.12 * hover),
         "sidebar": pick(mix(bg, text, 0.035), mix(bg, text, 0.03)),
-        "sidebar_hover": pick(mix(bg, text, 0.14), mix(bg, text, 0.13)),
-        "hover": pick(mix(bg, text, 0.07), mix(bg, text, 0.08)),
+        "sidebar_hover": pick(mix(bg, text, 0.035 + 0.105 * hover), mix(bg, text, 0.03 + 0.10 * hover)),
+        "hover": pick(mix(bg, text, 0.07 * hover), mix(bg, text, 0.08 * hover)),
         "pressed": pick(mix(bg, text, 0.13), mix(bg, text, 0.15)),
         "border": pick(mix(bg, text, 0.20), mix(bg, text, 0.16)),
-        "border_strong": pick(mix(bg, text, 0.30), mix(bg, text, 0.26)),
+        "border_strong": border_strong,
+        # hovered borders: darker on light themes, lighter on dark (both toward text)
+        "border_hover": mix(border_strong, text, 0.15 * hover),
         "trough": pick(mix(bg, text, 0.12), mix(bg, text, 0.14)),
         "text_dim": mix(text, bg, 0.38),
         "menu_bg": menu_bg,
-        "menu_hover": mix(menu_bg, text, 0.10),
+        "menu_hover": mix(menu_bg, text, 0.10 * hover),
         "fav_bg": fav_bg,
-        "fav_hover": mix(fav_bg, text, 0.10),
+        "fav_hover": mix(fav_bg, text, 0.10 * hover),
         "panel": pick(mix(bg, WHITE, 0.25), mix(bg, text, 0.03)),
         "pb_rest": pick(mix(bg, text, 0.15), mix(bg, text, 0.13)),
-        "pb_hover": pick(lighter(bg, 0.50), mix(bg, text, 0.22)),
+        "pb_hover": pick(lift(bg, 0.50), mix(bg, text, 0.13 + 0.09 * hover)),
         "pb_edge": pick(mix(bg, text, 0.35), darker(bg, 0.45)),
         "pb_focus": accent,
         "pb_progress": darker(accent, 0.25),

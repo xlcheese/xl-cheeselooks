@@ -45,6 +45,12 @@ BUILTIN_EDGES: dict[str, dict[str, Any]] = {
         "shade": {"y": -1, "color": "black", "alpha": 0.07, "alpha_dark": 0.20},
         "shadow": {"y": 1, "blur": 2, "color": "black", "alpha": 0.10, "alpha_dark": 0.30},
     },
+    "raised_hover": {
+        "border": "border_hover",
+        "highlight": {"y": 1, "color": "white", "alpha": 0.60, "alpha_dark": 0.07},
+        "shade": {"y": -1, "color": "black", "alpha": 0.07, "alpha_dark": 0.20},
+        "shadow": {"y": 1, "blur": 2, "color": "black", "alpha": 0.10, "alpha_dark": 0.30},
+    },
     "sunken": {
         "border": "border_strong",
         "inner": {"y": 1, "blur": 2, "color": "black", "alpha": 0.10, "alpha_dark": 0.30},
@@ -57,10 +63,10 @@ BUILTIN_EDGES: dict[str, dict[str, Any]] = {
 }
 
 BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
-    "button": {"edge": "raised", "hover_edge": "raised", "pressed_edge": "sunken",
+    "button": {"edge": "raised", "hover_edge": "raised_hover", "pressed_edge": "sunken",
                "focus_edge": "raised", "hover_color": "button_hover"},
     "suggested": {"like": "button", "hover_color": "accent_hover"},
-    "toolbar_button": {"edge": "flat", "hover_edge": "raised", "pressed_edge": "sunken",
+    "toolbar_button": {"edge": "flat", "hover_edge": "raised_hover", "pressed_edge": "sunken",
                        "focus_edge": "flat", "hover_color": "button"},
     "title_button": {"like": "toolbar_button"},
     "close_button": {"like": "title_button", "hover_color": "accent"},

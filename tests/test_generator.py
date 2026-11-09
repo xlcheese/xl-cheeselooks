@@ -64,6 +64,23 @@ class PaletteTests(unittest.TestCase):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         self.assertLess(palette.luminance(p["menubar_hover"]), palette.luminance(p["hover"]))
 
+    def test_hover_strength(self):
+        base = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        strong = palette.derive("#FA8562", "#F5F5F5", "#303030", hover=2.0)
+        none = palette.derive("#FA8562", "#F5F5F5", "#303030", hover=0.0)
+        self.assertEqual(none["menu_hover"], none["menu_bg"])
+        self.assertGreater(palette.contrast(strong["menu_hover"], strong["menu_bg"]),
+                           palette.contrast(base["menu_hover"], base["menu_bg"]))
+        # light theme: hover lighter, border darker
+        self.assertGreater(palette.luminance(base["button_hover"]), palette.luminance(base["button"]))
+        self.assertLess(palette.luminance(base["border_hover"]), palette.luminance(base["border_strong"]))
+        # dark theme: border gets lighter on hover
+        dark = palette.derive("#FA8562", "#2B2B2B", "#E4E4E4")
+        self.assertGreater(palette.luminance(dark["border_hover"]), palette.luminance(dark["border_strong"]))
+        # a white surface has no room to go lighter, so it goes darker
+        white = palette.derive("#FA8562", "#FFFFFF", "#303030")
+        self.assertLess(palette.luminance(white["pb_hover"]), palette.luminance(white["bg"]))
+
     def test_gradient_skews_darker(self):
         top, bottom = palette.gradient("#808080", 1.0)
         base = palette.luminance("#808080")

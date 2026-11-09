@@ -68,7 +68,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
   "version": 1,
   "global":  { "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
                "size": "normal", "roundness": 20, "gradient": 30,
-               "hover_in_ms": 60, "hover_out_ms": 250 },
+               "hover_in_ms": 60, "hover_out_ms": 250, "hover_strength": 50 },
   "style":   { "name": "xl-Cheeselooks", "depth": 50 },
   "panel":   { "separate_colors": false, "accent": null, "bg": null, "text": null,
                "label_weight": "bold", "panel_opacity": 70, "menu_opacity": 94,
@@ -109,8 +109,9 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `select` | accent, darkened in 4% steps until white text reaches 2.6:1 (max 8 steps) | same | Selected rows, file labels, selected text |
 | `accent_hover` / `accent_press` | `lighter(accent, .12)` / `darker(accent, .14)` | same | |
 | `base` | `mix(bg, white, .75)` | `darker(bg, .18)` | Content areas: file view, entries, lists |
-| `button` | `mix(bg, white, .60)` | `mix(bg, text, .08)` | Button face |
-| `button_hover` | `lighter(button, .50)` | `mix(button, text, .06)` | |
+| `button` | `mix(bg, white, .30)` | `mix(bg, text, .08)` | Button face, a little below white so hover has room |
+| `button_hover` | `lighter(button, .80 × h)`, or `mix(button, text, .05 × h)` if the button is already white | `mix(button, text, .06 × h)` | |
+| `border_hover` | `mix(border_strong, text, .15 × h)` (darker) | same formula (lighter on dark) | Hovered button borders, as in Mint-Y |
 | `header` | `mix(bg, text, .066)` | same | Menubar, toolbar, title bar (Mint-Y's `#E8E8E8` on the default colors) |
 | `menubar_hover` | `mix(header, text, .12)` | same | **New:** menubar item hover, a bit darker than general hover |
 | `sidebar` | `mix(bg, text, .035)` | `mix(bg, text, .03)` | |
@@ -129,6 +130,8 @@ Each area (Global, Panel & Menu, Window Borders, Terminal) runs these rules on i
 | `pb_focus` | accent | accent | Focused app button |
 | `pb_progress` | `darker(accent, .25)` | same | Progress fill on panel buttons |
 | `pb_attention` | `mix(bg, #E5534B, .36)` | `mix(bg, #E5534B, .50)` | App needs attention |
+
+**Hover strength (`h`):** the Global *Hover strength* slider (0–100, default 50) sets `h = value / 50`. Every hover step in this table (button, menubar, sidebar, general hover, menu, favorites, panel button and hover borders) is multiplied by `h`, so all hovers get stronger or weaker together and stay balanced. Once the default xl-Cheeselooks look is settled, the step sizes will be recalibrated so that look sits at 50, the center, leaving room to go either way.
 
 **Rule of matching steps:** wherever a hover sits on a section with its own background, the hover is that background plus the **same step** toward text. That's why `menu_hover` and `fav_hover` both use `+.10`, which keeps contrast equal across the Cinnamon menu's three columns. Categories and apps share one hover color.
 

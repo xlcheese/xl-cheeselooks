@@ -90,7 +90,8 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     g = settings["global"]
     depth = settings["style"]["depth"]
     amount = g["gradient"] / 100
-    theme = pal.derive(g["accent"], g["bg"], g["text"])
+    hover = g["hover_strength"] / 50
+    theme = pal.derive(g["accent"], g["bg"], g["text"], hover)
     t: dict[str, str] = {}
 
     # --- meta
@@ -111,7 +112,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # --- Panel & Menu: shared colors, separate shapes
     p = settings["panel"]
     if p["separate_colors"]:
-        pcolors = pal.derive(p["accent"] or g["accent"], p["bg"] or g["bg"], p["text"] or g["text"])
+        pcolors = pal.derive(p["accent"] or g["accent"], p["bg"] or g["bg"], p["text"] or g["text"], hover)
     else:
         pcolors = theme
     ps, ms = p["panel_shape"], p["menu_shape"]
