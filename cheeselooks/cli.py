@@ -82,7 +82,8 @@ def cmd_apply(args: argparse.Namespace) -> int:
     for note in tokens.warnings(data):
         print(f"  note: {note}")
     if not args.no_reload and not args.theme_dir:
-        for line in reload.apply(tokens.THEME_NAME, table["wb.button_layout"], activate=args.activate):
+        layout = table["wb.button_layout"] if (theme_dir / "metacity-1").is_dir() else None
+        for line in reload.apply(tokens.THEME_NAME, layout, activate=args.activate, theme_dir=theme_dir):
             print(f"  {line}")
     return 0
 
@@ -93,7 +94,7 @@ def cmd_revert(args: argparse.Namespace) -> int:
         settings.save(settings.from_dict(data), paths.settings_file())
     print("Restored the previous theme.")
     if not args.no_reload:
-        for line in reload.apply(tokens.THEME_NAME):
+        for line in reload.apply(tokens.THEME_NAME, theme_dir=paths.theme_dir()):
             print(f"  {line}")
     return 0
 

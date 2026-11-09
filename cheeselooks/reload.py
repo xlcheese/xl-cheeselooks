@@ -12,11 +12,11 @@ import shutil
 import subprocess
 import time
 
-# (schema, key, theme to switch to briefly)
+# (schema, key, theme to switch to briefly, folder that must exist in the theme)
 THEME_KEYS = (
-    ("org.cinnamon.theme", "name", "Mint-Y"),
-    ("org.cinnamon.desktop.interface", "gtk-theme", "Mint-Y"),
-    ("org.cinnamon.desktop.wm.preferences", "theme", "Mint-Y"),
+    ("org.cinnamon.theme", "name", "Mint-Y", "cinnamon"),
+    ("org.cinnamon.desktop.interface", "gtk-theme", "Mint-Y", "gtk-3.0"),
+    ("org.cinnamon.desktop.wm.preferences", "theme", "Mint-Y", "metacity-1"),
 )
 LAYOUT_KEY = ("org.cinnamon.desktop.wm.preferences", "button-layout")
 PANEL_HEIGHT_KEY = ("org.cinnamon", "panels-height")
@@ -58,7 +58,7 @@ def panel_height(default: int) -> int:
 
 
 def apply(theme_name: str, button_layout: str | None = None, activate: bool = False,
-          pause: float = 0.3) -> list[str]:
+          pause: float = 0.3, theme_dir=None) -> list[str]:
     """Reload (and optionally switch to) the theme. Returns what was done, for the log."""
     if not available():
         return ["gsettings not found: skipped reloading (not running on Cinnamon?)"]
@@ -66,7 +66,10 @@ def apply(theme_name: str, button_layout: str | None = None, activate: bool = Fa
     if button_layout is not None and get(*LAYOUT_KEY) != button_layout:
         if set_value(*LAYOUT_KEY, button_layout):
             log.append(f"button layout set to {button_layout}")
-    for schema, key, fallback in THEME_KEYS:
+    for schema, key, fallback, part in THEME_KEYS:
+        if theme_dir is not None and not (theme_dir / part).is_dir():
+            log.append(f"{schema} {key}: this version of the theme has no {part}/ yet, left alone")
+            continue
         current = get(schema, key)
         if current is None:
             log.append(f"{schema} {key}: not available, skipped")
