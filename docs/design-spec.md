@@ -534,3 +534,11 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 3. GTK menu item hover uses `menu_hover` (darker background), not the accent, in xl-Cheeselooks ([§6](#6-styles)).
 4. Gradient is skewed darker: `+10% / −20%`, and the title bar top is `+20%` ([§4](#4-shape-rules)).
 5. Active tab has **no accent line**, and hovered inactive tabs show side and top borders ([§6](#6-styles)).
+
+---
+
+## 16. Pending changes (next round)
+
+Agreed but not built yet. Delete each line once it's done.
+
+- **Title bar gradient to 100%:** `title_gradient` 100 should take the top of the title bar fully to white (`lighter(title, 1.0 × t)`; currently 0.70). Works well on light themes; on darker title bars users can lower the slider.
