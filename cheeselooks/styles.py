@@ -193,7 +193,7 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                     elif lk == "color":
                         if not _is_color_ref(lv, names):
                             errors.append(f"{where}.color must be a palette color name or #RRGGBB (got {lv!r})")
-                    elif lk in ("grow", "inset"):
+                    elif lk in ("grow", "inset", "adaptive"):
                         if not isinstance(lv, bool):
                             errors.append(f"{where}.{lk} must be true or false")
                     elif lk in ("alpha", "alpha_dark"):
@@ -360,7 +360,14 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         # blur = fade inward over that many px (0 = crisp line)
         w = abs(layer.get("x", 1))
         blur = layer.get("blur", 0)
-        tail = f" {px(blur)}" if blur else " 0"
+        if blur:
+            # Keep the fade on its own edge: a blurred inset shadow would also
+            # glow along the top and bottom. Shrink it by the blur (negative
+            # spread) and push it out by the same amount.
+            tail = f" {px(blur)} {px(-blur)}"
+            w += blur
+        else:
+            tail = " 0"
         left = f"inset {px(w)} 0{tail} {color}"
         right = f"inset -{px(w)} 0{tail} {color}"
         return {"sides": f"{left}, {right}", "left": left, "right": right}[kind]
@@ -373,6 +380,11 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
     blur = layer.get("blur", 0) * grow
     spread = layer.get("spread", 0)
     inset = kind in ("highlight", "shade", "inner")
+    if kind in ("highlight", "shade") and blur and "spread" not in layer and y:
+        # Same trick as for the side layers: keep a top or bottom fade off the
+        # left and right edges.
+        spread = -blur
+        y += blur if y > 0 else -blur
     parts = [px(x), px(y), px(blur)]
     if spread:
         parts.append(px(spread))

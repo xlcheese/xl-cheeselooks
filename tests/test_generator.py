@@ -238,6 +238,9 @@ class StyleTests(unittest.TestCase):
         self.assertLess(a(full, "suggested"), a(soft, "suggested"))
         self.assertEqual(a(none, "suggested"), 0.6)
         self.assertLess(a(soft, "destructive"), 0.6)   # red buttons adapt too
+        errors, _ = styles.check({"name": "X", "edges": {"raised": {
+            "highlight": {"y": 1, "color": "white", "alpha": 0.5, "adaptive": False}}}})
+        self.assertEqual(errors, [])   # adaptive = false is accepted
         errors, _ = styles.check({"name": "X", "adapt_strength": 2})
         self.assertTrue(errors)
 
@@ -267,9 +270,9 @@ class StyleTests(unittest.TestCase):
             "right": {"color": "black", "alpha": 0.3, "adaptive": False},
             "shade": {"y": -2, "blur": 2, "color": "black", "alpha": 0.3, "adaptive": False}}})
         t = styles.widget_tokens(st, p, 50)["w.button.shadow"]
-        self.assertIn("inset 2px 0 2px rgba(255, 255, 255, 0.6)", t)     # left, fading
+        self.assertIn("inset 4px 0 2px -2px rgba(255, 255, 255, 0.6)", t)  # left, fading, kept off top/bottom
         self.assertIn("inset -1px 0 0 rgba(0, 0, 0, 0.3)", t)            # right, crisp
-        self.assertIn("inset 0 -2px 2px rgba(0, 0, 0, 0.3)", t)           # bottom, fading
+        self.assertIn("inset 0 -4px 2px -2px rgba(0, 0, 0, 0.3)", t)      # bottom, fading, kept off the sides
         _, warnings = styles.check({"name": "X", "edges": {"raised": {
             "sides": {"y": 1, "color": "white", "alpha": 0.5}}}})
         self.assertTrue(any("width is x" in w for w in warnings))
