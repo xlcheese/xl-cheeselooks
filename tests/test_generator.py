@@ -260,6 +260,9 @@ class StyleTests(unittest.TestCase):
         self.assertNotIn("-1px 0 0", t["w.button.st_shadow"])  # Cinnamon keeps one layer only
         self.assertEqual(styles.check({"name": "X", "edges": {"raised": {
             "sides": {"color": "white", "alpha": 0.5}}}})[0], [])
+        _, warnings = styles.check({"name": "X", "edges": {"raised": {
+            "sides": {"y": 1, "color": "white", "alpha": 0.5}}}})
+        self.assertTrue(any("width is x" in w for w in warnings))
 
     def test_color_expressions_in_styles(self):
         errors, _ = styles.check({"name": "X", "edges": {"raised": {"border": "darker(border_strong, 0.1)"}}})

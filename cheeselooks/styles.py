@@ -185,6 +185,9 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                     errors.append(f"{where} must be a table like {{ y = 1, color = \"white\", alpha = 0.5 }}")
                     continue
                 for lk, lv in v.items():
+                    if k == "sides" and lk in ("y", "blur", "spread"):
+                        warnings.append(f"{where}.{lk} has no effect on sides; its width is x "
+                                        f"(default 1px)")
                     if lk not in LAYER_KEYS:
                         warnings.append(f"{where}.{lk} is not a known layer setting and is ignored")
                     elif lk == "color":
