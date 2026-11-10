@@ -239,7 +239,7 @@ A style decides **how edges are drawn**. It never sets colors directly (it uses 
 
 ### File format
 TOML, which Python 3.11+ reads with no extra packages. Location:
-- built-in: `<app>/styles/<name>/style.toml`
+- built-in: `<app>/styles/<name>/style.toml` (one folder per style; the file is always `style.toml` and the folder name should match its `name =` line)
 - user: `~/.local/share/xl-cheeselooks/styles/<name>/style.toml`, plus an optional `extra.css`
 
 ```toml
@@ -390,7 +390,7 @@ No hand-made bitmap images remain in the theme.
 
 - A Python + GTK 3 app called **Cheeselooks Settings**, with a menu entry and the `cheeselooks-settings` command.
 - **Tabs:** Global · Style · Panel & Menu · Window Borders · Terminal · Details · *Icons (later)*.
-- **Style picker:** not toggle buttons (there may be 20+ styles). A list with a small live preview of each style (buttons, entry, tabs), its name and author, a search box once the list is long, plus *Open styles folder* and *Import style…*. Picking a style moves Roundness, Gradient and Depth to the style's `[defaults]`.
+- **Style picker:** not toggle buttons (there may be 20+ styles). A list modelled on GNOME 2's *Customize Theme → Controls* tab: each row shows a tiny live sample of that style (a button, a checkbox and a radio, drawn with the current colors) beside its name and author, a search box once the list is long, plus *Open styles folder* and *Import style…*. Picking a style moves Roundness, Gradient and Depth to the style's `[defaults]`.
 - **Accent from wallpaper:** a button on the Global tab reads the current wallpaper and offers 5–6 accent suggestions as swatches. One click applies one to the Accent picker (preview only until Apply). Implementation: downscale the image, cluster the colors, drop near-greys and colors too close to the background, and rank by how often they appear and how saturated they are. Python standard library plus GdkPixbuf only.
 - **Live preview inside the app:** generated CSS loaded into a preview area. The desktop changes only on **Apply**.
 - **Buttons:** **Apply**, **Revert** (restore the last applied settings), **Reset to defaults**.
