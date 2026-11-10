@@ -26,7 +26,8 @@ LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark
 SURFACE_LAYERS = ("highlight", "sides", "shade", "inner")
 # The surface each widget sits on at rest (palette names).
 WIDGET_FACE = {
-    "button": "button", "suggested": "accent", "toolbar_button": "header", "title_button": "header",
+    "button": "button", "suggested": "accent", "destructive": "destructive",
+    "toolbar_button": "header", "title_button": "header",
     "close_button": "header", "entry": "base", "combo": "button", "tab": "header",
     "menu_item": "menu_bg", "menubar_item": "header", "panel_button": "pb_rest",
     "check": "base", "switch": "trough",
@@ -34,7 +35,7 @@ WIDGET_FACE = {
 EDGE_KEYS = {"border", *LAYER_KINDS}
 
 WIDGETS = (
-    "button", "suggested", "toolbar_button", "title_button", "close_button",
+    "button", "suggested", "destructive", "toolbar_button", "title_button", "close_button",
     "entry", "combo", "tab", "menu_item", "menubar_item", "panel_button",
     "check", "switch",
 )
@@ -44,6 +45,7 @@ WIDGET_KEYS = {
     "hover_color", "tab_kind", "active_marker", "hover_border",
 }
 TAB_KINDS = ("boxed", "pills")
+DEFAULT_ADAPT_STRENGTH = 0.6
 ACTIVE_MARKERS = ("none", "accent_top", "accent_bottom")
 
 # Fallbacks used for anything a style leaves out.
@@ -76,6 +78,7 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
     "button": {"edge": "raised", "hover_edge": "raised_hover", "pressed_edge": "sunken",
                "focus_edge": "raised", "hover_color": "button_hover"},
     "suggested": {"like": "button", "hover_color": "accent_hover"},
+    "destructive": {"like": "button", "hover_color": "destructive"},
     "toolbar_button": {"edge": "flat", "hover_edge": "raised_hover", "pressed_edge": "sunken",
                        "focus_edge": "flat", "hover_color": "flat_hover"},
     "title_button": {"like": "toolbar_button"},
@@ -107,6 +110,7 @@ class Style:
     author: str = ""
     description: str = ""
     defaults: dict[str, int] = field(default_factory=dict)
+    adapt_strength: float = DEFAULT_ADAPT_STRENGTH
     edges: dict[str, dict[str, Any]] = field(default_factory=dict)
     widgets: dict[str, dict[str, Any]] = field(default_factory=dict)
     extra_css: str = ""
@@ -143,8 +147,12 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
     if not isinstance(data.get("name"), str) or not data["name"].strip():
         errors.append("'name' is required and must be text")
     for key in data:
-        if key not in ("name", "author", "description", "defaults", "edges", "widgets"):
+        if key not in ("name", "author", "description", "defaults", "edges", "widgets", "adapt_strength"):
             warnings.append(f"unknown top-level key '{key}' is ignored")
+
+    a = data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)
+    if isinstance(a, bool) or not isinstance(a, (int, float)) or not 0 <= a <= 1:
+        errors.append("adapt_strength must be a number from 0 (no adapting) to 1 (full)")
 
     defaults = data.get("defaults", {})
     if not isinstance(defaults, dict):
@@ -262,6 +270,7 @@ def load(path: Path) -> Style:
         author=data.get("author", ""),
         description=data.get("description", ""),
         defaults={k: int(v) for k, v in data.get("defaults", {}).items() if k in ("roundness", "gradient", "depth")},
+        adapt_strength=float(data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)),
         edges=copy.deepcopy(data.get("edges", {})),
         widgets=copy.deepcopy(data.get("widgets", {})),
         extra_css=extra.read_text(encoding="utf-8") if extra.exists() else "",
@@ -310,27 +319,29 @@ def _lightness(color: str) -> float:
     return 116 * y ** (1 / 3) - 16 if y > 0.008856 else 903.3 * y
 
 
-def _adapt(layer_color: str, surface: str | None, reference: str | None) -> float:
+def _adapt(layer_color: str, surface: str | None, reference: str | None,
+           strength: float = DEFAULT_ADAPT_STRENGTH) -> float:
     """How much to scale a surface layer so it looks as strong on `surface`
     as the style author saw it on `reference` (the normal button). A white
     line on coral is a far bigger jump than on a near-white button, so it is
-    toned down there. Only ever reduces."""
+    toned down there. Only ever reduces. strength (the style's
+    adapt_strength) softens it: 1 = fully equal, 0 = no adapting."""
     if not surface or not reference:
         return 1.0
     want = abs(_lightness(layer_color) - _lightness(reference))
     have = abs(_lightness(layer_color) - _lightness(surface))
     if have <= want or have < 1:
         return 1.0
-    return max(0.15, want / have)
+    return max(0.15, (want / have) ** strength)
 
 
 def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth: float, dark: bool,
-               surface: str | None = None) -> str | None:
+               surface: str | None = None, strength: float = DEFAULT_ADAPT_STRENGTH) -> str | None:
     scale = depth / 50.0
     alpha = layer.get("alpha_dark", layer.get("alpha", 1.0)) if dark else layer.get("alpha", 1.0)
     base_color = _resolve_color(layer["color"], palette)
     if kind in SURFACE_LAYERS and layer.get("adaptive", True):
-        alpha *= _adapt(base_color, surface, palette.get("button"))
+        alpha *= _adapt(base_color, surface, palette.get("button"), strength)
     alpha = min(1.0, alpha * scale)
     if alpha <= 0.001:
         return None
@@ -361,7 +372,8 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
 
 
 def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
-             border_override: str | None = None, surface: str | None = None) -> dict[str, str]:
+             border_override: str | None = None, surface: str | None = None,
+             strength: float = DEFAULT_ADAPT_STRENGTH) -> dict[str, str]:
     """Return {'border', 'shadow' (GTK, all layers), 'st_shadow' (Cinnamon, one layer)}."""
     dark = pal.is_dark(palette)
     border_ref = border_override or edge.get("border", "none")
@@ -369,7 +381,7 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
         border = "transparent"
     else:
         border = _resolve_color(border_ref, palette)
-    layers = {k: _layer_css(k, edge[k], palette, depth, dark, surface) for k in LAYER_KINDS if k in edge}
+    layers = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength) for k in LAYER_KINDS if k in edge}
     gtk = [layers[k] for k in LAYER_KINDS if layers.get(k)]
     inset = [layers[k] for k in LAYER_KINDS if layers.get(k) and layers[k].startswith("inset")]
     st = next((layers[k] for k in ST_PRIORITY if layers.get(k)), None)
@@ -414,7 +426,8 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
             key = "edge" if state == "rest" else f"{state}_edge"
             ename = spec.get(key, spec.get("edge", "flat"))
             css = edge_css(edges[ename], palette, depth,
-                           border_override if ename != "flat" else None, surfaces[state])
+                           border_override if ename != "flat" else None, surfaces[state],
+                           style.adapt_strength)
             prefix = f"w.{wname}." + ("" if state == "rest" else f"{state}_")
             tokens[prefix + "border"] = css["border"]
             tokens[prefix + "shadow"] = css["shadow"]

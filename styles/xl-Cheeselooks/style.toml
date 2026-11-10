@@ -8,6 +8,10 @@ name = "xl-Cheeselooks"
 author = "xl_cheese"
 description = "Raised buttons with a light top edge, sunken fields, boxed tabs."
 
+# How much inner layers (highlight, sides, shade) are toned down on darker
+# buttons such as accent and red ones: 0 = not at all, 1 = fully.
+adapt_strength = 0.6
+
 [defaults]
 roundness = 20
 gradient = 30

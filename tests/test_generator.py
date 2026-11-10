@@ -228,6 +228,19 @@ class StyleTests(unittest.TestCase):
         t = styles.widget_tokens(st, p, 50)
         self.assertIn("rgba(255, 255, 255, 0.6)", t["w.suggested.shadow"])
 
+    def test_adapt_strength_and_destructive(self):
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        edges = {"raised": {"border": "border_strong", "highlight": {"y": 1, "color": "white", "alpha": 0.6}}}
+        full = styles.Style(name="X", path=None, edges=edges, adapt_strength=1.0)
+        soft = styles.Style(name="X", path=None, edges=edges, adapt_strength=0.6)
+        none = styles.Style(name="X", path=None, edges=edges, adapt_strength=0.0)
+        a = lambda st, w: float(styles.widget_tokens(st, p, 50)[f"w.{w}.shadow"].split(", ")[-1].rstrip(")"))
+        self.assertLess(a(full, "suggested"), a(soft, "suggested"))
+        self.assertEqual(a(none, "suggested"), 0.6)
+        self.assertLess(a(soft, "destructive"), 0.6)   # red buttons adapt too
+        errors, _ = styles.check({"name": "X", "adapt_strength": 2})
+        self.assertTrue(errors)
+
     def test_focus_ring(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
         self.assertEqual((t["focus.style"], t["focus.width"]), ("dashed", "1"))
