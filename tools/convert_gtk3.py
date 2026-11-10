@@ -3,7 +3,10 @@
 
 This is how templates/gtk-3.0/base.css.tmpl was first produced from
 reference/xl_cheese-Mint-Y-Variable/gtk-3.0/gtk.css. It is kept for
-transparency; after the first run the template is edited by hand.
+transparency. DO NOT re-run it over base.css.tmpl: since November 2026 the
+template has hand edits (for example the stack switcher and path bar
+border colors), which a re-run would lose. Use `git log -p` on the
+template to see them.
 
 Rules (docs/design-spec.md, "Color formats in templates"):
 - greys become blends of bg -> text (darker) or bg -> base (lighter),

@@ -79,6 +79,12 @@ def files_window() -> tuple[Gtk.Window, Gtk.MenuItem]:
         b.set_always_show_image(True)
         path.pack_start(b, False, False, 0)
     toolbar.pack_start(path, False, False, 6)
+    # a stack switcher, like the one in Cinnamon's Themes settings
+    stack = Gtk.Stack()
+    for name in ("Themes", "Add/Remove", "Settings"):
+        stack.add_titled(Gtk.Label(), name, name)
+    switcher = Gtk.StackSwitcher(stack=stack)
+    toolbar.pack_start(switcher, False, False, 6)
     for name, active in (("view-list-symbolic", False), ("view-grid-symbolic", True), ("edit-find-symbolic", False)):
         toolbar.pack_end(icon_button(name, toggle=True, active=active), False, False, 0)
     box.pack_start(toolbar, False, False, 0)

@@ -1085,7 +1085,7 @@ headerbar .linked:not(.vertical):not(.path-bar) > button:not(:checked):not(:acti
 headerbar .linked:not(.vertical).path-bar > button {
   color: {{alpha(text, 0.87)}};
   outline-color: {{alpha(text, 0.17)}};
-  border-color: {{alpha(text, 0.17)}};
+  border-color: {{w.button.border}};
   background-color: {{alpha(mix(bg, base, 0.5), 0.9)}}; }
   .primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover,
   .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover, .primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover, headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover,
@@ -1093,6 +1093,7 @@ headerbar .linked:not(.vertical).path-bar > button {
   .primary-toolbar .linked:not(.vertical).path-bar > button:hover,
   .primary-toolbar .inline-toolbar .linked:not(.vertical).path-bar > button:hover,
   headerbar .linked:not(.vertical).path-bar > button:hover {
+    border-color: {{w.button.hover_border}};
     background-color: {{alpha(base, 0.9)}}; }
   .primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active,
   .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active, .primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active, headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active, .primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:checked,
@@ -1107,7 +1108,7 @@ headerbar .linked:not(.vertical).path-bar > button {
   headerbar .linked:not(.vertical).path-bar > button:checked {
     color: {{alpha(text, 0.87)}};
     outline-color: {{alpha(text, 0.17)}};
-    border-color: {{alpha(text, 0.17)}};
+    border-color: {{w.button.pressed_border}};
     background-color: {{alpha(text, 0.15)}}; }
   .primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:disabled,
   .primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:disabled, .primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:disabled, headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:disabled,
