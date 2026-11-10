@@ -260,6 +260,16 @@ class StyleTests(unittest.TestCase):
         self.assertNotIn("-1px 0 0", t["w.button.st_shadow"])  # Cinnamon keeps one layer only
         self.assertEqual(styles.check({"name": "X", "edges": {"raised": {
             "sides": {"color": "white", "alpha": 0.5}}}})[0], [])
+        st = styles.Style(name="X", path=None, edges={"raised": {
+            "border": "border_strong",
+            "highlight": {"y": 2, "color": "white", "alpha": 0.6, "adaptive": False},
+            "left": {"x": 2, "blur": 2, "color": "white", "alpha": 0.6, "adaptive": False},
+            "right": {"color": "black", "alpha": 0.3, "adaptive": False},
+            "shade": {"y": -2, "blur": 2, "color": "black", "alpha": 0.3, "adaptive": False}}})
+        t = styles.widget_tokens(st, p, 50)["w.button.shadow"]
+        self.assertIn("inset 2px 0 2px rgba(255, 255, 255, 0.6)", t)     # left, fading
+        self.assertIn("inset -1px 0 0 rgba(0, 0, 0, 0.3)", t)            # right, crisp
+        self.assertIn("inset 0 -2px 2px rgba(0, 0, 0, 0.3)", t)           # bottom, fading
         _, warnings = styles.check({"name": "X", "edges": {"raised": {
             "sides": {"y": 1, "color": "white", "alpha": 0.5}}}})
         self.assertTrue(any("width is x" in w for w in warnings))

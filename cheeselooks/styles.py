@@ -17,13 +17,13 @@ from typing import Any
 
 from . import palette as pal
 
-LAYER_KINDS = ("highlight", "sides", "shade", "inner", "shadow", "ring", "outline")
+LAYER_KINDS = ("highlight", "sides", "left", "right", "shade", "inner", "shadow", "ring", "outline")
 # Cinnamon (St) allows one box-shadow: keep the first layer present in this order.
 ST_PRIORITY = ("highlight", "shadow", "shade", "inner", "ring", "outline")
 LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset", "adaptive"}
 # Layers drawn on the widget's own surface. Their strength adapts to that surface
 # (see _adapt), so one line in a style looks alike on light and dark buttons.
-SURFACE_LAYERS = ("highlight", "sides", "shade", "inner")
+SURFACE_LAYERS = ("highlight", "sides", "left", "right", "shade", "inner")
 # The surface each widget sits on at rest (palette names).
 WIDGET_FACE = {
     "button": "button", "suggested": "accent", "destructive": "destructive",
@@ -185,8 +185,8 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                     errors.append(f"{where} must be a table like {{ y = 1, color = \"white\", alpha = 0.5 }}")
                     continue
                 for lk, lv in v.items():
-                    if k == "sides" and lk in ("y", "blur", "spread"):
-                        warnings.append(f"{where}.{lk} has no effect on sides; its width is x "
+                    if k in ("sides", "left", "right") and lk == "y":
+                        warnings.append(f"{where}.y has no effect on {k}; its width is x "
                                         f"(default 1px)")
                     if lk not in LAYER_KEYS:
                         warnings.append(f"{where}.{lk} is not a known layer setting and is ignored")
@@ -355,10 +355,15 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         v = round(v, 1)
         return "0" if v == 0 else f"{v:g}px"
 
-    if kind == "sides":
-        # a line inside the left and right edges (x = width in px, default 1)
-        x = px(layer.get("x", 1))
-        return f"inset {x} 0 0 {color}, inset -{x} 0 0 {color}"
+    if kind in ("sides", "left", "right"):
+        # a line inside the left and/or right edge: x = width in px (default 1),
+        # blur = fade inward over that many px (0 = crisp line)
+        w = abs(layer.get("x", 1))
+        blur = layer.get("blur", 0)
+        tail = f" {px(blur)}" if blur else " 0"
+        left = f"inset {px(w)} 0{tail} {color}"
+        right = f"inset -{px(w)} 0{tail} {color}"
+        return {"sides": f"{left}, {right}", "left": left, "right": right}[kind]
     if kind in ("ring", "outline"):
         width = layer.get("width", 1)
         inset = layer.get("inset", kind == "ring")
