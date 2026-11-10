@@ -542,3 +542,4 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 Agreed but not built yet. Delete each line once it's done.
 
 - **Title bar gradient to 100%:** `title_gradient` 100 should take the top of the title bar fully to white (`lighter(title, 1.0 × t)`; currently 0.70). Works well on light themes; on darker title bars users can lower the slider.
+- **More tab kinds:** `tab_kind = "pills"` is accepted but GTK still draws boxed tabs. Build pills (rounded tabs in a trough) and any new kinds the user designs (candidate: `underline`, flat tabs with only an accent line on the selected one). Needs the tab rules generated in Python from `tab_kind`, since templates have no conditionals.
