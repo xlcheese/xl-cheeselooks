@@ -194,13 +194,21 @@ headerbar button.titlebutton, .titlebar button.titlebutton {
   background-image: none;
   box-shadow: {{w.title_button.shadow}}; }
 headerbar button.titlebutton:hover, .titlebar button.titlebutton:hover,
-headerbar button.titlebutton:hover:backdrop, .titlebar button.titlebutton:hover:backdrop {
+headerbar button.titlebutton:hover:backdrop, .titlebar button.titlebutton:hover:backdrop,
+headerbar button.titlebutton.minimize:hover, headerbar button.titlebutton.maximize:hover,
+headerbar button.titlebutton.minimize:hover:backdrop, headerbar button.titlebutton.maximize:hover:backdrop,
+.titlebar button.titlebutton.minimize:hover, .titlebar button.titlebutton.maximize:hover,
+.titlebar button.titlebutton.minimize:hover:backdrop, .titlebar button.titlebutton.maximize:hover:backdrop {
   color: {{text}};
   border-color: {{w.title_button.hover_border}};
   background-color: {{w.title_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
   box-shadow: {{w.title_button.hover_shadow}}; }
-headerbar button.titlebutton:active, .titlebar button.titlebutton:active {
+headerbar button.titlebutton:active, .titlebar button.titlebutton:active,
+headerbar button.titlebutton.minimize:active, headerbar button.titlebutton.maximize:active,
+headerbar button.titlebutton.minimize:active:backdrop, headerbar button.titlebutton.maximize:active:backdrop,
+.titlebar button.titlebutton.minimize:active, .titlebar button.titlebutton.maximize:active,
+.titlebar button.titlebutton.minimize:active:backdrop, .titlebar button.titlebutton.maximize:active:backdrop {
   border-color: {{w.title_button.pressed_border}};
   background-color: {{pressed}};
   background-image: image({{pressed}});
@@ -216,7 +224,9 @@ headerbar button.titlebutton.close:active, .titlebar button.titlebutton.close:ac
   color: {{accent_fg}};
   background-color: {{accent_press}};
   background-image: image({{accent_press}}); }
-headerbar button.titlebutton:backdrop, .titlebar button.titlebutton:backdrop {
+headerbar button.titlebutton:backdrop, .titlebar button.titlebutton:backdrop,
+headerbar button.titlebutton.minimize:backdrop, headerbar button.titlebutton.maximize:backdrop,
+.titlebar button.titlebutton.minimize:backdrop, .titlebar button.titlebutton.maximize:backdrop {
   color: {{wb.unfocused_text}}; }
 
 /* Menubar and toolbar: flat, same color as the bottom of the title bar */
