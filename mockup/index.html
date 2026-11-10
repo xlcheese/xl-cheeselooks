@@ -1234,7 +1234,7 @@ Theme updated. Reloading Cinnamon and open apps…
     // Window borders
     var w = state.wbOn && state.w ? state.w : { title: dg.header, text: dg.text, border: dg.border };
     var s = stage.style;
-    s.setProperty("--wb-a", lighten(w.title, 0.4 * state.wbg / 100));
+    s.setProperty("--wb-a", lighten(w.title, 0.7 * state.wbg / 100));
     s.setProperty("--wb-b", w.title);
     s.setProperty("--wb-text", w.text);
     var unf = state.wbOn ? mix(w.title, dg.bg, 0.5) : dg.bg;
@@ -1306,7 +1306,7 @@ Theme updated. Reloading Cinnamon and open apps…
       ["Favorites hover", dp.favHover, "Favorites column + 10% toward text (same step)"],
       [state.wbOn ? "Window borders (separate colors)" : "Window borders (following Global)"],
       ["Title bar", w.title, state.wbOn ? "Your pick" : "Global menubar & toolbar color", state.wbOn ? 1 : 0],
-      ["Title bar top", lighten(w.title, 0.4 * state.wbg / 100), "Title bar, lightened by the Title bar gradient setting"],
+      ["Title bar top", lighten(w.title, 0.7 * state.wbg / 100), "Title bar, lightened by the Title bar gradient setting"],
       ["Border", w.border, state.wbOn ? "Your pick" : "Global border", state.wbOn ? 1 : 0],
       [state.termOn ? "Terminal (separate colors)" : "Terminal (following Global)"],
       ["Terminal background", tb, state.termOn ? "Your pick" : "Global content area", state.termOn ? 1 : 0],

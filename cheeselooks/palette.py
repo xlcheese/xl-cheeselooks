@@ -97,7 +97,7 @@ def gradient(color: str, amount: float) -> tuple[str, str]:
 
 def title_gradient(color: str, amount: float) -> tuple[str, str]:
     """Title bar: lighter top, bottom exactly the menubar/toolbar color."""
-    return lighter(color, 0.40 * amount), color
+    return lighter(color, 0.70 * amount), color
 
 
 # --------------------------------------------------------------------------

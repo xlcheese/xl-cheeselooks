@@ -183,7 +183,7 @@ The previous formula was `+30% / −10%`. The new one keeps the overall brightne
 
 **What doesn't:** menubars, toolbars, content areas, entries, troughs.
 
-**Title bar:** `[ top: lighter(title, 0.40 × t),  bottom: title ]`, where `t` is the **Title bar gradient** slider on Window Borders (0–100, default 30), separate from Global Gradient so a contrasting title bar color can be tuned on its own. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
+**Title bar:** `[ top: lighter(title, 0.70 × t),  bottom: title ]`, where `t` is the **Title bar gradient** slider on Window Borders (0–100, default 30), separate from Global Gradient so a contrasting title bar color can be tuned on its own. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
 
 ### Depth (0–100%, Style tab)
 Multiplies the strength of the style's highlights and shadows. At 0 any style draws flat.
