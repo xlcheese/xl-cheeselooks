@@ -270,7 +270,7 @@ menu_item      = { hover_color = "menu_hover" }  # "select" would use the accent
 
 The full file is [`styles/xl-Cheeselooks/style.toml`](../styles/xl-Cheeselooks/style.toml); the Float example is in [`docs/examples/float/`](examples/float/style.toml).
 
-- **Layers:** `highlight`, `shade`, `inner` (inset), `shadow` (outside), `ring` and `outline` (spread rings). Each takes `x`, `y`, `blur`, `spread`, `width`, `color`, `alpha`, optional `alpha_dark` for dark themes, and `grow = true` to make offset and blur grow with Depth.
+- **Layers:** `highlight` (inside the top edge), `sides` (inside the left and right edges; `x` sets the width, default 1px), `shade`, `inner` (inset), `shadow` (outside), `ring` and `outline` (spread rings). Cinnamon allows only one shadow per widget, so it never uses `sides`. Each takes `x`, `y`, `blur`, `spread`, `width`, `color`, `alpha`, optional `alpha_dark` for dark themes, and `grow = true` to make offset and blur grow with Depth.
 - **Widgets:** `button`, `suggested`, `toolbar_button`, `title_button`, `close_button`, `entry`, `combo`, `tab`, `menu_item`, `menubar_item`, `panel_button`, `check`, `switch`. Widget settings: `like`, `edge`, `hover_edge`, `pressed_edge`, `focus_edge`, `border`, `hover_color`, `tab_kind` (`boxed`/`pills`), `active_marker` (`none`/`accent_top`/`accent_bottom`), `hover_border`.
 - **Colors** can be a palette name, `#RRGGBB`, or an expression built on the palette: `darker(border_strong, 0.1)`, `lighter(border_strong, 0.1)`, `mix(border_strong, text, 0.2)`, `mix(border_strong, accent, 0.3)`.
 - `cheeselooks check-style PATH` lists problems in plain language.

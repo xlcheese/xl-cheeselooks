@@ -212,6 +212,19 @@ class StyleTests(unittest.TestCase):
         self.assertIn("circle", joined)
         self.assertTrue(any("gizmo" in w for w in warnings))
 
+    def test_sides_layer(self):
+        st = styles.Style(name="X", path=None, edges={"raised": {
+            "border": "border_strong",
+            "highlight": {"y": 1, "color": "white", "alpha": 0.6},
+            "sides": {"color": "white", "alpha": 0.5}}})
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        self.assertIn("inset 1px 0 0 rgba(255, 255, 255, 0.5), inset -1px 0 0 rgba(255, 255, 255, 0.5)",
+                      t["w.button.shadow"])
+        self.assertNotIn("-1px 0 0", t["w.button.st_shadow"])  # Cinnamon keeps one layer only
+        self.assertEqual(styles.check({"name": "X", "edges": {"raised": {
+            "sides": {"color": "white", "alpha": 0.5}}}})[0], [])
+
     def test_color_expressions_in_styles(self):
         errors, _ = styles.check({"name": "X", "edges": {"raised": {"border": "darker(border_strong, 0.1)"}}})
         self.assertEqual(errors, [])

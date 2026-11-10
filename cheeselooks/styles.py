@@ -17,7 +17,7 @@ from typing import Any
 
 from . import palette as pal
 
-LAYER_KINDS = ("highlight", "shade", "inner", "shadow", "ring", "outline")
+LAYER_KINDS = ("highlight", "sides", "shade", "inner", "shadow", "ring", "outline")
 # Cinnamon (St) allows one box-shadow: keep the first layer present in this order.
 ST_PRIORITY = ("highlight", "shadow", "shade", "inner", "ring", "outline")
 LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset"}
@@ -307,6 +307,10 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         v = round(v, 1)
         return "0" if v == 0 else f"{v:g}px"
 
+    if kind == "sides":
+        # a line inside the left and right edges (x = width in px, default 1)
+        x = px(layer.get("x", 1))
+        return f"inset {x} 0 0 {color}, inset -{x} 0 0 {color}"
     if kind in ("ring", "outline"):
         width = layer.get("width", 1)
         inset = layer.get("inset", kind == "ring")
