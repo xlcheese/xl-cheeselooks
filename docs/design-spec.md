@@ -220,7 +220,7 @@ Separate Roundness and Gradient for the **panel** and for its **menus** (main me
 | Hover | Hover color plus the style's hover edge; Hover in timing |
 | Pressed / toggled | `pressed` color plus a sunken edge; instant |
 | Selected | `select` with `accent_fg` text (rows, labels) |
-| Focused (keyboard) | Visible focus ring: 2 px accent at 50% opacity by default, defined by the style, overridable on the Details tab; never removed |
+| Focused (keyboard) | Subtle by default, like Mint-Y: 1px dashed outline in the text color at 25%. GTK shows it only once the keyboard has been used in that window, then it follows mouse clicks too (CSS can't tell them apart). Details tab: your own color and width, or width 0 to turn it off |
 | Disabled | 50% opacity text and edges, no shadow |
 | Unfocused window | Title bar keeps its color with the gradient removed, so it still matches the menubar and toolbar; dimmed title and glyphs; accent widgets keep their color |
 
@@ -276,6 +276,7 @@ The full file is [`styles/xl-Cheeselooks/style.toml`](../styles/xl-Cheeselooks/s
 - `cheeselooks check-style PATH` lists problems in plain language.
 
 - Alpha values are written for **Depth 50**; Depth scales them (100 doubles them, 0 makes any style flat).
+- **Surface layers adapt:** `highlight`, `sides`, `shade` and `inner` are written as they should look on the **normal button**. On a darker or more colored surface (an accent button, a pressed button, a focused panel button) they are toned down so they look about as strong; they are never strengthened. Drop shadows and rings are unaffected (they fall outside the widget). A layer can opt out with `adaptive = false`.
 - Color names are palette tokens ([§3](#3-color-rules)), `white`/`black`, or `#RRGGBB` for authors who really want fixed colors.
 - Any widget or state left out falls back to a built-in default, so a minimal style is about 30 lines.
 
@@ -360,7 +361,7 @@ Fine-grained overrides. Each row has its own switch. **Off** means the item foll
 | **Scrollbars** | *Thin overlay* or *Classic* switch; Roundness slider | Overlay, fully round thumb |
 | **Sliders** (volume, zoom, brightness) | Roundness slider for the handle and track | Fully round, as in Mint-Y |
 | **Switches** | Roundness slider | Fully round, as in Mint-Y |
-| **Focus ring** | Color picker; width 1–3 px | Style's ring (accent at 50%, 2 px) |
+| **Focus ring** | Color picker (default accent); width 0–3 px, 0 turns it off | Subtle 1px dashed, text color at 25%, like Mint-Y |
 
 Notes:
 - Mint-Y keeps sliders, switches and scrollbars round even though the rest of the theme is nearly square. These overrides keep that look possible while Global Roundness is low.

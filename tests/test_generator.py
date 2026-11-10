@@ -212,6 +212,29 @@ class StyleTests(unittest.TestCase):
         self.assertIn("circle", joined)
         self.assertTrue(any("gizmo" in w for w in warnings))
 
+    def test_surface_layers_adapt_to_darker_buttons(self):
+        st = styles.Style(name="X", path=None, edges={"raised": {
+            "border": "border_strong",
+            "highlight": {"y": 1, "color": "white", "alpha": 0.6},
+            "shadow": {"y": 1, "blur": 2, "color": "black", "alpha": 0.1}}})
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        normal = t["w.button.shadow"].split(", 0 1px 2px")[0]
+        coral = t["w.suggested.shadow"].split(", 0 1px 2px")[0]
+        self.assertIn("0.6)", normal)                  # as written on the normal button
+        self.assertNotIn("0.6)", coral)                # toned down on coral
+        self.assertIn("0 1px 2px rgba(0, 0, 0, 0.1)", t["w.suggested.shadow"])  # drop shadow unchanged
+        st.edges["raised"]["highlight"]["adaptive"] = False
+        t = styles.widget_tokens(st, p, 50)
+        self.assertIn("rgba(255, 255, 255, 0.6)", t["w.suggested.shadow"])
+
+    def test_focus_ring(self):
+        t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
+        self.assertEqual((t["focus.style"], t["focus.width"]), ("dashed", "1"))
+        s = defaults()
+        s["details"]["focus_ring"].update({"custom": True, "width": 0})
+        self.assertEqual(tokens.build(s, styles.load(DEFAULT_STYLE))["focus.style"], "none")
+
     def test_sides_layer(self):
         st = styles.Style(name="X", path=None, edges={"raised": {
             "border": "border_strong",

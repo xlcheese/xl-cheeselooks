@@ -20,7 +20,17 @@ from . import palette as pal
 LAYER_KINDS = ("highlight", "sides", "shade", "inner", "shadow", "ring", "outline")
 # Cinnamon (St) allows one box-shadow: keep the first layer present in this order.
 ST_PRIORITY = ("highlight", "shadow", "shade", "inner", "ring", "outline")
-LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset"}
+LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset", "adaptive"}
+# Layers drawn on the widget's own surface. Their strength adapts to that surface
+# (see _adapt), so one line in a style looks alike on light and dark buttons.
+SURFACE_LAYERS = ("highlight", "sides", "shade", "inner")
+# The surface each widget sits on at rest (palette names).
+WIDGET_FACE = {
+    "button": "button", "suggested": "accent", "toolbar_button": "header", "title_button": "header",
+    "close_button": "header", "entry": "base", "combo": "button", "tab": "header",
+    "menu_item": "menu_bg", "menubar_item": "header", "panel_button": "pb_rest",
+    "check": "base", "switch": "trough",
+}
 EDGE_KEYS = {"border", *LAYER_KINDS}
 
 WIDGETS = (
@@ -294,13 +304,37 @@ def _resolve_color(ref: str, palette: dict[str, str]) -> str:
     raise KeyError(ref)
 
 
-def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth: float, dark: bool) -> str | None:
+def _lightness(color: str) -> float:
+    """Perceived lightness, 0 (black) to 100 (white): CIE L*."""
+    y = pal.luminance(color)
+    return 116 * y ** (1 / 3) - 16 if y > 0.008856 else 903.3 * y
+
+
+def _adapt(layer_color: str, surface: str | None, reference: str | None) -> float:
+    """How much to scale a surface layer so it looks as strong on `surface`
+    as the style author saw it on `reference` (the normal button). A white
+    line on coral is a far bigger jump than on a near-white button, so it is
+    toned down there. Only ever reduces."""
+    if not surface or not reference:
+        return 1.0
+    want = abs(_lightness(layer_color) - _lightness(reference))
+    have = abs(_lightness(layer_color) - _lightness(surface))
+    if have <= want or have < 1:
+        return 1.0
+    return max(0.15, want / have)
+
+
+def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth: float, dark: bool,
+               surface: str | None = None) -> str | None:
     scale = depth / 50.0
     alpha = layer.get("alpha_dark", layer.get("alpha", 1.0)) if dark else layer.get("alpha", 1.0)
+    base_color = _resolve_color(layer["color"], palette)
+    if kind in SURFACE_LAYERS and layer.get("adaptive", True):
+        alpha *= _adapt(base_color, surface, palette.get("button"))
     alpha = min(1.0, alpha * scale)
     if alpha <= 0.001:
         return None
-    color = pal.rgba(_resolve_color(layer["color"], palette), alpha)
+    color = pal.rgba(base_color, alpha)
     grow = scale if layer.get("grow") else 1.0
 
     def px(v: float) -> str:
@@ -327,7 +361,7 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
 
 
 def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
-             border_override: str | None = None) -> dict[str, str]:
+             border_override: str | None = None, surface: str | None = None) -> dict[str, str]:
     """Return {'border', 'shadow' (GTK, all layers), 'st_shadow' (Cinnamon, one layer)}."""
     dark = pal.is_dark(palette)
     border_ref = border_override or edge.get("border", "none")
@@ -335,7 +369,7 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
         border = "transparent"
     else:
         border = _resolve_color(border_ref, palette)
-    layers = {k: _layer_css(k, edge[k], palette, depth, dark) for k in LAYER_KINDS if k in edge}
+    layers = {k: _layer_css(k, edge[k], palette, depth, dark, surface) for k in LAYER_KINDS if k in edge}
     gtk = [layers[k] for k in LAYER_KINDS if layers.get(k)]
     inset = [layers[k] for k in LAYER_KINDS if layers.get(k) and layers[k].startswith("inset")]
     st = next((layers[k] for k in ST_PRIORITY if layers.get(k)), None)
@@ -373,11 +407,14 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
     tokens: dict[str, str] = {}
     for wname, spec in resolved_widgets(style).items():
         border_override = spec.get("border")
+        face = palette.get(WIDGET_FACE.get(wname, "button"))
+        hover_face = _resolve_color(spec["hover_color"], palette) if spec.get("hover_color") else face
+        surfaces = {"rest": face, "hover": hover_face, "pressed": palette.get("pressed"), "focus": face}
         for state in STATES:
             key = "edge" if state == "rest" else f"{state}_edge"
             ename = spec.get(key, spec.get("edge", "flat"))
             css = edge_css(edges[ename], palette, depth,
-                           border_override if ename != "flat" else None)
+                           border_override if ename != "flat" else None, surfaces[state])
             prefix = f"w.{wname}." + ("" if state == "rest" else f"{state}_")
             tokens[prefix + "border"] = css["border"]
             tokens[prefix + "shadow"] = css["shadow"]

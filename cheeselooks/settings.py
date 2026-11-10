@@ -95,7 +95,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("details", "switches", "roundness"), "int", (0, 100)),
     (("details", "focus_ring", "custom"), "bool", None),
     (("details", "focus_ring", "color"), "color?", None),
-    (("details", "focus_ring", "width"), "int", (1, 3)),
+    (("details", "focus_ring", "width"), "int", (0, 3)),
     (("integration", "libadwaita_colors"), "bool", None),
     (("integration", "libadwaita_accent"), "bool", None),
     (("integration", "flatpak_access"), "bool", None),

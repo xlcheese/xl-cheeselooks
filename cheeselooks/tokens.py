@@ -188,12 +188,16 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["switch.r"] = str(shape.radius(sw, 22))
     t["switch.knob_r"] = str(shape.radius(sw, 18))
     fr = d["focus_ring"]
-    if fr["custom"] and fr["color"]:
-        ring_color, ring_alpha, ring_width = fr["color"], 1.0, fr["width"]
+    if fr["custom"]:
+        # your own ring: solid, in your color (or the accent), at your width (0 = off)
+        t["focus.ring"] = pal.rgba(fr["color"] or theme["accent"], 1.0)
+        t["focus.width"] = str(fr["width"])
+        t["focus.style"] = "solid" if fr["width"] else "none"
     else:
-        ring_color, ring_alpha, ring_width = theme["accent"], 0.5, fr["width"] if fr["custom"] else 2
-    t["focus.ring"] = pal.rgba(ring_color, ring_alpha)
-    t["focus.width"] = str(ring_width)
+        # default: subtle, like Mint-Y: 1px dashed, text color at 25%
+        t["focus.ring"] = pal.rgba(theme["text"], 0.25)
+        t["focus.width"] = "1"
+        t["focus.style"] = "dashed"
 
     # --- Integration
     t["adw.accent_name"] = nearest_adw_accent(theme["accent"])
