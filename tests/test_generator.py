@@ -168,6 +168,17 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(t["w.button.st_shadow"].count("rgba("), 1)
         self.assertTrue(t["w.button.st_shadow"].startswith("inset 0 1px"))  # highlight kept first
 
+    def test_seam_shadow_draws_the_shared_edge_in_the_border_color(self):
+        st = styles.load(DEFAULT_STYLE)
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        for state in ("hover_", "pressed_"):
+            seam = t[f"w.linked.{state}seam_shadow"]
+            self.assertTrue(seam.startswith(f"1px 0 0 0 {t[f'w.linked.{state}border']}"))
+            inset = t[f"w.linked.{state}inset_shadow"]
+            if inset != "none":
+                self.assertTrue(seam.endswith(inset))
+
     def test_title_buttons_have_nothing_at_rest(self):
         st = styles.load(DEFAULT_STYLE)
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")

@@ -154,6 +154,16 @@ headerbar .linked:not(.vertical).path-bar > button:active + button,
 .linked.vertical > button:checked + button, .linked.vertical > button:active + button {
   border-top-color: {{w.linked.pressed_border}}; }
 
+/* Nemo draws its own path bar and never updates a button's style when its
+   neighbor is hovered, so the rules above can't reach the shared edge there.
+   Nemo paints its buttons right to left, so a 1px outer shadow on the
+   hovered or pressed button lands on top of the next button's left border. */
+.nemo-window .linked.path-bar > button:hover:not(:last-child) {
+  box-shadow: {{w.linked.hover_seam_shadow}}; }
+.nemo-window .linked.path-bar > button:checked:not(:last-child),
+.nemo-window .linked.path-bar > button:active:not(:last-child) {
+  box-shadow: {{w.linked.pressed_seam_shadow}}; }
+
 /* Buttons on colored backgrounds (info bars, selected rows, selection mode):
    keep the see-through look so their light text stays readable */
 infobar.info button, infobar.question button, infobar.warning button, infobar.error button,

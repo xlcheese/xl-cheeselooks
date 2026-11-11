@@ -473,6 +473,11 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
             tokens[prefix + "border"] = css["border"]
             tokens[prefix + "shadow"] = css["shadow"]
             tokens[prefix + "inset_shadow"] = css["inset_shadow"]
+            # the inner shadows plus a 1px line just outside the right edge, for
+            # joined buttons that must draw the edge they share with the next one
+            seam = f"1px 0 0 0 {css['border']}"
+            tokens[prefix + "seam_shadow"] = (seam if css["inset_shadow"] == "none"
+                                              else f"{seam}, {css['inset_shadow']}")
             tokens[prefix + "st_shadow"] = css["st_shadow"]
         hover_color = spec.get("hover_color")
         if hover_color:
