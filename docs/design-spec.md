@@ -183,7 +183,7 @@ The previous formula was `+30% / −10%`. The new one keeps the overall brightne
 
 **What doesn't:** menubars, toolbars, content areas, entries, troughs.
 
-**Title bar:** `[ top: lighter(title, 0.70 × t),  bottom: title ]`, where `t` is the **Title bar gradient** slider on Window Borders (0–100, default 30), separate from Global Gradient so a contrasting title bar color can be tuned on its own. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
+**Title bar:** `[ top: lighter(title, 1.00 × t),  bottom: title ]`, where `t` is the **Title bar gradient** slider on Window Borders (0–100, default 30), separate from Global Gradient so a contrasting title bar color can be tuned on its own. Its bottom edge is exactly the menubar and toolbar color, so title bar, menubar and toolbar read as one block.
 
 ### Depth (0–100%, Style tab)
 Multiplies the strength of the style's highlights and shadows. At 0 any style draws flat.
@@ -551,5 +551,4 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 
 Agreed but not built yet. Delete each line once it's done.
 
-- **Title bar gradient to 100%:** `title_gradient` 100 should take the top of the title bar fully to white (`lighter(title, 1.0 × t)`; currently 0.70). Works well on light themes; on darker title bars users can lower the slider.
 - **Claude tab style:** designed by Claude together with the Claude preset (see Roadmap).
