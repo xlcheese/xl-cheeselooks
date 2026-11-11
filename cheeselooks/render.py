@@ -141,18 +141,38 @@ def render_text(text: str, tokens: dict[str, str], source: str = "<text>") -> st
     return out
 
 
+INCLUDE_RE = re.compile(r'\{\{\s*include\s+"([^"]+)"\s*\}\}')
+PART_SUFFIX = ".part"
+
+
+def expand_includes(text: str, base: Path, depth: int = 0) -> str:
+    """Replace {{include "file.part"}} with that file's text (relative to base).
+    .part files are only ever included, never written to the theme."""
+    if depth > 5:
+        raise TemplateError([f"includes nested too deeply under {base}"])
+
+    def sub(m: re.Match) -> str:
+        part = base / m.group(1)
+        if not part.is_file():
+            raise TemplateError([f"include not found: {part}"])
+        return expand_includes(part.read_text(encoding="utf-8"), part.parent, depth + 1)
+
+    return INCLUDE_RE.sub(sub, text)
+
+
 def render_tree(src: Path, dest: Path, tokens: dict[str, str]) -> list[Path]:
     """Render every template under src into dest. Returns the files written."""
     problems: list[str] = []
     written: list[Path] = []
     for path in sorted(src.rglob("*")):
-        if path.is_dir():
+        if path.is_dir() or path.suffix == PART_SUFFIX:
             continue
         rel = path.relative_to(src)
         if path.suffix == TEMPLATE_SUFFIX:
             target = dest / rel.with_suffix("")
             try:
-                content = render_text(path.read_text(encoding="utf-8"), tokens, str(rel))
+                text = expand_includes(path.read_text(encoding="utf-8"), path.parent)
+                content = render_text(text, tokens, str(rel))
             except TemplateError as exc:
                 problems.extend(exc.problems)
                 continue

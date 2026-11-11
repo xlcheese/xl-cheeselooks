@@ -390,6 +390,34 @@ class RenderAndInstallTests(unittest.TestCase):
             restored = install.revert(theme, good)
             self.assertEqual(restored["global"]["accent"], "#FA8562")
 
+    def test_cinnamon_theme(self):
+        st = styles.load(DEFAULT_STYLE)
+        s = settings.apply_preset(defaults(), json.loads(
+            (REPO / "presets/panel/coral-night-panel.json").read_text()))
+        t = tokens.build(s, st)
+        with tempfile.TemporaryDirectory() as tmp:
+            theme = Path(tmp) / "xl-Cheeselooks"
+            install.install(REPO / "templates", t, theme, Path(tmp) / "good")
+            css = (theme / "cinnamon" / "cinnamon.css").read_text()
+            self.assertNotIn("{{", css)
+            self.assertFalse(any(theme.rglob("*.part")))          # parts are only included
+            self.assertTrue((theme / "cinnamon" / "assets" / "switch-on.svg").is_file())
+            self.assertTrue((theme / "cinnamon" / "common-assets" / "misc" / "close.svg").is_file())
+            self.assertIn(f"rgba({t['panel.panel_rgb']}, 0.7)", css)   # separate dark panel at 70%
+            self.assertTrue(t["panel.panel"].startswith("#2") or t["panel.panel"].startswith("#3"))
+            self.assertNotIn("#35a854", css.lower())             # no Mint green left
+            self.assertEqual(css.count("{"), css.count("}"))
+
+    def test_include(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            (tmp / "a.part").write_text("A {{accent}}")
+            (tmp / "x.css.tmpl").write_text('top\n{{include "a.part"}}\n')
+            out = tmp / "out"
+            render.render_tree(tmp, out, {"accent": "#FA8562"})
+            self.assertEqual((out / "x.css").read_text(), "top\nA #FA8562\n")
+            self.assertFalse((out / "a.part").exists())
+
     def test_failed_render_leaves_theme_untouched(self):
         st = styles.load(DEFAULT_STYLE)
         with tempfile.TemporaryDirectory() as tmp:

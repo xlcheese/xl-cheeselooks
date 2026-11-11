@@ -466,7 +466,7 @@ xl-cheeselooks/
 | Template | Comes from |
 |---|---|
 | `gtk-3.0` / `gtk-4.0` | The current xl_cheese-Mint-Y-Variable files (Mint-Y based, coral already in place). Every hard-coded color, radius and shadow becomes a token, and the PNG check/radio/switch images are replaced with CSS |
-| `cinnamon` | The current file (Mint-X based panel), with gaps filled from Mint-Y's Cinnamon CSS in the same style |
+| `cinnamon` | **Linux Mint's current Mint-Y Cinnamon theme** (linuxmint/mint-themes, Oct 2026), converted by `tools/convert_cinnamon.py` into `templates/cinnamon/base.css.part`; it supports newer Cinnamon features the old Mint-X-based file lacks. The xl_cheese panel look (full-height raised buttons) is drawn by `xl.css.part`. Mint-Y's colored switch and checkbox images are replaced by generated ones; its neutral `common-assets` are copied unchanged |
 | `metacity` | Written new |
 
 ---

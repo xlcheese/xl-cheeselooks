@@ -16,7 +16,7 @@ It's a throwback to GNOME 2's Clearlooks and its Color Chooser, rebuilt for toda
 - libadwaita color and accent integration, Flatpak access, presets, and a `cheeselooks` command.
 
 ## Trying it (early testers)
-**GTK 3 apps work now** (Nemo, Xed, settings windows and so on). The Cinnamon panel, menus and window borders come next. On Linux Mint 22, from a checkout of this repository:
+**GTK 3 apps and the Cinnamon desktop work now** (Nemo, Xed and settings windows; the panel, menus, popups, notifications and alt-tab). Window borders come next. On Linux Mint 22, from a checkout of this repository:
 
 ```bash
 ./bin/cheeselooks apply --activate
@@ -38,7 +38,7 @@ To go back to what you had before the last apply:
 ./bin/cheeselooks revert
 ```
 
-To go back to Mint's own theme, pick it again in **System Settings → Themes**.
+To go back to Mint's own theme, pick it again in **System Settings → Themes** (Applications and Desktop). If the panel ever looks like plain default Cinnamon after an apply, Cinnamon couldn't load the theme; please report it with the output of `grep -i "theme\|css" ~/.xsession-errors | tail -20`.
 
 Preview without touching your desktop (opens two sample windows):
 

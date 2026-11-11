@@ -1,0 +1,244 @@
+
+/* ==========================================================================
+   xl-Cheeselooks layer for Cinnamon, on top of the Mint-Y base above.
+   Panel & Menu colors ("panel." and "menu." tokens) follow Global unless
+   separate panel colors are on. Panel and menus each have their own
+   roundness, gradient and opacity. Style: {{style_name}}.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Panel
+   -------------------------------------------------------------------------- */
+#panel {
+  color: {{panel.text}};
+  font-weight: {{panel.label_weight}}; }
+
+.panel-top, .panel-bottom, .panel-left, .panel-right {
+  color: {{panel.text}};
+  background-color: rgba({{panel.panel_rgb}}, {{panel.opacity}});
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba({{panel.panel_top_rgb}}, {{panel.opacity}});
+  background-gradient-end: rgba({{panel.panel_bottom_rgb}}, {{panel.opacity}}); }
+.panel-left, .panel-right {
+  background-gradient-direction: horizontal; }
+.panel-top { box-shadow: 0 1px {{alpha(panel.border, 0.8)}}; }
+.panel-bottom { box-shadow: 0 -1px {{alpha(panel.border, 0.8)}}; }
+.panel-left { box-shadow: 1px 0 {{alpha(panel.border, 0.8)}}; }
+.panel-right { box-shadow: -1px 0 {{alpha(panel.border, 0.8)}}; }
+
+.panel-button { color: {{panel.text}}; }
+.applet-label { font-weight: {{panel.label_weight}}; color: {{panel.text}}; }
+.applet-icon { color: {{panel.text}}; }
+
+/* Applets (menu button, tray, clock): flat until hovered, full height */
+.applet-box {
+  border: 1px solid transparent;
+  border-radius: {{panel.r}}px;
+  transition-duration: {{hover_out_ms}}; }
+.applet-box:hover {
+  color: {{panel.text}};
+  border-color: {{panel.w.panel_button.hover_border}};
+  background-color: {{panel.w.panel_button.hover_color}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.w.panel_button.hover_top}};
+  background-gradient-end: {{panel.w.panel_button.hover_bottom}};
+  box-shadow: {{panel.w.panel_button.hover_st_shadow}};
+  transition-duration: {{hover_in_ms}}; }
+.applet-box:checked, .applet-box:checked:hover {
+  color: {{panel.text}};
+  border-color: {{panel.w.panel_button.pressed_border}};
+  background-color: {{panel.pressed}};
+  background-gradient-direction: none;
+  box-shadow: {{panel.w.panel_button.pressed_st_shadow}}; }
+.applet-box:hover .applet-label, .applet-box:checked .applet-label,
+.applet-box:hover > .applet-icon, .applet-box:checked > .applet-icon {
+  color: {{panel.text}}; }
+
+/* --------------------------------------------------------------------------
+   Window lists: full-height raised buttons (the xl_cheese panel look)
+     pinned, not running  flat
+     running              raised, in pb_rest
+     hover                lighter, darker hover border
+     focused window       the accent, bold label
+     needs attention      a red tint
+   Grouped window list: :active / :checked = running, :focus = focused.
+   Classic window list: :running / :active / :checked = running, :focus = focused.
+   -------------------------------------------------------------------------- */
+.grouped-window-list-box, .window-list-box { spacing: 3px; }
+
+.grouped-window-list-item-box, .window-list-item-box {
+  color: {{alpha(panel.text, 0.85)}};
+  margin: 0;
+  border: 1px solid transparent;
+  border-width: 1px;
+  border-radius: {{panel.r}}px;
+  background-color: transparent;
+  background-gradient-direction: none;
+  box-shadow: none;
+  transition-duration: {{hover_out_ms}}; }
+.grouped-window-list-item-box.top, .grouped-window-list-item-box.bottom,
+.grouped-window-list-item-box.left, .grouped-window-list-item-box.right,
+.window-list-item-box.top, .window-list-item-box.bottom,
+.window-list-item-box.left, .window-list-item-box.right {
+  border-width: 1px; }
+
+.grouped-window-list-item-box:active, .grouped-window-list-item-box:checked,
+.window-list-item-box:running, .window-list-item-box:active, .window-list-item-box:checked {
+  color: {{panel.text}};
+  border-color: {{panel.w.panel_button.border}};
+  background-color: {{panel.pb_rest}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_rest_top}};
+  background-gradient-end: {{panel.pb_rest_bottom}};
+  box-shadow: {{panel.w.panel_button.st_shadow}}; }
+
+.grouped-window-list-item-box:hover, .window-list-item-box:hover, .window-list-item-box:groupFocus {
+  color: {{panel.text}};
+  border-color: {{panel.w.panel_button.hover_border}};
+  background-color: {{panel.pb_hover}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_hover_top}};
+  background-gradient-end: {{panel.pb_hover_bottom}};
+  box-shadow: {{panel.w.panel_button.hover_st_shadow}};
+  transition-duration: {{hover_in_ms}}; }
+
+.grouped-window-list-item-box:focus, .grouped-window-list-item-box:focus:hover,
+.window-list-item-box:focus, .window-list-item-box:focus:hover {
+  color: {{panel.accent_fg}};
+  font-weight: bold;
+  border-color: {{panel.accent_press}};
+  background-color: {{panel.pb_focus}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_focus_top}};
+  background-gradient-end: {{panel.pb_focus_bottom}};
+  box-shadow: {{panel.w.panel_button.st_shadow}}; }
+.grouped-window-list-item-box:focus .grouped-window-list-item-label,
+.window-list-item-box:focus StLabel {
+  color: {{panel.accent_fg}}; }
+
+.grouped-window-list-item-demands-attention, .window-list-item-demands-attention {
+  border-color: {{panel.pb_attention_edge}};
+  background-color: {{panel.pb_attention}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_attention_top}};
+  background-gradient-end: {{panel.pb_attention_bottom}}; }
+
+.grouped-window-list-item-box .progress, .window-list-item-box .progress {
+  border-radius: {{panel.r}}px;
+  background-color: {{alpha(panel.pb_progress, 0.85)}}; }
+
+.grouped-window-list-badge, .grouped-window-list-notifications-badge {
+  background-color: {{panel.accent}};
+  color: {{panel.accent_fg}}; }
+
+/* Panel launchers */
+.panel-launchers .launcher {
+  border: 1px solid transparent;
+  border-radius: {{panel.r}}px;
+  transition-duration: {{hover_out_ms}}; }
+.panel-launchers .launcher:hover {
+  border-color: {{panel.w.panel_button.hover_border}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_hover_top}};
+  background-gradient-end: {{panel.pb_hover_bottom}};
+  transition-duration: {{hover_in_ms}}; }
+
+/* Workspace switcher: current workspace in the accent */
+.workspace-button { border-radius: {{panel.r}}px; }
+.workspace-button:outlined {
+  color: {{panel.accent_fg}};
+  background-color: {{panel.accent}}; }
+
+/* --------------------------------------------------------------------------
+   Menus and popups: Menu opacity, menu roundness and gradient
+   -------------------------------------------------------------------------- */
+.menu {
+  color: {{menu.text}};
+  background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}});
+  border: 1px solid {{alpha(menu.border, 0.9)}};
+  box-shadow: 0 2px 8px {{alpha(black, 0.35)}}; }
+.menu-top { border-radius: 0 0 {{menu.r2}}px {{menu.r2}}px; }
+.menu-bottom { border-radius: {{menu.r2}}px {{menu.r2}}px 0 0; }
+.menu-left { border-radius: 0 {{menu.r2}}px {{menu.r2}}px 0; }
+.menu-right { border-radius: {{menu.r2}}px 0 0 {{menu.r2}}px; }
+
+.popup-sub-menu {
+  background-color: {{alpha(mix(menu.menu_bg, menu.text, 0.04), 0.6)}}; }
+
+.popup-menu-item {
+  border-radius: {{menu.r}}px;
+  transition-duration: {{hover_out_ms}}; }
+.popup-menu-item:active {
+  color: {{menu.w.menu_item.hover_fg}};
+  background-color: {{menu.w.menu_item.hover_color}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{menu.w.menu_item.hover_top}};
+  background-gradient-end: {{menu.w.menu_item.hover_bottom}};
+  transition-duration: {{hover_in_ms}}; }
+
+/* Main menu: favorites column, categories and apps share one hover step */
+.menu-favorites-box {
+  background-color: {{menu.fav_bg}};
+  border-radius: {{menu.r2}}px; }
+.menu-favorites-button {
+  border-radius: {{menu.r}}px;
+  transition-duration: {{hover_out_ms}}; }
+.menu-favorites-button:hover {
+  background-color: {{menu.fav_hover}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{menu.fav_hover_top}};
+  background-gradient-end: {{menu.fav_hover_bottom}};
+  transition-duration: {{hover_in_ms}}; }
+
+.menu-application-button, .menu-category-button, .menu-category-button-greyed {
+  border-radius: {{menu.r}}px;
+  transition-duration: {{hover_out_ms}}; }
+.menu-application-button-selected, .menu-category-button:hover {
+  color: {{menu.text}};
+  border-radius: {{menu.r}}px;
+  background-color: {{menu.menu_hover}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{menu.menu_hover_top}};
+  background-gradient-end: {{menu.menu_hover_bottom}};
+  transition-duration: {{hover_in_ms}}; }
+.menu-category-button-selected, .menu-category-button-selected:hover {
+  color: {{menu.accent_fg}};
+  border-radius: {{menu.r}}px;
+  background-color: {{menu.select}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{menu.select_top}};
+  background-gradient-end: {{menu.select_bottom}}; }
+.menu-category-button-selected .menu-category-button-label { color: {{menu.accent_fg}}; }
+
+#menu-search-entry {
+  border-radius: {{menu.r}}px;
+  border-color: {{menu.w.entry.border}};
+  box-shadow: {{menu.w.entry.st_shadow}}; }
+#menu-search-entry:focus {
+  border-color: {{menu.w.entry.focus_border}};
+  box-shadow: {{menu.w.entry.focus_st_shadow}}; }
+
+/* Notifications, on-screen displays and alt-tab follow Menu opacity */
+#notification, .notification {
+  background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}}); }
+.workspace-switch-osd, .info-osd, .media-keys-osd {
+  background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}}); }
+.switcher-list {
+  background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}});
+  border-radius: {{menu.r2}}px; }
+.switcher-list .item-box { border-radius: {{menu.r}}px; }
+
+/* Tooltips: Details tab colors (menu colors by default) */
+#Tooltip, .tooltip {
+  color: {{tooltip.text}};
+  background-color: {{tooltip.bg}};
+  border: 1px solid {{mix(tooltip.bg, tooltip.text, 0.2)}};
+  border-radius: {{menu.r2}}px; }
+
+/* Sliders (volume, brightness) and the calendar's today */
+.popup-slider-menu-item, .slider {
+  -slider-active-background-color: {{menu.accent}};
+  -slider-active-border-color: {{menu.accent_press}}; }
+.calendar-today, .calendar-today:hover {
+  color: {{menu.accent_fg}};
+  background-color: {{menu.accent}}; }
