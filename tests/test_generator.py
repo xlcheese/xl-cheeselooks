@@ -201,6 +201,16 @@ class StyleTests(unittest.TestCase):
         table = tokens.build(defaults(), st)
         self.assertEqual(table["panel.w.panel_button.selected_fg"], table["panel.text"])
 
+    def test_panel_button_padding(self):
+        t = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
+        self.assertEqual(t["panel.w.panel_button.padding"], "4")
+        st = styles.Style(name="Fixture", path=None, widgets={"panel_button": {"padding": 8}})
+        self.assertEqual(tokens.build(defaults(), st)["panel.w.panel_button.padding"], "8")
+        d = Path(tempfile.mkdtemp())
+        (d / "style.toml").write_text('name = "T"\n[widgets]\npanel_button = { padding = 99 }\n')
+        with self.assertRaises(styles.StyleError):
+            styles.load(d)
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

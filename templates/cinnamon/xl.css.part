@@ -70,8 +70,8 @@
   color: {{panel.text}};
   margin: 0;
   padding-top: 0;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: {{panel.w.panel_button.padding}}px;
+  padding-right: {{panel.w.panel_button.padding}}px;
   border: 1px solid {{panel.w.panel_button.border}};
   border-radius: {{panel.r}}px;
   background-color: {{panel.w.panel_button.color}};
