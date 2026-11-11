@@ -20,7 +20,7 @@ DEFAULTS: dict[str, Any] = {
     "global": {
         "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
         "size": "normal", "roundness": 15, "gradient": 10,
-        "hover_in_ms": 60, "hover_out_ms": 250, "hover_strength": 50,
+        "hover_in_ms": 50, "hover_out_ms": 125, "hover_strength": 50,
     },
     "style": {"name": "xl-Cheeselooks", "depth": 50},
     "panel": {

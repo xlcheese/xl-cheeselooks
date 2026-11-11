@@ -22,6 +22,7 @@ from . import styles as sty
 from . import tabs
 
 THEME_NAME = "xl-Cheeselooks"
+HOVER_CALIBRATION = 0.8
 
 GRADIENT_COLORS = (
     "button", "button_hover", "accent", "accent_hover", "select", "hover",
@@ -88,7 +89,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     g = settings["global"]
     depth = settings["style"]["depth"]
     amount = g["gradient"] / 100
-    hover = g["hover_strength"] / 50
+    # Calibrated so the slider's center (50) is xl_cheese's chosen look, which was
+    # 40 on the original scale: h = value / 50 x 0.8.
+    hover = g["hover_strength"] / 50 * HOVER_CALIBRATION
     theme = pal.derive(g["accent"], g["bg"], g["text"], hover)
     t: dict[str, str] = {}
 
