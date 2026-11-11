@@ -110,6 +110,10 @@
 .window-list-item-box:focus StLabel {
   color: {{panel.w.panel_button.selected_fg}}; }
 
+/* The style's active_marker on the focused window (written by
+   cheeselooks/panelmarker.py) */
+{{panel_marker.css}}
+
 .grouped-window-list-item-demands-attention, .window-list-item-demands-attention {
   border-color: {{panel.pb_attention_edge}};
   background-color: {{panel.pb_attention}};

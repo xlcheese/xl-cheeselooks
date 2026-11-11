@@ -201,6 +201,22 @@ class StyleTests(unittest.TestCase):
         table = tokens.build(defaults(), st)
         self.assertEqual(table["panel.w.panel_button.selected_fg"], table["panel.text"])
 
+    def test_panel_marker(self):
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
+        self.assertNotIn("box-shadow", none["panel_marker.css"])
+        for kind, want in (("line", "inset 0 -2px 0 0 "), ("accent_bottom", "inset 0 -2px 0 0 "),
+                           ("glow", "inset 0 -30px 20px -20px rgba(")):
+            st = styles.Style(name="Fixture", path=None,
+                              widgets={"panel_button": {"active_marker": kind,
+                                                        "selected_color": "mix(bg, text, 0.3)"}})
+            t = tokens.build(defaults(), st, panel_height=40)
+            self.assertIn(want, t["panel_marker.css"])
+            self.assertIn(":focus", t["panel_marker.css"])
+        # on an accent face the marker uses the darker accent so it still shows
+        st = styles.Style(name="Fixture", path=None, widgets={"panel_button": {"active_marker": "line"}})
+        self.assertIn(p["accent_press"], tokens.build(defaults(), st)["panel_marker.css"])
+
     def test_title_buttons_have_nothing_at_rest(self):
         st = styles.load(DEFAULT_STYLE)
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")

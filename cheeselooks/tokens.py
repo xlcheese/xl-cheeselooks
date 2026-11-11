@@ -19,7 +19,7 @@ import colorsys
 from . import palette as pal
 from . import shape
 from . import styles as sty
-from . import tabs
+from . import panelmarker, tabs
 
 THEME_NAME = "xl-Cheeselooks"
 HOVER_CALIBRATION = 0.8
@@ -135,6 +135,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["panel.height"] = str(panel_height)
     t["panel.label_weight"] = "bold" if p["label_weight"] == "bold" else "normal"
     t["panel.opacity"] = f"{p['panel_opacity'] / 100:g}"
+    t["panel_marker.css"] = panelmarker.css(t)
 
     # Cinnamon menus use the shell menu colors under the same names, so a
     # style's "menu_hover" means the right thing in GTK and in Cinnamon.

@@ -111,7 +111,8 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
     # focused window's button
     "panel_button": {"edge": "raised", "hover_edge": "raised", "pressed_edge": "sunken",
                      "focus_edge": "raised", "color": "pb_rest", "hover_color": "pb_hover",
-                     "selected_color": "pb_focus", "selected_border": "accent_press"},
+                     "selected_color": "pb_focus", "selected_border": "accent_press",
+                     "active_marker": "none"},
     "check": {"edge": "sunken", "hover_edge": "sunken", "pressed_edge": "sunken", "focus_edge": "focus"},
     "switch": {"like": "check"},
 }
