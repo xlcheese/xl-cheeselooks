@@ -16,7 +16,6 @@ Templates have no conditionals, so the rules are written here.
 from __future__ import annotations
 
 from . import palette as pal
-from .tabs import MARKER_ALIASES
 
 LINE_WIDTH = 2
 GLOW_ALPHA = 0.6   # at the bottom edge
@@ -35,8 +34,7 @@ def shadow(kind: str, color: str, height: int) -> str:
 
 
 def css(t: dict[str, str]) -> str:
-    raw = t.get("panel.w.panel_button.active_marker", "none")
-    kind = MARKER_ALIASES.get(raw, raw)
+    kind = t.get("panel.w.panel_button.active_marker", "none")
     head = f"/* focused window marker: {kind} */"
     if kind == "none":
         return head

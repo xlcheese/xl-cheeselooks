@@ -29,7 +29,6 @@ POSITIONS = ("top", "bottom", "left", "right")
 _EDGE = {"top": ("0", "{n}px"), "bottom": ("0", "-{n}px"), "left": ("{n}px", "0"), "right": ("-{n}px", "0")}
 # corner radii: rounded on the outer side only
 _RADII = {"top": "{r}px {r}px 0 0", "bottom": "0 0 {r}px {r}px", "left": "{r}px 0 0 {r}px", "right": "0 {r}px {r}px 0"}
-MARKER_ALIASES = {"accent_top": "line", "accent_bottom": "line"}
 
 
 def _marker(kind: str, pos: str, accent: str) -> str:
@@ -52,7 +51,7 @@ def _join(*shadows: str) -> str:
 
 def css(t: dict[str, str]) -> str:
     kind = t.get("w.tab.tab_kind", "boxed")
-    marker = MARKER_ALIASES.get(t.get("w.tab.active_marker", "none"), t.get("w.tab.active_marker", "none"))
+    marker = t.get("w.tab.active_marker", "none")
     r = t["r"]
     out = [f"/* tabs: {kind}, selected marker: {marker} */"]
 

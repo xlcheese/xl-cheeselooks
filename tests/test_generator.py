@@ -205,7 +205,7 @@ class StyleTests(unittest.TestCase):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
         self.assertNotIn("box-shadow", none["panel_marker.css"])
-        for kind, want in (("line", "inset 0 -2px 0 0 "), ("accent_bottom", "inset 0 -2px 0 0 "),
+        for kind, want in (("line", "inset 0 -2px 0 0 "),
                            ("glow", "inset 0 -30px 20px -20px rgba(")):
             st = styles.Style(name="Fixture", path=None,
                               widgets={"panel_button": {"active_marker": kind,
@@ -426,13 +426,19 @@ class TokenTests(unittest.TestCase):
         with self.assertRaises(settings.SettingsError):
             settings.from_dict({"panel": {"panel_opacity": 10}})
 
+    def test_old_marker_names_are_rejected(self):
+        d = Path(tempfile.mkdtemp())
+        (d / "style.toml").write_text('name = "T"\n[widgets]\ntab = { active_marker = "accent_top" }\n')
+        with self.assertRaises(styles.StyleError):
+            styles.load(d)
+
     def test_tab_kinds_and_markers(self):
         s = defaults()
         css = tokens.build(s, self.style)["tabs.css"]
         self.assertIn("tabs: boxed, selected marker: none", css)
         for kind, marker, expect, bottom in (("open", "line", "inset 0 2px 0", "inset 0 -2px 0"),
                                              ("pills", "glow", "8px -8px", "inset 0 -1px 0 #"),
-                                             ("boxed", "accent_top", "inset 0 2px 0", "inset 0 -2px 0")):
+                                             ("boxed", "line", "inset 0 2px 0", "inset 0 -2px 0")):
             st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": kind, "active_marker": marker}})
             css = tokens.build(s, st)["tabs.css"]
             self.assertIn(expect, css, (kind, marker))

@@ -60,7 +60,7 @@ DEFAULT_KEYS: dict[str, Any] = {
     "panel_label_weight": None,
 }
 DEFAULT_ADAPT_STRENGTH = 0.6
-ACTIVE_MARKERS = ("none", "line", "glow", "accent_top", "accent_bottom")  # last two: old names for "line"
+ACTIVE_MARKERS = ("none", "line", "glow")
 
 # Fallbacks used for anything a style leaves out.
 BUILTIN_EDGES: dict[str, dict[str, Any]] = {
