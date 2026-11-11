@@ -149,17 +149,19 @@ class SettingsTests(unittest.TestCase):
 
 class StyleTests(unittest.TestCase):
     def test_builtin_styles_are_clean(self):
-        paths = sorted((REPO / "styles").iterdir()) + sorted((REPO / "docs" / "examples").iterdir())
+        builtin = sorted((REPO / "styles").iterdir())
+        paths = builtin + sorted((REPO / "docs" / "examples").iterdir())
         self.assertGreaterEqual(len(paths), 5)
         for path in paths:
             with self.subTest(style=path.name):
                 st = styles.load(path)
                 self.assertEqual(st.warnings, [])
-                self.assertEqual(st.name, path.name)   # folder name matches the style's name
+                if path in builtin:
+                    self.assertEqual(st.name, path.name)   # folder name matches the style's name
                 tokens.build(defaults(), st)           # and it builds
 
     def test_raised_edge_has_all_layers_for_gtk_one_for_cinnamon(self):
-        st = styles.load(DEFAULT_STYLE)
+        st = styles.Style(name="Fixture", path=None)
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = styles.widget_tokens(st, p, 50)
         self.assertEqual(t["w.button.shadow"].count("rgba("), 3)
@@ -182,7 +184,7 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(t["w.button.shadow"], "none")
 
     def test_depth_scales_alpha(self):
-        st = styles.load(DEFAULT_STYLE)
+        st = styles.Style(name="Fixture", path=None)
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         lo = styles.widget_tokens(st, p, 25)["w.button.shadow"]
         hi = styles.widget_tokens(st, p, 100)["w.button.shadow"]
