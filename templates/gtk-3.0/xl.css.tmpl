@@ -104,6 +104,56 @@ toolbar .linked > button:checked, .path-bar button:checked, .path-bar button:act
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.linked.pressed_inset_shadow}}; }
 
+/* Joined buttons share the edge between them (Mint-Y drops each button's right
+   border; vertical groups drop the bottom one). When a button is hovered or
+   pressed, the next button colors the shared edge to match, so the hovered
+   button looks outlined on all four sides. */
+.linked:not(.vertical) > button:hover + button,
+.primary-toolbar .linked:not(.vertical) > button:hover + button,
+.primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover + button,
+.primary-toolbar .linked:not(.vertical).path-bar > button:hover + button,
+headerbar .linked:not(.vertical) > button:hover + button,
+headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover + button,
+headerbar .linked:not(.vertical).path-bar > button:hover + button,
+.primary-toolbar toolbar .linked:not(.vertical) > button:hover + button,
+.primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover + button,
+.primary-toolbar toolbar .linked:not(.vertical).path-bar > button:hover + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical) > button:hover + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:hover + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical).path-bar > button:hover + button {
+  border-left-color: {{w.linked.hover_border}}; }
+.linked:not(.vertical) > button:checked + button,
+.primary-toolbar .linked:not(.vertical) > button:checked + button,
+.primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:checked + button,
+.primary-toolbar .linked:not(.vertical).path-bar > button:checked + button,
+headerbar .linked:not(.vertical) > button:checked + button,
+headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:checked + button,
+headerbar .linked:not(.vertical).path-bar > button:checked + button,
+.primary-toolbar toolbar .linked:not(.vertical) > button:checked + button,
+.primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:checked + button,
+.primary-toolbar toolbar .linked:not(.vertical).path-bar > button:checked + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical) > button:checked + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:checked + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical).path-bar > button:checked + button,
+.linked:not(.vertical) > button:active + button,
+.primary-toolbar .linked:not(.vertical) > button:active + button,
+.primary-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active + button,
+.primary-toolbar .linked:not(.vertical).path-bar > button:active + button,
+headerbar .linked:not(.vertical) > button:active + button,
+headerbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active + button,
+headerbar .linked:not(.vertical).path-bar > button:active + button,
+.primary-toolbar toolbar .linked:not(.vertical) > button:active + button,
+.primary-toolbar toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active + button,
+.primary-toolbar toolbar .linked:not(.vertical).path-bar > button:active + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical) > button:active + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical):not(.path-bar).stack-switcher > button:active + button,
+.primary-toolbar .inline-toolbar .linked:not(.vertical).path-bar > button:active + button {
+  border-left-color: {{w.linked.pressed_border}}; }
+.linked.vertical > button:hover + button {
+  border-top-color: {{w.linked.hover_border}}; }
+.linked.vertical > button:checked + button, .linked.vertical > button:active + button {
+  border-top-color: {{w.linked.pressed_border}}; }
+
 /* Buttons on colored backgrounds (info bars, selected rows, selection mode):
    keep the see-through look so their light text stays readable */
 infobar.info button, infobar.question button, infobar.warning button, infobar.error button,
