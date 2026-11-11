@@ -1,7 +1,7 @@
 """The focused window's marker on panel window-list buttons.
 
     active_marker  none   nothing extra (the selected_color face only)
-                   line   a 2px accent line along the bottom of the button
+                   line   a 3px accent line along the bottom of the button
                    glow   an accent glow rising from the bottom edge and
                           fading out by the middle of the button (Clearlooks)
 
@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from . import palette as pal
 
-LINE_WIDTH = 2
+LINE_WIDTH = 3
 GLOW_ALPHA = 0.6   # at the bottom edge
 
 

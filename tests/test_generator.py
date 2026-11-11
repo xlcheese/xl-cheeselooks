@@ -215,7 +215,7 @@ class StyleTests(unittest.TestCase):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
         self.assertNotIn("box-shadow", none["panel_marker.css"])
-        for kind, want in (("line", "inset 0 -2px 0 0 "),
+        for kind, want in (("line", "inset 0 -3px 0 0 "),
                            ("glow", "inset 0 -30px 20px -20px rgba(")):
             st = styles.Style(name="Fixture", path=None,
                               widgets={"panel_button": {"active_marker": kind,
