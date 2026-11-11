@@ -338,14 +338,18 @@ class TokenTests(unittest.TestCase):
         s = defaults()
         css = tokens.build(s, self.style)["tabs.css"]
         self.assertIn("tabs: boxed, selected marker: none", css)
-        for kind, marker, expect in (("open", "line", "inset 0 2px 0"), ("pills", "glow", "8px -8px"),
-                                     ("boxed", "accent_top", "inset 0 2px 0")):
+        for kind, marker, expect, bottom in (("open", "line", "inset 0 2px 0", "inset 0 -2px 0"),
+                                             ("pills", "glow", "8px -8px", "inset 0 -1px 0 #"),
+                                             ("boxed", "accent_top", "inset 0 2px 0", "inset 0 -2px 0")):
             st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": kind, "active_marker": marker}})
             css = tokens.build(s, st)["tabs.css"]
             self.assertIn(expect, css, (kind, marker))
-            self.assertIn("inset 0 -2px 0", css)          # bottom tabs get the marker on their bottom edge
-        st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": "pills"}})
-        self.assertIn("notebook > header > tabs {", tokens.build(s, st)["tabs.css"])  # the trough
+            self.assertIn(bottom, css)          # bottom tabs get the marker on their bottom edge
+        self.assertIn("border-bottom-style: solid", tokens.build(s, self.style)["tabs.css"])  # boxed: edge facing the page
+        st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": "pills", "active_marker": "glow"}})
+        t = tokens.build(s, st)
+        self.assertIn(f"padding: 3px;\n  background-color: {t['header']}", t["tabs.css"])  # trough = toolbar color
+        self.assertIn("inset 0 1px 0", t["tabs.css"])      # glow edge line is 1px
 
     def test_layout_and_accent_name(self):
         s = defaults()

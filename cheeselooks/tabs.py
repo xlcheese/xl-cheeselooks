@@ -35,12 +35,13 @@ MARKER_ALIASES = {"accent_top": "line", "accent_bottom": "line"}
 def _marker(kind: str, pos: str, accent: str) -> str:
     if kind == "none":
         return ""
-    x, y = (v.format(n=2) for v in _EDGE[pos])
+    width = 2 if kind == "line" else 1          # glow: a 1px edge line, the fade does the rest
+    x, y = (v.format(n=width) for v in _EDGE[pos])
     line = f"inset {x} {y} 0 {accent}"
     if kind == "line":
         return line
     # glow: the line, plus a soft accent fade kept on the same edge
-    gx, gy = (v.format(n=2 + 8) for v in _EDGE[pos])
+    gx, gy = (v.format(n=width + 8) for v in _EDGE[pos])
     return f"{line}, inset {gx} {gy} 8px -8px {pal.rgba(accent, 0.35)}"
 
 
@@ -75,12 +76,13 @@ def css(t: dict[str, str]) -> str:
              f"  box-shadow: {t['w.tab.hover_inset_shadow']};")
 
     if kind == "pills":
-        trough_r = int(r) + 3
+        # the whole tab strip is the trough, edge to edge, in the toolbar/menubar color
         out.append(f"notebook > header, {', '.join(f'notebook > header.{p}' for p in POSITIONS)} {{\n"
-                   f"  border-color: transparent;\n  box-shadow: none; }}")
-        out.append(f"notebook > header > tabs {{\n  margin: 4px;\n  padding: 3px;\n"
-                   f"  border-radius: {trough_r}px;\n  background-color: {t['trough']}; }}")
-        out.append(f"{all_pos()} {{\n  margin: 0;\n  border: 1px solid transparent;\n  border-radius: {r}px; }}")
+                   f"  padding: 3px;\n  background-color: {t['header']};\n  background-image: none;\n"
+                   f"  box-shadow: none; }}")
+        out.append("notebook > header > tabs {\n  margin: 0;\n  padding: 0;\n"
+                   "  border-radius: 0;\n  background-color: transparent; }")
+        out.append(f"{all_pos()} {{\n  margin: 0 1px;\n  border: 1px solid transparent;\n  border-radius: {r}px; }}")
     else:
         for pos in POSITIONS:
             radii = _RADII[pos].format(r=r)
@@ -88,6 +90,16 @@ def css(t: dict[str, str]) -> str:
                        f"  border-radius: {radii}; }}")
 
     out.append(f"{all_pos(':not(:checked)')} {{\n{rest} }}")
+    if kind == "boxed":
+        # unselected boxed tabs keep the edge that faces the page; only the
+        # selected tab opens into it
+        inner = {"top": "bottom", "bottom": "top", "left": "right", "right": "left"}
+        for pos in POSITIONS:
+            side = inner[pos]
+            out.append(f"{sel(pos, ':not(:checked)')}"
+                       f"{',' + chr(10) + 'notebook > header > tabs > tab:not(:checked)' if pos == 'top' else ''} {{\n"
+                       f"  border-{side}-style: solid;\n  border-{side}-width: 1px;\n"
+                       f"  border-{side}-color: {t['w.button.border']}; }}")
     out.append(f"{all_pos(':hover:not(:checked)')} {{\n{hover} }}")
 
     # selected tab
