@@ -81,28 +81,28 @@ toolbar button:active, toolbar button:checked {
    neighbouring button and make one look bigger than the others. Grouped buttons
    in toolbars (path bar, view switchers) stay raised as one group. */
 .linked > button, .linked > combobox > box > button.combo, spinbutton > button {
-  box-shadow: {{w.button.inset_shadow}}; }
+  box-shadow: {{w.linked.inset_shadow}}; }
 .linked > button:hover, .linked > combobox > box > button.combo:hover, spinbutton > button:hover {
-  box-shadow: {{w.button.hover_inset_shadow}}; }
+  box-shadow: {{w.linked.hover_inset_shadow}}; }
 .linked > button:active, .linked > button:checked, spinbutton > button:active {
-  box-shadow: {{w.button.pressed_inset_shadow}}; }
+  box-shadow: {{w.linked.pressed_inset_shadow}}; }
 .primary-toolbar .linked > button, headerbar .linked > button, toolbar .linked > button,
 .path-bar button, .nemo-window .path-bar button {
-  border-color: {{w.button.border}};
+  border-color: {{w.linked.border}};
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
-  box-shadow: {{w.button.inset_shadow}}; }
+  box-shadow: {{w.linked.inset_shadow}}; }
 .primary-toolbar .linked > button:hover, headerbar .linked > button:hover, toolbar .linked > button:hover,
 .path-bar button:hover {
-  border-color: {{w.button.hover_border}};
-  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
-  box-shadow: {{w.button.hover_inset_shadow}}; }
+  border-color: {{w.linked.hover_border}};
+  background-image: linear-gradient(to bottom, {{w.linked.hover_top}}, {{w.linked.hover_bottom}});
+  box-shadow: {{w.linked.hover_inset_shadow}}; }
 .primary-toolbar .linked > button:active, .primary-toolbar .linked > button:checked,
 headerbar .linked > button:active, headerbar .linked > button:checked,
 toolbar .linked > button:checked, .path-bar button:checked, .path-bar button:active {
-  border-color: {{w.button.pressed_border}};
+  border-color: {{w.linked.pressed_border}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
-  box-shadow: {{w.button.pressed_inset_shadow}}; }
+  box-shadow: {{w.linked.pressed_inset_shadow}}; }
 
 /* Buttons on colored backgrounds (info bars, selected rows, selection mode):
    keep the see-through look so their light text stays readable */

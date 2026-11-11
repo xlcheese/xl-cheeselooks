@@ -275,6 +275,18 @@ class StyleTests(unittest.TestCase):
             st = styles.load(DEFAULT_STYLE)
             self.assertEqual(saved["global"]["roundness"], st.defaults["roundness"])
 
+    def test_linked_widget(self):
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        base = styles.Style(name="X", path=None)
+        t = styles.widget_tokens(base, p, 50)
+        self.assertEqual(t["w.linked.hover_border"], t["w.button.hover_border"])   # copies button by default
+        tuned = styles.Style(name="X", path=None,
+                             edges={"linked_hover": {"border": "darker(border_hover, 0.3)"}},
+                             widgets={"linked": {"like": "button", "hover_edge": "linked_hover"}})
+        t2 = styles.widget_tokens(tuned, p, 50)
+        self.assertEqual(t2["w.linked.hover_border"], palette.darker(p["border_hover"], 0.3))
+        self.assertEqual(t2["w.button.hover_border"], t["w.button.hover_border"])  # buttons unchanged
+
     def test_focus_ring(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
         self.assertEqual((t["focus.style"], t["focus.width"]), ("dashed", "1"))

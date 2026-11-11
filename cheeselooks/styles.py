@@ -26,7 +26,7 @@ LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark
 SURFACE_LAYERS = ("highlight", "sides", "left", "right", "shade", "inner")
 # The surface each widget sits on at rest (palette names).
 WIDGET_FACE = {
-    "button": "button", "suggested": "accent", "destructive": "destructive",
+    "button": "button", "suggested": "accent", "destructive": "destructive", "linked": "button",
     "toolbar_button": "header", "title_button": "header",
     "close_button": "header", "entry": "base", "combo": "button", "tab": "header",
     "menu_item": "menu_bg", "menubar_item": "header", "panel_button": "pb_rest",
@@ -35,7 +35,7 @@ WIDGET_FACE = {
 EDGE_KEYS = {"border", *LAYER_KINDS}
 
 WIDGETS = (
-    "button", "suggested", "destructive", "toolbar_button", "title_button", "close_button",
+    "button", "suggested", "destructive", "linked", "toolbar_button", "title_button", "close_button",
     "entry", "combo", "tab", "menu_item", "menubar_item", "panel_button",
     "check", "switch",
 )
@@ -89,6 +89,9 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
                "focus_edge": "raised", "hover_color": "button_hover"},
     "suggested": {"like": "button", "hover_color": "accent_hover"},
     "destructive": {"like": "button", "hover_color": "destructive"},
+    # joined button groups (path bars, stack switchers, spin buttons); inner
+    # layers only, never a drop shadow, so neighbours don't overlap
+    "linked": {"like": "button"},
     "toolbar_button": {"edge": "flat", "hover_edge": "raised_hover", "pressed_edge": "sunken",
                        "focus_edge": "flat", "hover_color": "flat_hover"},
     "title_button": {"like": "toolbar_button"},
