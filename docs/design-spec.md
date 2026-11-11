@@ -552,3 +552,4 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 Agreed but not built yet. Delete each line once it's done.
 
 - **Claude tab style:** designed by Claude together with the Claude preset (see Roadmap).
+- **Icon and theme thumbnails:** one static "swirly rainbow" image as the settings app's icon and as the theme's thumbnails in Mint's Themes settings (`gtk-3.0/thumbnail.png`, `cinnamon/thumbnail.png`, `metacity-1/thumbnail.png`), so xl-Cheeselooks is recognizable whatever colors are chosen. Static on purpose: the brand, not a preview of the current colors.
