@@ -19,6 +19,7 @@ import colorsys
 from . import palette as pal
 from . import shape
 from . import styles as sty
+from . import tabs
 
 THEME_NAME = "xl-Cheeselooks"
 
@@ -27,7 +28,7 @@ GRADIENT_COLORS = (
     "sidebar_hover", "menu_hover", "fav_hover", "menubar_hover", "panel",
     "pb_rest", "pb_hover", "pb_focus", "pb_attention", "destructive", "pressed",
 )
-ACTIVE_SHADOWS = {"none": "none", "accent_top": "inset 0 2px {c}", "accent_bottom": "inset 0 -2px {c}"}
+
 
 # libadwaita's named accents (GNOME 47+)
 ADW_ACCENTS = {
@@ -79,9 +80,6 @@ def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
             # whichever of text / text-on-accent reads better on the hover color
             fg = max((palette["text"], palette["accent_fg"]), key=lambda c: pal.contrast(c, v))
             wt[base + "hover_fg"] = fg
-        elif k.endswith(".active_marker"):
-            wt[k[: -len("active_marker")] + "active_shadow"] = \
-                ACTIVE_SHADOWS[v].format(c=palette["accent"])
     for k, v in wt.items():
         tokens[prefix + k] = v
 
@@ -108,6 +106,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["hover_out_ms"] = str(g["hover_out_ms"])
     _add_widgets(t, "", style, theme, depth, amount)
     t["style.extra_css"] = style.extra_css
+    t["tabs.css"] = tabs.css(t)
 
     # --- Panel & Menu: shared colors, separate shapes
     p = settings["panel"]

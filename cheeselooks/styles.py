@@ -44,9 +44,9 @@ WIDGET_KEYS = {
     "like", "edge", "hover_edge", "pressed_edge", "focus_edge", "border",
     "hover_color", "tab_kind", "active_marker", "hover_border",
 }
-TAB_KINDS = ("boxed", "pills")
+TAB_KINDS = ("boxed", "open", "pills")
 DEFAULT_ADAPT_STRENGTH = 0.6
-ACTIVE_MARKERS = ("none", "accent_top", "accent_bottom")
+ACTIVE_MARKERS = ("none", "line", "glow", "accent_top", "accent_bottom")  # last two: old names for "line"
 
 # Fallbacks used for anything a style leaves out.
 BUILTIN_EDGES: dict[str, dict[str, Any]] = {
@@ -85,8 +85,8 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
     "close_button": {"like": "title_button", "hover_color": "accent"},
     "entry": {"edge": "sunken", "hover_edge": "sunken", "pressed_edge": "sunken", "focus_edge": "focus"},
     "combo": {"like": "button"},
-    "tab": {"edge": "flat", "hover_edge": "flat", "pressed_edge": "flat", "focus_edge": "flat",
-            "hover_color": "flat_hover", "tab_kind": "boxed", "active_marker": "none", "hover_border": True},
+    # tabs take their look from the buttons (see tabs.py); a style only picks the shape
+    "tab": {"like": "toolbar_button", "tab_kind": "boxed", "active_marker": "none"},
     "menu_item": {"edge": "flat", "hover_edge": "flat", "pressed_edge": "flat", "focus_edge": "flat",
                   "hover_color": "menu_hover"},
     "menubar_item": {"like": "menu_item", "hover_color": "menubar_hover"},
@@ -459,7 +459,4 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
         for k in ("tab_kind", "active_marker"):
             if k in spec:
                 tokens[f"w.{wname}.{k}"] = spec[k]
-        if "hover_border" in spec:
-            tokens[f"w.{wname}.hover_border"] = (
-                palette["border"] if spec["hover_border"] else "transparent")
     return tokens

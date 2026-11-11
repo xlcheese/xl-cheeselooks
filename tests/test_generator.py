@@ -305,7 +305,6 @@ class TokenTests(unittest.TestCase):
         self.assertEqual(t["term.bg"], t["base"])
         self.assertEqual(t["tooltip.bg"], t["menu_bg"])
         self.assertEqual(t["switch.r"], "11")  # fully round by default (22px tall)
-        self.assertEqual(t["w.tab.active_shadow"], "none")
         self.assertEqual(t["w.menu_item.hover_fg"], t["text"])
         self.assertTrue(all(isinstance(v, str) for v in t.values()))
 
@@ -334,6 +333,19 @@ class TokenTests(unittest.TestCase):
         self.assertTrue(any("see-through" in n for n in tokens.warnings(s)))
         with self.assertRaises(settings.SettingsError):
             settings.from_dict({"panel": {"panel_opacity": 10}})
+
+    def test_tab_kinds_and_markers(self):
+        s = defaults()
+        css = tokens.build(s, self.style)["tabs.css"]
+        self.assertIn("tabs: boxed, selected marker: none", css)
+        for kind, marker, expect in (("open", "line", "inset 0 2px 0"), ("pills", "glow", "8px -8px"),
+                                     ("boxed", "accent_top", "inset 0 2px 0")):
+            st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": kind, "active_marker": marker}})
+            css = tokens.build(s, st)["tabs.css"]
+            self.assertIn(expect, css, (kind, marker))
+            self.assertIn("inset 0 -2px 0", css)          # bottom tabs get the marker on their bottom edge
+        st = styles.Style(name="T", path=None, widgets={"tab": {"tab_kind": "pills"}})
+        self.assertIn("notebook > header > tabs {", tokens.build(s, st)["tabs.css"])  # the trough
 
     def test_layout_and_accent_name(self):
         s = defaults()

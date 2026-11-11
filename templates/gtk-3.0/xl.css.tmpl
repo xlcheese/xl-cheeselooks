@@ -313,31 +313,9 @@ spinbutton:not(.vertical) > button, combobox entry {
 /* --------------------------------------------------------------------------
    Notebook tabs
    -------------------------------------------------------------------------- */
-notebook > header > tabs > tab, notebook > header.top > tabs > tab {
-  border-radius: {{r}}px {{r}}px 0 0; }
-notebook > header.bottom > tabs > tab { border-radius: 0 0 {{r}}px {{r}}px; }
-notebook > header.left > tabs > tab { border-radius: {{r}}px 0 0 {{r}}px; }
-notebook > header.right > tabs > tab { border-radius: 0 {{r}}px {{r}}px 0; }
-notebook > header > tabs > tab:not(:checked) {
-  color: {{text_dim}};
-  border-color: {{border}};
-  background-color: {{header}};
-  background-image: none; }
-notebook > header > tabs > tab:hover:not(:checked) {
-  color: {{w.tab.hover_fg}};
-  border-color: {{w.tab.hover_border}};
-  background-color: {{w.tab.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.tab.hover_top}}, {{w.tab.hover_bottom}}); }
-notebook > header.top > tabs > tab:hover:not(:checked),
-notebook > header.bottom > tabs > tab:hover:not(:checked),
-notebook > header.left > tabs > tab:hover:not(:checked),
-notebook > header.right > tabs > tab:hover:not(:checked) {
-  box-shadow: none; }
-notebook > header > tabs > tab:checked {
-  border-color: {{border_strong}};
-  background-color: {{base}};
-  background-image: none;
-  box-shadow: {{w.tab.active_shadow}}; }
+/* Shape and selected-tab marker come from the style's tab line (tab_kind,
+   active_marker); written by cheeselooks/tabs.py. */
+{{tabs.css}}
 
 /* --------------------------------------------------------------------------
    Check boxes and radios (drawn in CSS; glyphs recolored from symbolic SVGs)
