@@ -43,11 +43,15 @@ STATES = ("rest", "hover", "pressed", "focus")
 WIDGET_KEYS = {
     "like", "edge", "hover_edge", "pressed_edge", "focus_edge", "border",
     "hover_color", "tab_kind", "active_marker", "hover_border",
-    "color", "selected_color", "selected_border", "padding",
+    "color", "selected_color", "selected_border", "padding", "hover_fg", "selected_fg",
 }
 # keys only some widgets use so far (others accept them but ignore them)
 WIDGET_ONLY_KEYS = {"color": ("panel_button",), "selected_color": ("panel_button",),
-                    "selected_border": ("panel_button",), "padding": ("panel_button",)}
+                    "selected_border": ("panel_button",), "padding": ("panel_button",),
+                    "hover_fg": ("menu_item", "menubar_item", "tab"), "selected_fg": ("panel_button",)}
+# a text color belongs to its face: a widget that sets its own face doesn't
+# inherit the text color of the widget it is "like"
+FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg"}
 PADDING_RANGE = (0, 24)   # px, left and right
 TAB_KINDS = ("boxed", "open", "pills")
 # Settings a style can suggest in [defaults] (applied when the style is picked
@@ -255,7 +259,8 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
             elif k.endswith("edge"):
                 if v not in all_edges:
                     errors.append(f"{where}.{k} refers to an edge that doesn't exist: {v!r}")
-            elif k in ("border", "hover_color", "color", "selected_color", "selected_border"):
+            elif k in ("border", "hover_color", "color", "selected_color", "selected_border",
+                       "hover_fg", "selected_fg"):
                 if k in WIDGET_ONLY_KEYS and wname not in WIDGET_ONLY_KEYS[k]:
                     warnings.append(f"{where}.{k} is only used by "
                                     f"{', '.join(WIDGET_ONLY_KEYS[k])} so far and is ignored")
@@ -463,6 +468,9 @@ def resolved_widgets(style: Style) -> dict[str, dict[str, Any]]:
         spec = dict(raw[name])
         base_name = spec.pop("like", None)
         result = dict(resolve(base_name)) if base_name else {}
+        for face, fg in FACE_FG.items():
+            if face in spec and fg not in spec:
+                result.pop(fg, None)
         result.update(spec)
         out[name] = result
         return result
@@ -501,7 +509,7 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
         hover_color = spec.get("hover_color")
         if hover_color:
             tokens[f"w.{wname}.hover_color"] = _resolve_color(hover_color, palette)
-        for k in ("color", "selected_color", "selected_border"):
+        for k in ("color", "selected_color", "selected_border", "hover_fg", "selected_fg"):
             if spec.get(k):
                 tokens[f"w.{wname}.{k}"] = _resolve_color(spec[k], palette)
         if "padding" in spec:

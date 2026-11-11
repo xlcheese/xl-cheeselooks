@@ -211,6 +211,20 @@ class StyleTests(unittest.TestCase):
         with self.assertRaises(styles.StyleError):
             styles.load(d)
 
+    def test_style_can_choose_hover_text(self):
+        st = styles.Style(name="Fixture", path=None, widgets={
+            "menu_item": {"hover_color": "accent_hover", "hover_fg": "accent_fg"},
+            "menubar_item": {"like": "menu_item", "hover_color": "menubar_hover"}})
+        t = tokens.build(defaults(), st)
+        self.assertEqual(t["w.menu_item.hover_fg"], t["accent_fg"])
+        self.assertEqual(t["menu.w.menu_item.hover_fg"], t["menu.accent_fg"])
+        # menubar sets its own face, so it doesn't inherit the white text
+        self.assertEqual(t["w.menubar_item.hover_fg"], t["text"])
+        # without hover_fg the contrast pick stays
+        plain = tokens.build(defaults(), styles.Style(name="Fixture", path=None,
+                             widgets={"menu_item": {"hover_color": "accent_hover"}}))
+        self.assertEqual(plain["w.menu_item.hover_fg"], plain["text"])
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

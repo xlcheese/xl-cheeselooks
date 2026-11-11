@@ -82,6 +82,8 @@ def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
                 base = k[: -len(suffix) + 1]
                 top, bottom = pal.gradient(v, amount)
                 wt[base + out + "top"], wt[base + out + "bottom"] = top, bottom
+                if base + out + "fg" in wt:    # the style chose this text color
+                    continue
                 # on the accent itself, the theme's text-on-accent; otherwise
                 # whichever of text / text-on-accent reads better on this face
                 wt[base + out + "fg"] = (palette["accent_fg"] if v == palette["accent"] else
