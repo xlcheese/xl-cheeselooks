@@ -73,14 +73,20 @@ def _add_gradients(tokens: dict[str, str], prefix: str, palette: dict[str, str],
 def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
                  palette: dict[str, str], depth: float, amount: float) -> None:
     wt = sty.widget_tokens(style, palette, depth)
+    # faces get a gradient pair and a readable text color:
+    # w.X.color -> w.X.color_top/_bottom/_fg, w.X.hover_color -> w.X.hover_top/..., etc.
+    faces = {".color": "color_", ".hover_color": "hover_", ".selected_color": "selected_"}
     for k, v in list(wt.items()):
-        if k.endswith(".hover_color"):
-            base = k[: -len("hover_color")]
-            top, bottom = pal.gradient(v, amount)
-            wt[base + "hover_top"], wt[base + "hover_bottom"] = top, bottom
-            # whichever of text / text-on-accent reads better on the hover color
-            fg = max((palette["text"], palette["accent_fg"]), key=lambda c: pal.contrast(c, v))
-            wt[base + "hover_fg"] = fg
+        for suffix, out in faces.items():
+            if k.endswith(suffix):
+                base = k[: -len(suffix) + 1]
+                top, bottom = pal.gradient(v, amount)
+                wt[base + out + "top"], wt[base + out + "bottom"] = top, bottom
+                # on the accent itself, the theme's text-on-accent; otherwise
+                # whichever of text / text-on-accent reads better on this face
+                wt[base + out + "fg"] = (palette["accent_fg"] if v == palette["accent"] else
+                                         max((palette["text"], palette["accent_fg"]),
+                                             key=lambda c: pal.contrast(c, v)))
     for k, v in wt.items():
         tokens[prefix + k] = v
 

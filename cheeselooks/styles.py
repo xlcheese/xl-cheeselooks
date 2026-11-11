@@ -43,7 +43,11 @@ STATES = ("rest", "hover", "pressed", "focus")
 WIDGET_KEYS = {
     "like", "edge", "hover_edge", "pressed_edge", "focus_edge", "border",
     "hover_color", "tab_kind", "active_marker", "hover_border",
+    "color", "selected_color", "selected_border",
 }
+# keys only some widgets use so far (others accept them but ignore them)
+WIDGET_ONLY_KEYS = {"color": ("panel_button",), "selected_color": ("panel_button",),
+                    "selected_border": ("panel_button",)}
 TAB_KINDS = ("boxed", "open", "pills")
 # Settings a style can suggest in [defaults] (applied when the style is picked
 # and on a fresh install). Panel and menu values are optional: left out, the
@@ -103,8 +107,11 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
     "menu_item": {"edge": "flat", "hover_edge": "flat", "pressed_edge": "flat", "focus_edge": "flat",
                   "hover_color": "menu_hover"},
     "menubar_item": {"like": "menu_item", "hover_color": "menubar_hover"},
+    # panel window-list buttons, launchers and applets; "selected" is the
+    # focused window's button
     "panel_button": {"edge": "raised", "hover_edge": "raised", "pressed_edge": "sunken",
-                     "focus_edge": "raised", "hover_color": "pb_hover"},
+                     "focus_edge": "raised", "color": "pb_rest", "hover_color": "pb_hover",
+                     "selected_color": "pb_focus", "selected_border": "accent_press"},
     "check": {"edge": "sunken", "hover_edge": "sunken", "pressed_edge": "sunken", "focus_edge": "focus"},
     "switch": {"like": "check"},
 }
@@ -246,7 +253,10 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
             elif k.endswith("edge"):
                 if v not in all_edges:
                     errors.append(f"{where}.{k} refers to an edge that doesn't exist: {v!r}")
-            elif k in ("border", "hover_color"):
+            elif k in ("border", "hover_color", "color", "selected_color", "selected_border"):
+                if k in WIDGET_ONLY_KEYS and wname not in WIDGET_ONLY_KEYS[k]:
+                    warnings.append(f"{where}.{k} is only used by "
+                                    f"{', '.join(WIDGET_ONLY_KEYS[k])} so far and is ignored")
                 if not _is_color_ref(v, names):
                     errors.append(f"{where}.{k} must be a palette color name or #RRGGBB (got {v!r})")
             elif k == "tab_kind" and v not in TAB_KINDS:
@@ -460,7 +470,8 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
     tokens: dict[str, str] = {}
     for wname, spec in resolved_widgets(style).items():
         border_override = spec.get("border")
-        face = palette.get(WIDGET_FACE.get(wname, "button"))
+        face = (_resolve_color(spec["color"], palette) if spec.get("color")
+                else palette.get(WIDGET_FACE.get(wname, "button")))
         hover_face = _resolve_color(spec["hover_color"], palette) if spec.get("hover_color") else face
         surfaces = {"rest": face, "hover": hover_face, "pressed": palette.get("pressed"), "focus": face}
         for state in STATES:
@@ -482,6 +493,9 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
         hover_color = spec.get("hover_color")
         if hover_color:
             tokens[f"w.{wname}.hover_color"] = _resolve_color(hover_color, palette)
+        for k in ("color", "selected_color", "selected_border"):
+            if spec.get(k):
+                tokens[f"w.{wname}.{k}"] = _resolve_color(spec[k], palette)
         for k in ("tab_kind", "active_marker"):
             if k in spec:
                 tokens[f"w.{wname}.{k}"] = spec[k]

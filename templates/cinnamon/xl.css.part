@@ -56,10 +56,10 @@
 
 /* --------------------------------------------------------------------------
    Window lists: full-height raised buttons (the xl_cheese panel look)
-     every button     raised, in pb_rest (as the original xl_cheese theme does;
+     every button     raised, in the panel_button color (as xl_cheese does;
                       it doesn't depend on Cinnamon having marked the app as running)
      hover            lighter, darker hover border
-     focused window   the accent, bold label
+     focused window   selected_color (the accent by default), bold label
      needs attention  a red tint
    -------------------------------------------------------------------------- */
 .grouped-window-list-box, .window-list-box { spacing: 2px; }
@@ -74,10 +74,10 @@
   padding-right: 4px;
   border: 1px solid {{panel.w.panel_button.border}};
   border-radius: {{panel.r}}px;
-  background-color: {{panel.pb_rest}};
+  background-color: {{panel.w.panel_button.color}};
   background-gradient-direction: vertical;
-  background-gradient-start: {{panel.pb_rest_top}};
-  background-gradient-end: {{panel.pb_rest_bottom}};
+  background-gradient-start: {{panel.w.panel_button.color_top}};
+  background-gradient-end: {{panel.w.panel_button.color_bottom}};
   box-shadow: {{panel.w.panel_button.st_shadow}};
   transition-duration: {{hover_out_ms}}; }
 .grouped-window-list-item-box.top, .grouped-window-list-item-box.bottom,
@@ -89,26 +89,26 @@
 .grouped-window-list-item-box:hover, .window-list-item-box:hover, .window-list-item-box:groupFocus {
   color: {{panel.text}};
   border-color: {{panel.w.panel_button.hover_border}};
-  background-color: {{panel.pb_hover}};
+  background-color: {{panel.w.panel_button.hover_color}};
   background-gradient-direction: vertical;
-  background-gradient-start: {{panel.pb_hover_top}};
-  background-gradient-end: {{panel.pb_hover_bottom}};
+  background-gradient-start: {{panel.w.panel_button.hover_top}};
+  background-gradient-end: {{panel.w.panel_button.hover_bottom}};
   box-shadow: {{panel.w.panel_button.hover_st_shadow}};
   transition-duration: {{hover_in_ms}}; }
 
 .grouped-window-list-item-box:focus, .grouped-window-list-item-box:focus:hover,
 .window-list-item-box:focus, .window-list-item-box:focus:hover {
-  color: {{panel.accent_fg}};
+  color: {{panel.w.panel_button.selected_fg}};
   font-weight: bold;
-  border-color: {{panel.accent_press}};
-  background-color: {{panel.pb_focus}};
+  border-color: {{panel.w.panel_button.selected_border}};
+  background-color: {{panel.w.panel_button.selected_color}};
   background-gradient-direction: vertical;
-  background-gradient-start: {{panel.pb_focus_top}};
-  background-gradient-end: {{panel.pb_focus_bottom}};
+  background-gradient-start: {{panel.w.panel_button.selected_top}};
+  background-gradient-end: {{panel.w.panel_button.selected_bottom}};
   box-shadow: {{panel.w.panel_button.st_shadow}}; }
 .grouped-window-list-item-box:focus .grouped-window-list-item-label,
 .window-list-item-box:focus StLabel {
-  color: {{panel.accent_fg}}; }
+  color: {{panel.w.panel_button.selected_fg}}; }
 
 .grouped-window-list-item-demands-attention, .window-list-item-demands-attention {
   border-color: {{panel.pb_attention_edge}};
@@ -133,8 +133,8 @@
 .panel-launchers .launcher:hover {
   border-color: {{panel.w.panel_button.hover_border}};
   background-gradient-direction: vertical;
-  background-gradient-start: {{panel.pb_hover_top}};
-  background-gradient-end: {{panel.pb_hover_bottom}};
+  background-gradient-start: {{panel.w.panel_button.hover_top}};
+  background-gradient-end: {{panel.w.panel_button.hover_bottom}};
   transition-duration: {{hover_in_ms}}; }
 
 /* Workspace switcher: current workspace in the accent */

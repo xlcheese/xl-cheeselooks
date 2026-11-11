@@ -179,6 +179,28 @@ class StyleTests(unittest.TestCase):
             if inset != "none":
                 self.assertTrue(seam.endswith(inset))
 
+    def test_panel_button_colors_default_to_the_panel_palette(self):
+        st = styles.load(DEFAULT_STYLE)
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        self.assertEqual(t["w.panel_button.color"], p["pb_rest"])
+        self.assertEqual(t["w.panel_button.selected_color"], p["accent"])
+        self.assertEqual(t["w.panel_button.selected_border"], p["accent_press"])
+        table = tokens.build(defaults(), st)
+        self.assertEqual(table["panel.w.panel_button.selected_fg"], table["panel.accent_fg"])
+        self.assertEqual(table["panel.w.panel_button.color_top"], table["panel.pb_rest_top"])
+
+    def test_style_can_set_panel_button_colors(self):
+        st = styles.Style(name="Fixture", path=None,
+                          widgets={"panel_button": {"color": "mix(bg, text, 0.08)",
+                                                    "selected_color": "mix(bg, text, 0.30)"}})
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        self.assertEqual(t["w.panel_button.color"], palette.mix(p["bg"], p["text"], 0.08))
+        self.assertNotEqual(t["w.panel_button.selected_color"], p["accent"])
+        table = tokens.build(defaults(), st)
+        self.assertEqual(table["panel.w.panel_button.selected_fg"], table["panel.text"])
+
     def test_title_buttons_have_nothing_at_rest(self):
         st = styles.load(DEFAULT_STYLE)
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
