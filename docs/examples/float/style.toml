@@ -52,7 +52,7 @@ title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }
 combo          = { like = "button" }
-tab            = { tab_kind = "pills", active_marker = "none", hover_border = false, hover_color = "hover" }
+tab            = { tab_kind = "pills", active_marker = "none", hover_color = "hover" }
 menu_item      = { hover_color = "select" }
 menubar_item   = { hover_color = "menubar_hover" }
 panel_button   = { edge = "raised", hover_edge = "lifted", hover_color = "pb_hover" }

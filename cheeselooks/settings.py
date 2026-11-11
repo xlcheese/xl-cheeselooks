@@ -19,7 +19,7 @@ DEFAULTS: dict[str, Any] = {
     "version": SETTINGS_VERSION,
     "global": {
         "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
-        "size": "normal", "roundness": 20, "gradient": 30,
+        "size": "normal", "roundness": 15, "gradient": 10,
         "hover_in_ms": 60, "hover_out_ms": 250, "hover_strength": 50,
     },
     "style": {"name": "xl-Cheeselooks", "depth": 50},
@@ -27,8 +27,8 @@ DEFAULTS: dict[str, Any] = {
         "separate_colors": False, "accent": None, "bg": None, "text": None,
         "label_weight": "bold",
         "panel_opacity": 70, "menu_opacity": 94,
-        "panel_shape": {"follow_global": True, "roundness": 20, "gradient": 30},
-        "menu_shape": {"follow_global": True, "roundness": 20, "gradient": 30},
+        "panel_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
+        "menu_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
     },
     "window_borders": {
         "separate_colors": False, "title_bar": None, "title_text": None, "border": None,

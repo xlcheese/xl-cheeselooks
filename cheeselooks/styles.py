@@ -234,8 +234,9 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                 errors.append(f"{where}.tab_kind must be one of {', '.join(TAB_KINDS)}")
             elif k == "active_marker" and v not in ACTIVE_MARKERS:
                 errors.append(f"{where}.active_marker must be one of {', '.join(ACTIVE_MARKERS)}")
-            elif k == "hover_border" and not isinstance(v, bool):
-                errors.append(f"{where}.hover_border must be true or false")
+            elif k == "hover_border":
+                warnings.append(f"{where}.hover_border is no longer used (tabs follow "
+                                f"toolbar_button) and can be removed")
 
     # 'like' cycles
     merged_like = {w: dict(BUILTIN_WIDGETS.get(w, {})) for w in WIDGETS}
