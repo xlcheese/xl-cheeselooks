@@ -149,10 +149,14 @@ class SettingsTests(unittest.TestCase):
 
 class StyleTests(unittest.TestCase):
     def test_builtin_styles_are_clean(self):
-        for path in (DEFAULT_STYLE, FLOAT_STYLE):
+        paths = sorted((REPO / "styles").iterdir()) + sorted((REPO / "docs" / "examples").iterdir())
+        self.assertGreaterEqual(len(paths), 5)
+        for path in paths:
             with self.subTest(style=path.name):
                 st = styles.load(path)
                 self.assertEqual(st.warnings, [])
+                self.assertEqual(st.name, path.name)   # folder name matches the style's name
+                tokens.build(defaults(), st)           # and it builds
 
     def test_raised_edge_has_all_layers_for_gtk_one_for_cinnamon(self):
         st = styles.load(DEFAULT_STYLE)

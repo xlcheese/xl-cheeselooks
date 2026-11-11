@@ -302,6 +302,12 @@ Cinnamon's CSS allows **one** box shadow per widget and two-color gradients. Whe
 - **Menubar items:** hover is `menubar_hover`. An open menubar item uses the same color.
 - **Panel buttons:** full panel height, raised (highlight only in Cinnamon), running = `pb_rest`, focused = `pb_focus`.
 
+### Built-in styles (v1)
+Designed by xl_cheese; one folder each in `styles/`:
+- **xl-Cheeselooks** (default): muted, softly lit buttons with a light border and a gentle drop shadow; boxed tabs. Suggested defaults: roundness 15, gradient 10, depth 50.
+- **xl-Gummy**: thick, softly blurred light edges for a soft, pillowy button; boxed tabs with the glow marker. Defaults 20 / 30 / 50.
+- **xl-Classic**: a traditional bevel (light top and left, faint dark bottom and right); boxed tabs with the glow marker, as in Clearlooks. Defaults 20 / 30 / 50.
+
 ### Float (example style, shipped in docs, not in the app for v1)
 Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the accent**. Entries are borderless with a hairline outline and a 3px accent glow on focus. Tabs are pills in a trough. It exists to prove the format and to give authors a second starting point.
 

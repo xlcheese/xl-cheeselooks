@@ -1,38 +1,40 @@
 # xl-Cheeselooks: the default style.
-# Raised, softly bevelled buttons; sunken entries; flat toolbar and title
-# buttons that rise on hover; boxed tabs with no accent line.
+# Muted, softly lit buttons with a light border and a gentle drop shadow;
+# sunken entries; flat toolbar and title buttons that rise on hover; boxed tabs.
 #
 # Alpha values are written for Depth 50. alpha_dark is used on dark themes.
 
 name = "xl-Cheeselooks"
 author = "xl_cheese"
-description = "Raised buttons with a light top edge, sunken fields, boxed tabs."
+description = "Muted buttons with a light top edge, sunken fields, boxed tabs."
 
-# How much inner layers (highlight, sides, shade) are toned down on darker
-# buttons such as accent and red ones: 0 = not at all, 1 = fully.
 adapt_strength = 0.6
 
 [defaults]
-roundness = 20
-gradient = 30
+roundness = 15
+gradient = 10
 depth = 50
 
 [edges.raised]
-border    = "border_strong"
-highlight = { y = 1,  color = "white", alpha = 0.60, alpha_dark = 0.07 }
-shade     = { y = -1, color = "black", alpha = 0.07, alpha_dark = 0.20 }
-shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+border    = "lighter(border_strong, 0.3)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30 }
+left      = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+shade     = { y = -1, blur = 0, color = "black", alpha = 0.02 }
+right     = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+shadow    = { y = 3, blur = 3, color = "black", alpha = 0.06, alpha_dark = 0.30 }
 
 # Hover: same layers, darker border (lighter on dark themes), as Mint-Y does
 [edges.raised_hover]
-border    = "border_hover"
-highlight = { y = 1,  color = "white", alpha = 0.60, alpha_dark = 0.07 }
-shade     = { y = -1, color = "black", alpha = 0.07, alpha_dark = 0.20 }
-shadow    = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+border    = "lighter(border_hover, 0.2)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30 }
+left      = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+shade     = { y = -1, blur = 0, color = "black", alpha = 0.02 }
+right     = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+shadow    = { y = 3, blur = 4, color = "black", alpha = 0.08, alpha_dark = 0.30 }
 
 [edges.sunken]
 border = "border_strong"
-inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }
 
 [edges.focus]
 border = "accent"
@@ -45,12 +47,12 @@ border = "none"
 [widgets]
 button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
-toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "flat_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lighter(header, 0.7)" }
 title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }
 combo          = { like = "button" }
-tab            = { like = "toolbar_button", tab_kind = "boxed", active_marker = "none" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_border = true, hover_color = "lighter(header, 0.6)" }
 menu_item      = { hover_color = "menu_hover" }
 menubar_item   = { hover_color = "menubar_hover" }
 panel_button   = { edge = "raised", hover_edge = "raised_hover", hover_color = "pb_hover" }
