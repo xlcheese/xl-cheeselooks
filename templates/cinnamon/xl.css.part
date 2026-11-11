@@ -56,41 +56,35 @@
 
 /* --------------------------------------------------------------------------
    Window lists: full-height raised buttons (the xl_cheese panel look)
-     pinned, not running  flat
-     running              raised, in pb_rest
-     hover                lighter, darker hover border
-     focused window       the accent, bold label
-     needs attention      a red tint
-   Grouped window list: :active / :checked = running, :focus = focused.
-   Classic window list: :running / :active / :checked = running, :focus = focused.
+     every button     raised, in pb_rest (as the original xl_cheese theme does;
+                      it doesn't depend on Cinnamon having marked the app as running)
+     hover            lighter, darker hover border
+     focused window   the accent, bold label
+     needs attention  a red tint
    -------------------------------------------------------------------------- */
-.grouped-window-list-box, .window-list-box { spacing: 3px; }
+.grouped-window-list-box, .window-list-box { spacing: 2px; }
 
-.grouped-window-list-item-box, .window-list-item-box {
-  color: {{alpha(panel.text, 0.85)}};
+.grouped-window-list-item-box, .window-list-item-box,
+.grouped-window-list-item-box:active, .grouped-window-list-item-box:checked,
+.window-list-item-box:running, .window-list-item-box:active, .window-list-item-box:checked {
+  color: {{panel.text}};
   margin: 0;
-  border: 1px solid transparent;
-  border-width: 1px;
+  padding-top: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid {{panel.w.panel_button.border}};
   border-radius: {{panel.r}}px;
-  background-color: transparent;
-  background-gradient-direction: none;
-  box-shadow: none;
+  background-color: {{panel.pb_rest}};
+  background-gradient-direction: vertical;
+  background-gradient-start: {{panel.pb_rest_top}};
+  background-gradient-end: {{panel.pb_rest_bottom}};
+  box-shadow: {{panel.w.panel_button.st_shadow}};
   transition-duration: {{hover_out_ms}}; }
 .grouped-window-list-item-box.top, .grouped-window-list-item-box.bottom,
 .grouped-window-list-item-box.left, .grouped-window-list-item-box.right,
 .window-list-item-box.top, .window-list-item-box.bottom,
 .window-list-item-box.left, .window-list-item-box.right {
   border-width: 1px; }
-
-.grouped-window-list-item-box:active, .grouped-window-list-item-box:checked,
-.window-list-item-box:running, .window-list-item-box:active, .window-list-item-box:checked {
-  color: {{panel.text}};
-  border-color: {{panel.w.panel_button.border}};
-  background-color: {{panel.pb_rest}};
-  background-gradient-direction: vertical;
-  background-gradient-start: {{panel.pb_rest_top}};
-  background-gradient-end: {{panel.pb_rest_bottom}};
-  box-shadow: {{panel.w.panel_button.st_shadow}}; }
 
 .grouped-window-list-item-box:hover, .window-list-item-box:hover, .window-list-item-box:groupFocus {
   color: {{panel.text}};
