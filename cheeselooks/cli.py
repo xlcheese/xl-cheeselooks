@@ -49,7 +49,16 @@ def find_preset(name: str) -> dict:
 
 def _load_settings(args: argparse.Namespace) -> dict:
     path = Path(args.settings) if args.settings else paths.settings_file()
+    fresh = not path.exists()
     data = settings.load(path)
+    new_style = getattr(args, "style", None)
+    if new_style:
+        data["style"]["name"] = new_style
+    if fresh or new_style or getattr(args, "style_defaults", False):
+        # fresh install, a newly picked style, or "reset to style defaults":
+        # start from the style's suggested [defaults]
+        style = _load_style(data["style"]["name"], getattr(args, "style_dir", None))
+        data = settings.apply_style_defaults(data, style.defaults)
     for name in args.preset or []:
         try:
             data = settings.apply_preset(data, find_preset(name))
@@ -159,6 +168,9 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("apply", help="generate the theme and reload the desktop")
     common(p)
     p.add_argument("--theme-dir", help="write the theme here instead of ~/.themes (no reload)")
+    p.add_argument("--style", help="switch to this style and start from its suggested defaults")
+    p.add_argument("--style-defaults", action="store_true",
+                   help="reset roundness, gradient, depth and panel/menu shape to the style's defaults")
     p.add_argument("--activate", action="store_true", help="also switch Cinnamon to this theme")
     p.add_argument("--no-reload", action="store_true", help="write files only")
     p.add_argument("--no-save", action="store_true", help="don't save the settings used")

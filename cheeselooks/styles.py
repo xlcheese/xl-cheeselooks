@@ -45,6 +45,16 @@ WIDGET_KEYS = {
     "hover_color", "tab_kind", "active_marker", "hover_border",
 }
 TAB_KINDS = ("boxed", "open", "pills")
+# Settings a style can suggest in [defaults] (applied when the style is picked
+# and on a fresh install). Panel and menu values are optional: left out, the
+# panel and menus follow Global.
+DEFAULT_KEYS: dict[str, Any] = {
+    "roundness": (0, 100), "gradient": (0, 100), "depth": (0, 100),
+    "panel_roundness": (0, 100), "panel_gradient": (0, 100),
+    "menu_roundness": (0, 100), "menu_gradient": (0, 100),
+    "panel_opacity": (30, 100), "menu_opacity": (30, 100),
+    "panel_label_weight": None,
+}
 DEFAULT_ADAPT_STRENGTH = 0.6
 ACTIVE_MARKERS = ("none", "line", "glow", "accent_top", "accent_bottom")  # last two: old names for "line"
 
@@ -109,7 +119,7 @@ class Style:
     path: Path | None
     author: str = ""
     description: str = ""
-    defaults: dict[str, int] = field(default_factory=dict)
+    defaults: dict[str, Any] = field(default_factory=dict)
     adapt_strength: float = DEFAULT_ADAPT_STRENGTH
     edges: dict[str, dict[str, Any]] = field(default_factory=dict)
     widgets: dict[str, dict[str, Any]] = field(default_factory=dict)
@@ -159,10 +169,16 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
         errors.append("'defaults' must be a table")
     else:
         for k, v in defaults.items():
-            if k not in ("roundness", "gradient", "depth"):
-                warnings.append(f"defaults.{k} is not a known setting and is ignored")
-            elif isinstance(v, bool) or not isinstance(v, (int, float)) or not 0 <= v <= 100:
-                errors.append(f"defaults.{k} must be a number from 0 to 100")
+            if k not in DEFAULT_KEYS:
+                warnings.append(f"defaults.{k} is not a known setting and is ignored "
+                                f"(known: {', '.join(DEFAULT_KEYS)})")
+            elif k == "panel_label_weight":
+                if v not in ("bold", "regular"):
+                    errors.append("defaults.panel_label_weight must be \"bold\" or \"regular\"")
+            else:
+                lo, hi = DEFAULT_KEYS[k]
+                if isinstance(v, bool) or not isinstance(v, (int, float)) or not lo <= v <= hi:
+                    errors.append(f"defaults.{k} must be a number from {lo} to {hi}")
 
     edges = data.get("edges", {})
     if not isinstance(edges, dict):
@@ -273,7 +289,8 @@ def load(path: Path) -> Style:
         path=toml_path,
         author=data.get("author", ""),
         description=data.get("description", ""),
-        defaults={k: int(v) for k, v in data.get("defaults", {}).items() if k in ("roundness", "gradient", "depth")},
+        defaults={k: (v if isinstance(v, str) else int(v))
+                  for k, v in data.get("defaults", {}).items() if k in DEFAULT_KEYS},
         adapt_strength=float(data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)),
         edges=copy.deepcopy(data.get("edges", {})),
         widgets=copy.deepcopy(data.get("widgets", {})),

@@ -276,6 +276,7 @@ The full file is [`styles/xl-Cheeselooks/style.toml`](../styles/xl-Cheeselooks/s
   - `tab_kind`: `boxed` (joined to the page, unselected tabs in the toolbar color with a line along the page edge: xl-Cheeselooks), `open` (unselected tabs have no box until hovered: Mint-Y), `pills` (rounded tabs on a strip in the toolbar color, edge to edge; the selected one a raised button).
   - `active_marker`: `none`, `line` (2px accent line on the outer edge), `glow` (a 1px accent line plus an accent gradient fading inward: Clearlooks). The marker follows the tab position (top, bottom, left, right).
   - Boxed and open tabs never get a drop shadow (they are joined to the page). Written by `cheeselooks/tabs.py`, since each shape needs different rules.
+- **`[defaults]`** suggests the style's starting point: `roundness`, `gradient`, `depth`, and optionally `panel_roundness`, `panel_gradient`, `menu_roundness`, `menu_gradient`, `panel_opacity`, `menu_opacity` and `panel_label_weight` (`"bold"`/`"regular"`). Panel and menu values left out keep following Global. They are applied on a fresh install (from the default style), when a style is picked, and on *Reset to style defaults*; the user can change anything afterwards. This is how a style ships its own panel feel.
 - **Colors** can be a palette name, `#RRGGBB`, or an expression built on the palette: `darker(border_strong, 0.1)`, `lighter(border_strong, 0.1)`, `mix(border_strong, text, 0.2)`, `mix(border_strong, accent, 0.3)`.
 - `cheeselooks check-style PATH` lists problems in plain language.
 
@@ -410,7 +411,7 @@ No hand-made bitmap images remain in the theme.
 
 ### Command line
 ```
-cheeselooks apply [--preset NAME | --settings FILE]
+cheeselooks apply [--preset NAME | --settings FILE] [--style NAME] [--style-defaults]
 cheeselooks check-style PATH        # validate a style file, list problems
 cheeselooks export-preset NAME
 cheeselooks revert

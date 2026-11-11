@@ -250,6 +250,31 @@ class StyleTests(unittest.TestCase):
         errors, _ = styles.check({"name": "X", "adapt_strength": 2})
         self.assertTrue(errors)
 
+    def test_style_defaults(self):
+        s = settings.apply_style_defaults(defaults(), {"roundness": 30, "gradient": 5, "depth": 70})
+        self.assertEqual((s["global"]["roundness"], s["global"]["gradient"], s["style"]["depth"]), (30, 5, 70))
+        self.assertTrue(s["panel"]["panel_shape"]["follow_global"])
+        s = settings.apply_style_defaults(defaults(), {"roundness": 30, "panel_gradient": 40,
+                                                      "panel_label_weight": "regular", "menu_opacity": 90})
+        ps = s["panel"]["panel_shape"]
+        self.assertEqual((ps["follow_global"], ps["roundness"], ps["gradient"]), (False, 30, 40))
+        self.assertTrue(s["panel"]["menu_shape"]["follow_global"])
+        self.assertEqual((s["panel"]["label_weight"], s["panel"]["menu_opacity"]), ("regular", 90))
+        errors, warnings = styles.check({"name": "X", "defaults": {"panel_label_weight": "heavy",
+                                                                   "panel_opacity": 10, "nope": 1}})
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(any("nope" in w for w in warnings))
+
+    def test_fresh_install_uses_style_defaults(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg = Path(tmp) / "missing.json"
+            theme = Path(tmp) / "xl-Cheeselooks"
+            rc = cli.main(["apply", "--settings", str(cfg), "--theme-dir", str(theme), "--no-save"])
+            self.assertEqual(rc, 0)
+            saved = json.loads((Path(tmp) / ".xl-Cheeselooks.settings.json").read_text())
+            st = styles.load(DEFAULT_STYLE)
+            self.assertEqual(saved["global"]["roundness"], st.defaults["roundness"])
+
     def test_focus_ring(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
         self.assertEqual((t["focus.style"], t["focus.width"]), ("dashed", "1"))

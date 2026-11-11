@@ -191,6 +191,33 @@ def save(settings: dict, path: Path) -> None:
     tmp.replace(path)
 
 
+def apply_style_defaults(settings: dict, defaults: dict) -> dict:
+    """Use a style's suggested [defaults] as the starting point (when the style is
+    picked, on a fresh install, or on "reset to style defaults")."""
+    out = copy.deepcopy(settings)
+    g, p = out["global"], out["panel"]
+    for key in ("roundness", "gradient"):
+        if key in defaults:
+            g[key] = defaults[key]
+    if "depth" in defaults:
+        out["style"]["depth"] = defaults["depth"]
+    for area in ("panel", "menu"):
+        shape = p[f"{area}_shape"]
+        r, gr = defaults.get(f"{area}_roundness"), defaults.get(f"{area}_gradient")
+        if r is None and gr is None:
+            shape.update(follow_global=True, roundness=g["roundness"], gradient=g["gradient"])
+        else:
+            shape.update(follow_global=False,
+                         roundness=g["roundness"] if r is None else r,
+                         gradient=g["gradient"] if gr is None else gr)
+    for key in ("panel_opacity", "menu_opacity"):
+        if key in defaults:
+            p[key] = defaults[key]
+    if "panel_label_weight" in defaults:
+        p["label_weight"] = defaults["panel_label_weight"]
+    return from_dict(out)
+
+
 def apply_preset(settings: dict, preset: dict) -> dict:
     """Presets are partial settings files; merge them over the current settings."""
     preset = {k: v for k, v in preset.items() if k not in ("name", "version")}

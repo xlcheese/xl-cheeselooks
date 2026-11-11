@@ -32,6 +32,16 @@ That writes `~/.themes/xl-Cheeselooks`, switches your apps to it and saves your 
 ./bin/cheeselooks presets
 ```
 
+Switch style (this also loads the style's suggested roundness, gradient, depth and panel settings), or reset to the current style's defaults:
+
+```bash
+./bin/cheeselooks apply --style xl-Classic
+```
+
+```bash
+./bin/cheeselooks apply --style-defaults
+```
+
 To go back to what you had before the last apply:
 
 ```bash
