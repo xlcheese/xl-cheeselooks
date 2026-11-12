@@ -1,6 +1,8 @@
 # xl-Cheeselooks: the default style.
 # Muted, softly lit buttons with a light border and a gentle drop shadow;
 # sunken entries; flat toolbar and title buttons that rise on hover; boxed tabs.
+# A square, darker panel with flat-looking buttons (border matches the face),
+# as in xl_cheese's Mint-Y-Variable.
 #
 # Alpha values are written for Depth 50. alpha_dark is used on dark themes.
 
@@ -14,6 +16,8 @@ adapt_strength = 0.6
 roundness = 15
 gradient = 10
 depth = 50
+panel_opacity = 65
+panel_roundness = 0
 
 [edges.raised]
 border    = "lighter(border_strong, 0.3)"
@@ -44,6 +48,14 @@ inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
 [edges.flat]
 border = "none"
 
+[edges.panel_raised]
+border = "darker(button, 0.09)"
+shade  = { y = -4, blur = 9, color = "black", alpha = 0.03 }
+ 
+[edges.panel_hover]
+border = "button"
+shade  = { y = -1, color = "black", alpha = 0.08 }
+
 [widgets]
 button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
@@ -55,4 +67,7 @@ combo          = { like = "button" }
 tab            = { tab_kind = "boxed", active_marker = "none", hover_color = "lighter(header, 0.6)" }
 menu_item      = { hover_color = "menu_hover" }
 menubar_item   = { hover_color = "menubar_hover" }
-panel_button   = { edge = "raised", hover_edge = "raised_hover", hover_color = "pb_hover" }
+panel_button   = { edge = "panel_raised", hover_edge = "panel_hover", color = "darker(button, 0.09)", hover_color = "button", selected_color = "button", selected_border = "button", spacing = 3 }
+
+[panel]
+color = "darker(bg, 0.14)"

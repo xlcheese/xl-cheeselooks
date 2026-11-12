@@ -180,7 +180,7 @@ class StyleTests(unittest.TestCase):
                 self.assertTrue(seam.endswith(inset))
 
     def test_panel_button_colors_default_to_the_panel_palette(self):
-        st = styles.load(DEFAULT_STYLE)
+        st = styles.Style(name="Fixture", path=None)   # built-in widget defaults only
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         t = styles.widget_tokens(st, p, 50)
         self.assertEqual(t["w.panel_button.color"], p["pb_rest"])

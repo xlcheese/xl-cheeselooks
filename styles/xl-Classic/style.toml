@@ -1,7 +1,8 @@
 # xl-Classic: a traditional bevel.
 # Light top and left edges, a faint dark bottom and right; sunken entries;
 # flat toolbar and title buttons that rise on hover; boxed tabs with an
-# accent glow on the selected tab, as in Clearlooks.
+# accent line on the selected tab; accent menu hovers; raised panel buttons
+# with an accent line under the focused window.
 #
 # Alpha values are written for Depth 50. alpha_dark is used on dark themes.
 
@@ -33,6 +34,13 @@ shade     = { y = -2, blur = 3, color = "black", alpha = 0.05 }
 right     = { x = 2, blur = 3, color = "black", alpha = 0.03 }
 shadow    = { y = 1, blur = 4, color = "black", alpha = 0.08, alpha_dark = 0.30 }
 
+[edges.linked_hover]
+border    = "darker(border_hover, 0.03)"
+highlight = { y = 2, blur = 2, color = "white", alpha = 0.60 }
+left      = { x = 2, blur = 2, color = "white", alpha = 0.50 }
+shade     = { y = -2, blur = 3, color = "black", alpha = 0.05 }
+right     = { x = 2, blur = 3, color = "black", alpha = 0.03 }
+
 [edges.sunken]
 border = "border_strong"
 inner  = { y = 1, blur = 2, color = "black", alpha = 0.15, alpha_dark = 0.30 }
@@ -47,13 +55,14 @@ border = "none"
 
 [widgets]
 button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lighter(button_hover, 0.7)" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
 toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lighter(header, 0.7)" }
 title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }
 combo          = { like = "button" }
-tab            = { tab_kind = "boxed", active_marker = "glow", hover_color = "lighter(header, 0.6)" }
-menu_item      = { hover_color = "menu_hover" }
-menubar_item   = { hover_color = "menubar_hover" }
-panel_button   = { edge = "raised", hover_edge = "raised_hover", hover_color = "pb_hover" }
+tab            = { tab_kind = "boxed", active_marker = "line", hover_color = "bg" }
+menu_item      = { hover_color = "accent", hover_fg = "accent_fg" }
+menubar_item   = { hover_color = "accent", hover_fg = "accent_fg" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "darker(button, 0.06)", hover_color = "button_hover", selected_color = "button", selected_border = "border_hover", active_marker = "line" }
