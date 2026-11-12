@@ -570,6 +570,4 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 ## 16. Pending changes (next round)
 
 Agreed but not built yet. Delete each line once it's done.
-
-- **Icon and theme thumbnails:** one static "swirly rainbow" image as the settings app's icon and as the theme's thumbnails in Mint's Themes settings (`gtk-3.0/thumbnail.png`, `cinnamon/thumbnail.png`, `metacity-1/thumbnail.png`), so xl-Cheeselooks is recognizable whatever colors are chosen. Static on purpose: the brand, not a preview of the current colors.
-
+- *(done)* **Icon and theme thumbnails:** the static swirly rainbow (`data/icons/xl-cheeselooks.svg`, drawn by `tools/make_icon.py`: an Archimedean spiral of short round-capped strokes, hue around the wheel, thickening outward). `tools/make_icon.sh` renders the 256px app icon and the 224×160 thumbnails (`gtk-3.0`, `cinnamon`, `metacity-1`; Mint's Themes settings scales them to fit 112×80) into the templates, so every install has them.

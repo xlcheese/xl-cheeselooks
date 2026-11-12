@@ -710,6 +710,15 @@ class RenderAndInstallTests(unittest.TestCase):
                                    ["xdg-config/gtk-4.0:ro"])
         self.assertIn("~/.themes:ro", kept)
 
+    def test_theme_thumbnails_installed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            theme = Path(tmp) / "xl-Cheeselooks"
+            install.install(REPO / "templates", tokens.build(defaults(), styles.load(DEFAULT_STYLE)),
+                            theme, Path(tmp) / "good")
+            for part in ("gtk-3.0", "cinnamon", "metacity-1"):
+                data = (theme / part / "thumbnail.png").read_bytes()
+                self.assertTrue(data.startswith(b"\x89PNG"), part)
+
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)
         with tempfile.TemporaryDirectory() as tmp:
