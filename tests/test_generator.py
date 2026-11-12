@@ -206,6 +206,9 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(t["panel.w.panel_button.padding"], "4")
         st = styles.Style(name="Fixture", path=None, widgets={"panel_button": {"padding": 8}})
         self.assertEqual(tokens.build(defaults(), st)["panel.w.panel_button.padding"], "8")
+        self.assertEqual(t["panel.w.panel_button.spacing"], "2")
+        st = styles.Style(name="Fixture", path=None, widgets={"panel_button": {"spacing": 0}})
+        self.assertEqual(tokens.build(defaults(), st)["panel.w.panel_button.spacing"], "0")
         d = Path(tempfile.mkdtemp())
         (d / "style.toml").write_text('name = "T"\n[widgets]\npanel_button = { padding = 99 }\n')
         with self.assertRaises(styles.StyleError):

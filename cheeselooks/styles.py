@@ -43,16 +43,18 @@ STATES = ("rest", "hover", "pressed", "focus")
 WIDGET_KEYS = {
     "like", "edge", "hover_edge", "pressed_edge", "focus_edge", "border",
     "hover_color", "tab_kind", "active_marker", "hover_border",
-    "color", "selected_color", "selected_border", "padding", "hover_fg", "selected_fg",
+    "color", "selected_color", "selected_border", "padding", "spacing", "hover_fg", "selected_fg",
 }
 # keys only some widgets use so far (others accept them but ignore them)
 WIDGET_ONLY_KEYS = {"color": ("panel_button",), "selected_color": ("panel_button",),
                     "selected_border": ("panel_button",), "padding": ("panel_button",),
+                    "spacing": ("panel_button",),
                     "hover_fg": ("menu_item", "menubar_item", "tab"), "selected_fg": ("panel_button",)}
 # a text color belongs to its face: a widget that sets its own face doesn't
 # inherit the text color of the widget it is "like"
 FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg"}
 PADDING_RANGE = (0, 24)   # px, left and right
+SPACING_RANGE = (0, 12)   # px between window-list buttons
 TAB_KINDS = ("boxed", "open", "pills")
 # Settings a style can suggest in [defaults] (applied when the style is picked
 # and on a fresh install). Panel and menu values are optional: left out, the
@@ -117,7 +119,7 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
     "panel_button": {"edge": "raised", "hover_edge": "raised", "pressed_edge": "sunken",
                      "focus_edge": "raised", "color": "pb_rest", "hover_color": "pb_hover",
                      "selected_color": "pb_focus", "selected_border": "accent_press",
-                     "active_marker": "none", "padding": 4},
+                     "active_marker": "none", "padding": 4, "spacing": 2},
     "check": {"edge": "sunken", "hover_edge": "sunken", "pressed_edge": "sunken", "focus_edge": "focus"},
     "switch": {"like": "check"},
 }
@@ -266,12 +268,12 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                                     f"{', '.join(WIDGET_ONLY_KEYS[k])} so far and is ignored")
                 if not _is_color_ref(v, names):
                     errors.append(f"{where}.{k} must be a palette color name or #RRGGBB (got {v!r})")
-            elif k == "padding":
+            elif k in ("padding", "spacing"):
                 if wname not in WIDGET_ONLY_KEYS[k]:
-                    warnings.append(f"{where}.padding is only used by panel_button so far and is ignored")
-                lo, hi = PADDING_RANGE
+                    warnings.append(f"{where}.{k} is only used by panel_button so far and is ignored")
+                lo, hi = PADDING_RANGE if k == "padding" else SPACING_RANGE
                 if isinstance(v, bool) or not isinstance(v, int) or not lo <= v <= hi:
-                    errors.append(f"{where}.padding must be a whole number of pixels from {lo} to {hi} (got {v!r})")
+                    errors.append(f"{where}.{k} must be a whole number of pixels from {lo} to {hi} (got {v!r})")
             elif k == "tab_kind" and v not in TAB_KINDS:
                 errors.append(f"{where}.tab_kind must be one of {', '.join(TAB_KINDS)}")
             elif k == "active_marker" and v not in ACTIVE_MARKERS:
@@ -512,8 +514,9 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
         for k in ("color", "selected_color", "selected_border", "hover_fg", "selected_fg"):
             if spec.get(k):
                 tokens[f"w.{wname}.{k}"] = _resolve_color(spec[k], palette)
-        if "padding" in spec:
-            tokens[f"w.{wname}.padding"] = str(spec["padding"])
+        for k in ("padding", "spacing"):
+            if k in spec:
+                tokens[f"w.{wname}.{k}"] = str(spec[k])
         for k in ("tab_kind", "active_marker"):
             if k in spec:
                 tokens[f"w.{wname}.{k}"] = spec[k]

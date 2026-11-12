@@ -62,7 +62,7 @@
      focused window   selected_color (the accent by default), bold label
      needs attention  a red tint
    -------------------------------------------------------------------------- */
-.grouped-window-list-box, .window-list-box { spacing: 2px; }
+.grouped-window-list-box, .window-list-box { spacing: {{panel.w.panel_button.spacing}}px; }
 
 .grouped-window-list-item-box, .window-list-item-box,
 .grouped-window-list-item-box:active, .grouped-window-list-item-box:checked,
