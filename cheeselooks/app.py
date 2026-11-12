@@ -34,7 +34,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 from gi.repository import Gdk, GLib, Gtk  # noqa: E402
 
-from . import cli, flatpak, palette as pal, paths, render, settings, styles, themes, tokens  # noqa: E402
+from . import cli, flatpak, palette as pal, panelmarker, paths, render, settings, styles, themes, tokens  # noqa: E402
 
 APP_TITLE = "xl-Cheeselooks"
 PREVIEW_DELAY_MS = 120
@@ -438,7 +438,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
             lb.select_row(lb.get_row_at_index(1))
             notebook.append_page(lb, Gtk.Label(label=name))
         body.pack_start(notebook, False, False, 0)
-        term = Gtk.Label(label="wes@daddy:~$ ls\nDesktop  Documents  Music", xalign=0, margin=6)
+        term = Gtk.Label(label="user@mint:~$ ls\nDesktop  Documents  Music", xalign=0, margin=6)
         term.get_style_context().add_class("xl-prev-terminal")
         body.pack_start(term, False, False, 0)
         win.pack_start(body, False, False, 0)
@@ -464,6 +464,11 @@ class SettingsWindow(Gtk.ApplicationWindow):
     def _extra_css(self, t: dict[str, str]) -> str:
         """The drawn panel and the terminal sample, from the same tokens."""
         pb = "panel.w.panel_button."
+        kind = t.get(pb + "active_marker", "none")
+        marker = "none"
+        if kind != "none":     # the focused window's marker, as the real panel draws it
+            color = t["panel.accent_press"] if t[pb + "selected_color"] == t["panel.accent"] else t["panel.accent"]
+            marker = panelmarker.shadow(kind, color, 28)
         return f"""
 .xl-prev-panel {{ background-color: rgba({t['panel.panel_rgb']}, {t['panel.opacity']});
   background-image: linear-gradient(to bottom, rgba({t['panel.panel_top_rgb']}, {t['panel.opacity']}),
@@ -478,7 +483,8 @@ button.xl-prev-pb {{ min-height: 26px; padding: 0 {t[pb + 'padding']}px; margin-
 button.xl-prev-pb:hover {{ border-color: {t[pb + 'hover_border']}; background-color: {t[pb + 'hover_color']};
   background-image: linear-gradient(to bottom, {t[pb + 'hover_top']}, {t[pb + 'hover_bottom']}); }}
 button.xl-prev-pb.focused {{ border-color: {t[pb + 'selected_border']}; background-color: {t[pb + 'selected_color']};
-  background-image: linear-gradient(to bottom, {t[pb + 'selected_top']}, {t[pb + 'selected_bottom']}); }}
+  background-image: linear-gradient(to bottom, {t[pb + 'selected_top']}, {t[pb + 'selected_bottom']});
+  box-shadow: {marker}; }}
 button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: bold; }}
 .xl-prev-terminal {{ font-family: monospace; color: {t['term.text']}; background-color: {t['term.bg']}; padding: 6px; }}
 """

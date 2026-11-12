@@ -308,6 +308,20 @@ stacksidebar row:hover:not(:selected) {
   background-color: {{select}};
   background-image: {{select_grad}}; }
 
+/* Stack sidebars (a settings window's page list, e.g. this theme's own app):
+   the sidebar colour, no divider lines (they'd stick out past rounded
+   selections), and rows inset a little so the selection floats in the list */
+stacksidebar.sidebar list, stacksidebar list {
+  background-color: {{sidebar}}; }
+stacksidebar list separator, stacksidebar list > separator {
+  min-height: 0;
+  margin: 0;
+  background: none;
+  border: none; }
+stacksidebar row {
+  margin: 2px 6px;
+  border-radius: {{r}}px; }
+
 /* --------------------------------------------------------------------------
    Entries
    -------------------------------------------------------------------------- */

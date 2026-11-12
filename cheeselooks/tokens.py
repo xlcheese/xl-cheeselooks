@@ -17,7 +17,7 @@ from __future__ import annotations
 import colorsys
 
 from . import palette as pal
-from . import shape
+from . import render, shape
 from . import styles as sty
 from . import gtk4, metacity, panelmarker, tabs
 
@@ -115,6 +115,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # Calibrated so the slider's center (50) is xl_cheese's chosen look, which was
     # 40 on the original scale: h = value / 50 x 0.8.
     hover = g["hover_strength"] / 50 * HOVER_CALIBRATION
+    render.LIFT_SCALE = g["hover_strength"] / 50     # style lift() hovers follow the slider too
     theme = pal.derive(g["accent"], g["bg"], g["text"], hover)
     t: dict[str, str] = {}
 

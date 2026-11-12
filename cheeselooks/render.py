@@ -62,6 +62,9 @@ FUNCTIONS = {
 # relative to a light palette's move toward white (the palette's own hovers:
 # 0.50 light, 0.08 dark)
 DARK_LIFT = 0.16
+# lift() amounts follow the Hover strength slider: 1.0 at its default (50).
+# tokens.build sets this before styles are resolved.
+LIFT_SCALE = 1.0
 
 
 def _lift(args: list, tokens: dict[str, str]) -> str:
@@ -71,7 +74,7 @@ def _lift(args: list, tokens: dict[str, str]) -> str:
     colour, gently, instead of jumping toward white."""
     if len(args) != 2:
         raise _ExprError("wrong number of arguments for lift()")
-    color, amount = _color(args[0]), _number(args[1])
+    color, amount = _color(args[0]), min(1.0, _number(args[1]) * LIFT_SCALE)
     bg, text = tokens.get("bg"), tokens.get("text")
     dark = (pal.luminance(bg) < pal.luminance(text)) if bg and text else pal.luminance(color) < 0.18
     if dark:

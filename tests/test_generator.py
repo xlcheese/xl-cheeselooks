@@ -313,6 +313,16 @@ class StyleTests(unittest.TestCase):
         self.assertLess(palette.luminance(lifted), 0.2)                   # still a dark face
         self.assertGreater(palette.luminance(lifted), palette.luminance("#3B4252"))
 
+    def test_lift_follows_hover_strength(self):
+        st = styles.load(DEFAULT_STYLE)
+        base = tokens.build(defaults(), st)["w.tab.hover_color"]
+        strong = defaults(); strong["global"]["hover_strength"] = 100
+        weak = defaults(); weak["global"]["hover_strength"] = 10
+        hs, hw = tokens.build(strong, st)["w.tab.hover_color"], tokens.build(weak, st)["w.tab.hover_color"]
+        tokens.build(defaults(), st)                          # leave the default scale behind
+        self.assertGreater(palette.luminance(hs), palette.luminance(base))
+        self.assertLess(palette.luminance(hw), palette.luminance(base))
+
     def test_title_bar_buttons_follow_a_contrasting_title_bar(self):
         st = styles.load(DEFAULT_STYLE)
         same = tokens.build(defaults(), st)
