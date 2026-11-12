@@ -359,7 +359,7 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 ### Terminal
 - **Switch off:** follows the theme (light theme, light terminal).
 - **Switch on:** the user's background and text, plus Terminal presets.
-- **Implementation:** a `vte-terminal` rule in the GTK CSS. This only takes effect when the terminal profile uses system theme colors, which is GNOME Terminal's default on Mint. The README must say so.
+- **Implementation:** a `vte-terminal` rule in the GTK CSS. Checked with VTE the way GNOME Terminal's "Use colors from system theme" reads it (the terminal widget's GTK colour and background). This only takes effect when the terminal profile uses system theme colors, which is GNOME Terminal's default on Mint. The README must say so.
 
 ### GTK 4 / libadwaita (colors only)
 - The generator writes a **marked block** into `~/.config/gtk-4.0/gtk.css`, between `/* xl-cheeselooks begin */` and `/* xl-cheeselooks end */`. The libadwaita named colors go there as both `@define-color` and `:root` variables.
@@ -376,7 +376,7 @@ Fine-grained overrides. Each row has its own switch. **Off** means the item foll
 | Item | Controls when switched on | Default when off |
 |---|---|---|
 | **Tooltips** | Background and text color pickers; presets *Follow menu* and *Classic yellow* (`#FBEAA0` / `#303030`) | Menu colors (`menu_bg`, `text`) |
-| **Scrollbars** | *Thin overlay* or *Classic* switch; Roundness slider | Overlay, fully round thumb |
+| **Scrollbars** | *Thin overlay* or *Classic* switch; Roundness slider | Overlay, fully round thumb. When set, `apply` also turns Mint's "Use overlay scroll bars" (`org.cinnamon.desktop.interface gtk-overlay-scrollbars`) on or off to match; when not set, the theme follows that switch |
 | **Sliders** (volume, zoom, brightness) | Roundness slider for the handle and track | Fully round, as in Mint-Y |
 | **Switches** | Roundness slider | Fully round, as in Mint-Y |
 | **Focus ring** | Color picker (default accent); width 0–3 px, 0 turns it off | Subtle 1px dashed, text color at 25%, like Mint-Y |
@@ -562,3 +562,4 @@ Agreed but not built yet. Delete each line once it's done.
 - **Claude tab style:** designed by Claude together with the Claude preset (see Roadmap).
 - **Icon and theme thumbnails:** one static "swirly rainbow" image as the settings app's icon and as the theme's thumbnails in Mint's Themes settings (`gtk-3.0/thumbnail.png`, `cinnamon/thumbnail.png`, `metacity-1/thumbnail.png`), so xl-Cheeselooks is recognizable whatever colors are chosen. Static on purpose: the brand, not a preview of the current colors.
 - **Title buttons on a contrasting title bar:** with separate window-border colours (e.g. a dark title bar on a light theme), the title buttons' hover face still comes from the main palette, so it is light on a dark bar, in both Muffin and GTK headerbars. Derive the title-button faces from the title bar colour when it differs.
+

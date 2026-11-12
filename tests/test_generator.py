@@ -252,6 +252,15 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(t["w.scrollbar.color"], t["accent"])
         self.assertEqual(t["w.scrollbar.outline"], t["accent_press"])
 
+    def test_scrollbar_mode_follows_mint_unless_chosen(self):
+        st = styles.Style(name="Fixture", path=None)
+        self.assertEqual(tokens.build(defaults(), st)["scrollbar.mode"], "overlay")
+        off = tokens.build(defaults(), st, overlay_scrollbars=False)
+        self.assertEqual((off["scrollbar.mode"], off["scrollbar.width"]), ("classic", "10"))
+        s = defaults()
+        s["details"]["scrollbars"].update(custom=True, mode="overlay")
+        self.assertEqual(tokens.build(s, st, overlay_scrollbars=False)["scrollbar.mode"], "overlay")
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

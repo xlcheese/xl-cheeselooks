@@ -20,6 +20,8 @@ THEME_KEYS = (
 )
 LAYOUT_KEY = ("org.cinnamon.desktop.wm.preferences", "button-layout")
 PANEL_HEIGHT_KEY = ("org.cinnamon", "panels-height")
+# Mint's Themes settings: "Use overlay scroll bars"
+OVERLAY_KEY = ("org.cinnamon.desktop.interface", "gtk-overlay-scrollbars")
 
 
 def available() -> bool:
@@ -55,6 +57,22 @@ def panel_height(default: int) -> int:
         if m:
             return int(m.group(1))
     return default
+
+
+def overlay_scrollbars() -> bool | None:
+    """Whether GTK apps use overlay (floating) scrollbars; None when unknown."""
+    if not available():
+        return None
+    value = get(*OVERLAY_KEY)
+    return None if value is None else value == "true"
+
+
+def set_overlay_scrollbars(enabled: bool) -> str | None:
+    """Match Mint's overlay-scrollbar switch to the Details choice. Returns a log line."""
+    if not available() or overlay_scrollbars() in (None, enabled):
+        return None
+    set_value(*OVERLAY_KEY, "true" if enabled else "false")
+    return f"overlay scroll bars turned {'on' if enabled else 'off'} (Details > Scrollbars)"
 
 
 def apply(theme_name: str, button_layout: str | None = None, activate: bool = False,

@@ -95,8 +95,10 @@ def cmd_apply(args: argparse.Namespace) -> int:
     style = _load_style(data["style"]["name"], args.style_dir)
     for w in style.warnings:
         _err(f"style warning: {w}")
-    height = reload.panel_height(DEFAULT_PANEL_HEIGHT) if not args.no_reload else DEFAULT_PANEL_HEIGHT
-    table = tokens.build(data, style, panel_height=height)
+    live = not args.no_reload
+    height = reload.panel_height(DEFAULT_PANEL_HEIGHT) if live else DEFAULT_PANEL_HEIGHT
+    table = tokens.build(data, style, panel_height=height,
+                         overlay_scrollbars=reload.overlay_scrollbars() if live else None)
     if args.theme_dir:
         theme_dir = Path(args.theme_dir)
         last_good = theme_dir.with_name(f".{theme_dir.name}.last-good")
@@ -111,6 +113,11 @@ def cmd_apply(args: argparse.Namespace) -> int:
         print(f"  note: {note}")
     if not args.no_reload and not args.theme_dir:
         layout = table["wb.button_layout"] if (theme_dir / "metacity-1").is_dir() else None
+        sb = data["details"]["scrollbars"]
+        if sb["custom"]:
+            line = reload.set_overlay_scrollbars(sb["mode"] == "overlay")
+            if line:
+                print(f"  {line}")
         for line in reload.apply(tokens.THEME_NAME, layout, activate=args.activate, theme_dir=theme_dir):
             print(f"  {line}")
     return 0
