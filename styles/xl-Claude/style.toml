@@ -1,0 +1,82 @@
+# xl-Claude: designed by Claude.
+# Calm and warm, like good paper: soft buttons with only a faint top light and
+# almost no shadow, a slightly warmer border on hover; gently sunken fields with
+# a terracotta focus ring; flat toolbar and title buttons that lift softly (lift()
+# keeps them right on light and dark title bars); menus hovered with a light
+# terracotta tint and dark text instead of a solid block; "claude" tabs with a
+# short accent bar; a panel a shade darker than the windows, with paper-chip
+# buttons whose borders disappear into their face.
+#
+# Made to go with the Claude preset (presets/global/claude.json), but any colours
+# work:  cheeselooks apply --style xl-Claude --preset claude
+#
+# Alpha values are written for Depth 50. alpha_dark is used on dark themes.
+
+name = "xl-Claude"
+author = "Claude"
+description = "Soft paper buttons, terracotta accents, calm tabs. Designed by Claude."
+
+adapt_strength = 0.6
+gradient_shape = "smooth"
+
+[defaults]
+roundness = 35
+gradient = 10
+depth = 45
+panel_opacity = 92
+panel_roundness = 25
+panel_gradient = 6
+
+# Buttons: a faint light along the top, a whisper of shade below, and a drop
+# shadow you feel more than see
+[edges.raised]
+border    = "mix(border_strong, bg, 0.2)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.55 }
+shade     = { y = -1, blur = 0, color = "black", alpha = 0.04 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.04, alpha_dark = 0.25 }
+
+# Hover: the same, with the border warmed toward the accent
+[edges.raised_hover]
+border    = "mix(border_hover, accent, 0.25)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.6 }
+shade     = { y = -1, blur = 0, color = "black", alpha = 0.04 }
+shadow    = { y = 1, blur = 3, color = "black", alpha = 0.06, alpha_dark = 0.3 }
+
+[edges.sunken]
+border = "border_strong"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.07, alpha_dark = 0.3 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.35 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.07, alpha_dark = 0.3 }
+
+[edges.flat]
+border = "none"
+
+# Panel buttons: paper chips on a slightly darker panel; the border is the
+# face colour, so the chip has no outline, just a top light
+[edges.panel_rest]
+border    = "lighter(bg, 0.35)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.5 }
+
+[edges.panel_hover]
+border = "mix(border_hover, accent, 0.3)"
+shade  = { y = -1, color = "black", alpha = 0.06 }
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(button, 0.6)" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(header, 0.6)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+tab            = { tab_kind = "claude", active_marker = "none", hover_color = "lift(header, 0.5)" }
+menu_item      = { hover_color = "mix(menu_bg, accent, 0.14)", hover_fg = "text" }
+menubar_item   = { hover_color = "mix(header, accent, 0.14)", hover_fg = "text" }
+panel_button   = { edge = "panel_rest", hover_edge = "panel_hover", color = "lighter(bg, 0.35)", hover_color = "lift(button, 0.7)", selected_color = "base", selected_border = "mix(border_hover, accent, 0.3)", active_marker = "line", spacing = 2 }
+scrollbar      = { color = "mix(bg, text, 0.35)", hover_color = "mix(bg, accent, 0.55)", pressed_color = "accent" }
+
+[panel]
+color = "darker(bg, 0.07)"
