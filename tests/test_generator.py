@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from cheeselooks import cli, flatpak, gtk4, install, tabs, palette, render, settings, shape, styles, tokens
+from cheeselooks import cli, flatpak, gtk4, install, tabs, themes, palette, render, settings, shape, styles, tokens
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_STYLE = REPO / "styles" / "xl-Cheeselooks"
@@ -727,6 +727,36 @@ class RenderAndInstallTests(unittest.TestCase):
         self.assertEqual(css.count("{"), css.count("}"))              # balanced rules
         controls = {path for path, kind, extra in settings._RULES}
         self.assertIn(("global", "accent"), controls)          # every rule gets a control
+
+    def test_themes_load_save_export_import(self):
+        import os, zipfile
+        from unittest import mock
+        names = [n for n, _f, _b in themes.list_themes()]
+        self.assertEqual(names[:4], ["xl-Cheeselooks", "xl-Classic", "xl-Gummy", "Claude"])
+        claude = themes.load("Claude")
+        self.assertEqual((claude["theme"], claude["style"]["name"], claude["global"]["accent"]),
+                         ("Claude", "xl-Claude", "#B85A38"))
+        self.assertEqual(claude["global"]["roundness"], 35)          # the style's [defaults] apply
+        with tempfile.TemporaryDirectory() as home, tempfile.TemporaryDirectory() as home2:
+            def use(h):
+                return mock.patch.dict(os.environ, {"XDG_CONFIG_HOME": f"{h}/c", "XDG_DATA_HOME": f"{h}/d"})
+            with use(home):
+                data = copy.deepcopy(claude)
+                data["global"]["accent"] = "#2F7DE1"
+                themes.save("Blue Claude", data)
+                with self.assertRaises(themes.ThemeError):
+                    themes.save("Claude", data)                       # built-in names are taken
+                with self.assertRaises(themes.ThemeError):
+                    themes.save("Blue Claude", data)                  # no silent overwrite
+                self.assertEqual(themes.load("Blue Claude")["global"]["accent"], "#2F7DE1")
+                themes.save_custom(data, "Claude")
+                self.assertEqual((themes.load("Custom")["theme"], themes.based_on()), ("Custom", "Claude"))
+                out = themes.export("Blue Claude", data, Path(home) / "blue")
+                self.assertEqual(zipfile.ZipFile(out).namelist(), ["theme.json"])   # built-in style: not packed
+            with use(home2):
+                name, notes = themes.import_file(out)
+                self.assertEqual((name, notes), ("Blue Claude", []))
+                self.assertEqual(themes.load(name)["global"]["accent"], "#2F7DE1")
 
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)

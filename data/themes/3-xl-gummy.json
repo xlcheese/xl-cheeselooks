@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "name": "xl-Gummy",
+  "settings": {
+    "style": {
+      "name": "xl-Gummy"
+    },
+    "global": {
+      "accent": "#FA8562",
+      "bg": "#F5F5F5",
+      "text": "#303030"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "name": "xl-Classic",
+  "settings": {
+    "style": {
+      "name": "xl-Classic"
+    },
+    "global": {
+      "accent": "#FA8562",
+      "bg": "#F5F5F5",
+      "text": "#303030"
+    }
+  }
+}

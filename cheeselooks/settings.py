@@ -17,6 +17,7 @@ SETTINGS_VERSION = 1
 
 DEFAULTS: dict[str, Any] = {
     "version": SETTINGS_VERSION,
+    "theme": "xl-Cheeselooks",     # the theme these settings came from, or "Custom"
     "global": {
         "accent": "#FA8562", "bg": "#F5F5F5", "text": "#303030",
         "size": "normal", "roundness": 15, "gradient": 10,
@@ -159,6 +160,8 @@ def validate(data: dict) -> list[str]:
         elif kind == "choice":
             if value not in extra:
                 problems.append(f"{name} must be one of {', '.join(extra)} (got {value!r})")
+    if not isinstance(data.get("theme"), str):
+        problems.append("theme must be text")
     if not isinstance(data.get("style", {}).get("name"), str):
         problems.append("style.name must be text")
     return problems

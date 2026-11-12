@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "name": "Claude",
+  "settings": {
+    "style": {
+      "name": "xl-Claude"
+    },
+    "global": {
+      "accent": "#B85A38",
+      "bg": "#F4F2EC",
+      "text": "#2E2A25"
+    }
+  }
+}

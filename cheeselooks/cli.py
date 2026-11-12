@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import __version__, flatpak, gtk4, install, paths, reload, settings, styles, tokens
+from . import __version__, flatpak, gtk4, install, paths, reload, settings, styles, themes, tokens
 from .shape import DEFAULT_PANEL_HEIGHT
 
 
@@ -51,6 +51,12 @@ def _load_settings(args: argparse.Namespace) -> dict:
     path = Path(args.settings) if args.settings else paths.settings_file()
     fresh = not path.exists()
     data = settings.load(path)
+    if getattr(args, "theme", None):
+        try:
+            data = themes.load(args.theme)        # the whole theme: every tab
+        except themes.ThemeError as exc:
+            raise settings.SettingsError([str(exc)])
+        fresh = False
     new_style = getattr(args, "style", None)
     if new_style:
         data["style"]["name"] = new_style
@@ -168,6 +174,24 @@ def cmd_apply(args: argparse.Namespace) -> int:
     return 0
 
 
+def revert_desktop() -> tuple[dict | None, list[str]]:
+    """Put the previous theme back on the desktop (the one before the last
+    Apply). Returns the restored settings and the log lines; the settings app
+    keeps its own settings as they are."""
+    log = []
+    data = install.revert(paths.theme_dir(), paths.last_good_dir())
+    if data:
+        data = settings.from_dict(data)
+        settings.save(data, paths.settings_file())
+        try:
+            style = _load_style(data["style"]["name"], None)
+            log += _libadwaita(data, tokens.build(data, style))
+        except styles.StyleError as exc:
+            log.append(f"libadwaita colors left as they were: {exc}")
+    log += reload.apply(tokens.THEME_NAME, theme_dir=paths.theme_dir())
+    return data, log
+
+
 def cmd_revert(args: argparse.Namespace) -> int:
     data = install.revert(paths.theme_dir(), paths.last_good_dir())
     if data:
@@ -259,6 +283,41 @@ def _set_flatpak_setting(on: bool) -> None:
         settings.save(data, path)
 
 
+def cmd_themes(args: argparse.Namespace) -> int:
+    for name, f, builtin in themes.list_themes():
+        print(f"{name:28} {'built-in' if builtin else 'yours':9} {f}")
+    if themes.custom_file().exists():
+        print(f"{themes.CUSTOM:28} {'yours':9} {themes.custom_file()}")
+    return 0
+
+
+def cmd_export_theme(args: argparse.Namespace) -> int:
+    if args.name == themes.CUSTOM or not args.name:
+        data, name = settings.load(paths.settings_file()), args.save_as or "My theme"
+    else:
+        data, name = themes.load(args.name), args.save_as or args.name
+    dest = Path(args.file) if args.file else Path.cwd() / themes.slug(name)
+    try:
+        out = themes.export(name, data, dest)
+    except (themes.ThemeError, styles.StyleError) as exc:
+        _err(str(exc))
+        return 1
+    print(f"Exported '{name}' to {out}")
+    return 0
+
+
+def cmd_import_theme(args: argparse.Namespace) -> int:
+    try:
+        name, notes = themes.import_file(Path(args.file))
+    except (themes.ThemeError, OSError, ValueError) as exc:
+        _err(str(exc))
+        return 1
+    print(f"Imported theme '{name}'. Use it with: cheeselooks apply --theme \"{name}\"")
+    for n in notes:
+        print(f"  note: {n}")
+    return 0
+
+
 def cmd_presets(args: argparse.Namespace) -> int:
     for f in preset_files():
         data = json.loads(f.read_text(encoding="utf-8"))
@@ -289,6 +348,7 @@ def main(argv: list[str] | None = None) -> int:
         p.add_argument("--preset", action="append",
                        help="apply a preset on top (name or .json file; can repeat)")
         p.add_argument("--style-dir", help="extra folder to look for styles in")
+        p.add_argument("--theme", help="use this theme (every setting; see: cheeselooks themes)")
 
     p = sub.add_parser("apply", help="generate the theme and reload the desktop")
     common(p)
@@ -320,6 +380,19 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--disable", action="store_true", help="remove that access again")
     p.add_argument("--yes", action="store_true", help="don't ask before enabling")
     p.set_defaults(func=cmd_flatpak)
+
+    p = sub.add_parser("themes", help="list the themes (built-in and yours)")
+    p.set_defaults(func=cmd_themes)
+
+    p = sub.add_parser("export-theme", help="pack a theme into one file to share (.xltheme)")
+    p.add_argument("name", help="theme name, or Custom for your current settings")
+    p.add_argument("file", nargs="?", help="where to write it (default: <name>.xltheme here)")
+    p.add_argument("--save-as", help="the name the theme gets in the file")
+    p.set_defaults(func=cmd_export_theme)
+
+    p = sub.add_parser("import-theme", help="install a theme from a .xltheme file")
+    p.add_argument("file")
+    p.set_defaults(func=cmd_import_theme)
 
     p = sub.add_parser("presets", help="list available presets")
     p.set_defaults(func=cmd_presets)
