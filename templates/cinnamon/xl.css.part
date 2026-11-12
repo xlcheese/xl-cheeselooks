@@ -130,6 +130,9 @@
   color: {{panel.accent_fg}}; }
 
 /* Panel launchers */
+/* gaps follow the style's panel_button spacing, like the window list; no
+   lead-in padding before the first launcher (Mint-Y adds 7px) */
+.panel-launchers { spacing: {{panel.w.panel_button.spacing}}px; padding-left: 0; }
 .panel-launchers .launcher {
   border: 1px solid transparent;
   border-radius: {{panel.r}}px;
