@@ -31,7 +31,13 @@
 .applet-icon { color: {{panel.text}}; }
 
 /* Applets (menu button, tray, clock): flat until hovered, full height */
+/* 3px padding + the 1px border (room for the hover outline) = Mint-Y-Variable's
+   4px padding with no border; Mint-Y's 5px made every applet 4px wider, which
+   on a full panel squeezed the window list in the centre. */
 .applet-box {
+  padding-left: 3px;
+  padding-right: 3px;
+  spacing: 3px;
   border: 1px solid transparent;
   border-radius: {{panel.r}}px;
   transition-duration: {{hover_out_ms}}; }
