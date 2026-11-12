@@ -719,6 +719,15 @@ class RenderAndInstallTests(unittest.TestCase):
                 data = (theme / part / "thumbnail.png").read_bytes()
                 self.assertTrue(data.startswith(b"\x89PNG"), part)
 
+    def test_settings_app_preview_css(self):
+        from cheeselooks import app
+        t = tokens.build(defaults(), styles.load(REPO / "styles" / "xl-Claude"))
+        css = app.SettingsWindow._extra_css(None, t)          # the drawn panel and terminal sample
+        self.assertIn(t["panel.w.panel_button.selected_color"], css)
+        self.assertEqual(css.count("{"), css.count("}"))              # balanced rules
+        controls = {path for path, kind, extra in settings._RULES}
+        self.assertIn(("global", "accent"), controls)          # every rule gets a control
+
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)
         with tempfile.TemporaryDirectory() as tmp:

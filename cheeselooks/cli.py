@@ -105,6 +105,33 @@ def _libadwaita(data: dict, table: dict) -> list[str]:
     return [line for line in log if line]
 
 
+def apply_to_desktop(data: dict, style: styles.Style, activate: bool = False,
+                     save: bool = True) -> list[str]:
+    """Write the theme to ~/.themes, save the settings, update the libadwaita
+    colours and reload the desktop: everything `cheeselooks apply` does.
+    Returns the log lines. Used by the settings app's Apply button."""
+    log = []
+    height = reload.panel_height(DEFAULT_PANEL_HEIGHT)
+    table = tokens.build(data, style, panel_height=height,
+                         overlay_scrollbars=reload.overlay_scrollbars())
+    theme_dir = paths.theme_dir()
+    written = install.install(paths.templates_dir(), table, theme_dir, paths.last_good_dir(), data)
+    if save:
+        settings.save(data, paths.settings_file())
+    log.append(f"Wrote {len(written)} files to {theme_dir}")
+    log.append(f"style: {style.name} from {_where(style)}")
+    log += [f"note: {n}" for n in tokens.warnings(data)]
+    log += _libadwaita(data, table)
+    layout = table["wb.button_layout"] if (theme_dir / "metacity-1").is_dir() else None
+    sb = data["details"]["scrollbars"]
+    if sb["custom"]:
+        line = reload.set_overlay_scrollbars(sb["mode"] == "overlay")
+        if line:
+            log.append(line)
+    log += reload.apply(tokens.THEME_NAME, layout, activate=activate, theme_dir=theme_dir)
+    return log
+
+
 def cmd_apply(args: argparse.Namespace) -> int:
     data = _load_settings(args)
     style = _load_style(data["style"]["name"], args.style_dir)

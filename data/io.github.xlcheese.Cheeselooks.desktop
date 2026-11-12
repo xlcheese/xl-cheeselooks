@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=xl-Cheeselooks
+GenericName=Theme Settings
+Comment=Style your Linux Mint theme: colours, shapes, panel and window borders
+Exec=cheeselooks-settings
+Icon=xl-cheeselooks
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;
+Keywords=theme;colour;color;accent;appearance;cinnamon;gtk;
