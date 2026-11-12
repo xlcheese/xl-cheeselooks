@@ -528,6 +528,7 @@ xl-cheeselooks/
 | **v1.x** | Accent from wallpaper. Window button styles: Dots, Wide, Circles. Float shipped as a selectable style. Import/export polish |
 | **Release** | A **Claude** preset: a theme designed by Claude, any way it likes, shipped alongside the other presets |
 | **v2** | Icons tab (recolor the user's Yaru-based folders with the accent); more original styles; in-app style editor |
+| **Later (lowest priority)** | **GNOME / Ubuntu.** (1) *Apps only:* GTK 3 and plain GTK 4 themes already work on any desktop; the tool needs to detect GNOME and use its settings (`org.gnome.desktop.interface gtk-theme`, accent-color) instead of Cinnamon's. Window title bars there come from the GTK 3 headerbar rules (Mutter ignores `metacity-1/`). libadwaita apps get colours only (the gtk.css block and the accent key): upstream libadwaita doesn't read themes, which is a Mint patch. (2) *Desktop:* a GNOME Shell theme (`gnome-shell/gnome-shell.css`, loaded through the User Themes extension); same St CSS dialect as Cinnamon but different class names, so a new template about the size of the Cinnamon one |
 
 ---
 
