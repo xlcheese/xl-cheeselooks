@@ -228,6 +228,19 @@ class StyleTests(unittest.TestCase):
                              widgets={"menu_item": {"hover_color": "accent_hover"}}))
         self.assertEqual(plain["w.menu_item.hover_fg"], plain["text"])
 
+    def test_style_panel_color(self):
+        base = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
+        st = styles.Style(name="Fixture", path=None, panel={"color": "mix(bg, white, 0.4)"})
+        t = tokens.build(defaults(), st)
+        self.assertEqual(t["panel.panel"], palette.mix(t["panel.bg"], "#FFFFFF", 0.4))
+        self.assertNotEqual(t["panel.panel"], base["panel.panel"])
+        out = render.render_text("rgba({{panel.panel_rgb}}, {{panel.opacity}})", t)
+        self.assertEqual(out, f"rgba({palette.rgb_triplet(t['panel.panel'])}, {t['panel.opacity']})")
+        d = Path(tempfile.mkdtemp())
+        (d / "style.toml").write_text('name = "T"\n[panel]\ncolor = "nonsense("\n')
+        with self.assertRaises(styles.StyleError):
+            styles.load(d)
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

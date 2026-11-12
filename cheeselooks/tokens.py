@@ -130,6 +130,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     m_round, m_grad = (g["roundness"], g["gradient"]) if ms["follow_global"] else (ms["roundness"], ms["gradient"])
     ctl = shape.SIZES[g["size"]][0]
 
+    if style.panel.get("color"):
+        # the style's panel color; its gradient and opacity are added as usual
+        pcolors = {**pcolors, "panel": sty._resolve_color(style.panel["color"], pcolors)}
     _add_colors(t, "panel.", pcolors)
     _add_gradients(t, "panel.", pcolors, p_grad / 100)
     _add_widgets(t, "panel.", style, pcolors, depth, p_grad / 100)

@@ -56,6 +56,9 @@ FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg"}
 PADDING_RANGE = (0, 24)   # px, left and right
 SPACING_RANGE = (0, 12)   # px between window-list buttons
 TAB_KINDS = ("boxed", "open", "pills")
+# [panel]: the panel's own colors (opacity is a user setting; a style suggests
+# it with [defaults] panel_opacity)
+PANEL_KEYS = ("color",)
 # Settings a style can suggest in [defaults] (applied when the style is picked
 # and on a fresh install). Panel and menu values are optional: left out, the
 # panel and menus follow Global.
@@ -141,6 +144,7 @@ class Style:
     adapt_strength: float = DEFAULT_ADAPT_STRENGTH
     edges: dict[str, dict[str, Any]] = field(default_factory=dict)
     widgets: dict[str, dict[str, Any]] = field(default_factory=dict)
+    panel: dict[str, Any] = field(default_factory=dict)
     extra_css: str = ""
     warnings: list[str] = field(default_factory=list)
 
@@ -175,12 +179,24 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
     if not isinstance(data.get("name"), str) or not data["name"].strip():
         errors.append("'name' is required and must be text")
     for key in data:
-        if key not in ("name", "author", "description", "defaults", "edges", "widgets", "adapt_strength"):
+        if key not in ("name", "author", "description", "defaults", "edges", "widgets", "panel",
+                       "adapt_strength"):
             warnings.append(f"unknown top-level key '{key}' is ignored")
 
     a = data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)
     if isinstance(a, bool) or not isinstance(a, (int, float)) or not 0 <= a <= 1:
         errors.append("adapt_strength must be a number from 0 (no adapting) to 1 (full)")
+
+    panel = data.get("panel", {})
+    if not isinstance(panel, dict):
+        errors.append("'panel' must be a table")
+    else:
+        for k, v in panel.items():
+            if k not in PANEL_KEYS:
+                warnings.append(f"panel.{k} is not a known panel setting and is ignored "
+                                f"(known: {', '.join(PANEL_KEYS)})")
+            elif not _is_color_ref(v, names):
+                errors.append(f"panel.{k} must be a palette color name or #RRGGBB (got {v!r})")
 
     defaults = data.get("defaults", {})
     if not isinstance(defaults, dict):
@@ -322,6 +338,7 @@ def load(path: Path) -> Style:
         adapt_strength=float(data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)),
         edges=copy.deepcopy(data.get("edges", {})),
         widgets=copy.deepcopy(data.get("widgets", {})),
+        panel=copy.deepcopy(data.get("panel", {})),
         extra_css=extra.read_text(encoding="utf-8") if extra.exists() else "",
         warnings=warnings,
     )
