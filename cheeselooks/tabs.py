@@ -186,3 +186,43 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
         selectors = sel(pos, ":checked") + (",\nnotebook > header > tabs > tab:checked" if pos == "top" else "")
         out.append(f"{selectors} {{\n{body} }}")
     return "\n".join(out) + "\n"
+
+
+def adw_css(t: dict[str, str]) -> str:
+    """libadwaita's tab bar (AdwTabBar: tabbar > tabbox > tabboxchild > tab), in the
+    style's tab look. Boxed and open tabs sit on the page like notebook tabs;
+    pills float in the strip. GTK 4 shadows (blur doubled, solid colours)."""
+    kind = t.get("w.tab.tab_kind", "boxed")
+    marker = _marker(t.get("w.tab.active_marker", "none"), "top", t["accent"])
+    r = t["r"]
+    border = t["w.button.border"]
+    hover = (f"  color: {t['w.tab.hover_fg']};\n  background-color: {t['w.tab.hover_color']};\n"
+             f"  background-image: linear-gradient(to bottom, {t['w.tab.hover_top']}, {t['w.tab.hover_bottom']});\n"
+             f"  box-shadow: inset 0 0 0 1px {t['w.tab.hover_border']}; }}")
+    out = [f"/* libadwaita tab bar: {kind}, selected marker: "
+           f"{t.get('w.tab.active_marker', 'none')} (cheeselooks/tabs.py) */",
+           f"tabbar .box {{\n  background-color: {t['header']};\n  background-image: none;\n"
+           f"  box-shadow: inset 0 -1px {border}; }}",
+           "tabbar tab, tabbar tab:selected, tabbar tab:hover, tabbar tab:active {\n"
+           "  background-image: none;\n  box-shadow: none;\n  transition-property: color, background-color; }"]
+    if kind == "pills":
+        out += [f"tabbar tabbox > tabboxchild {{ border-radius: {r}px; }}",
+                f"tabbar tab {{ border-radius: {r}px; color: {t['text_dim']}; background-color: transparent; }}",
+                f"tabbar tab:hover:not(:selected) {{\n{hover}",
+                f"tabbar tab:selected, tabbar tab:selected:hover {{\n  color: {t['text']};\n"
+                f"  background-color: {t['button']};\n"
+                f"  background-image: linear-gradient(to bottom, {t['button_top']}, {t['button_bottom']});\n"
+                f"  box-shadow: {_join(f'inset 0 0 0 1px {border}', t['w.button.g4_inset_shadow'], marker)}; }}"]
+    else:
+        # sit on the page: no gap below the tabs, square bottom corners
+        rest_bg = t["header"] if kind == "boxed" else "transparent"
+        rest_edge = f"inset 0 0 0 1px {border}" if kind == "boxed" else "none"
+        out += ["tabbar tabbox { padding-bottom: 0; }",
+                f"tabbar tabbox > tabboxchild {{ border-radius: {r}px {r}px 0 0; }}",
+                f"tabbar tab {{\n  border-radius: {r}px {r}px 0 0;\n  color: {t['text_dim']};\n"
+                f"  background-color: {rest_bg};\n  box-shadow: {rest_edge}; }}",
+                f"tabbar tab:hover:not(:selected) {{\n{hover}",
+                f"tabbar tab:selected, tabbar tab:selected:hover {{\n  color: {t['text']};\n"
+                f"  background-color: {t['base']};\n"
+                f"  box-shadow: {_join(f'inset 1px 0 {border}', f'inset -1px 0 {border}', f'inset 0 1px {border}', marker)}; }}"]
+    return "\n".join(out) + "\n"

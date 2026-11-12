@@ -31,3 +31,16 @@ list.boxed-list > row:last-child, list.content > row:last-child,
 list.boxed-list > row:last-child.expander:not(:checked), list.boxed-list > row:last-child.expander:not(:checked) row.header,
 list.content > row:last-child.expander:not(:checked) row.header {
   border-bottom-left-radius: {{r2}}px; border-bottom-right-radius: {{r2}}px; }
+
+/* Title buttons: Mint's stylesheet draws a circle behind the icon (a separate
+   image node) on hover; ours is the button itself, so no circle in any state */
+windowcontrols > button > image, windowcontrols > button:hover > image,
+windowcontrols > button:active > image, windowcontrols > button.close > image,
+windowcontrols > button.close:hover > image, windowcontrols > button.close:backdrop > image {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  filter: none; }
+
+/* libadwaita's tab bar, in your tab style */
+{{tabs_adw.css}}

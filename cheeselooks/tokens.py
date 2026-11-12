@@ -123,6 +123,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["style.extra_css"] = style.extra_css
     t["tabs.css"] = tabs.css(t)
     t["tabs4.css"] = tabs.css(t, gtk4=True)
+    t["tabs_adw.css"] = tabs.adw_css(t)
     t.update(gtk4.tokens(t))
 
     # --- Panel & Menu: shared colors, separate shapes

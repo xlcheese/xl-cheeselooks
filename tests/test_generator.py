@@ -606,6 +606,8 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertIn("xl-Cheeselooks for libadwaita", base)          # our layer is appended
             self.assertIn("windowcontrols > button:not(.osd):hover", base)  # our title buttons
             self.assertIn("toolbarview > .top-bar", base)                   # title gradient on headers
+            self.assertIn("libadwaita tab bar", base)                       # AdwTabBar in the tab style
+            self.assertIn("windowcontrols > button:hover > image", base)    # no circle behind icons
             self.assertNotIn("{{", base)
             self.assertNotIn("@mint_button_hover; border-radius: 100%", base)   # Mint's round ones gone
             self.assertFalse(list(adw.glob("*.part")))
