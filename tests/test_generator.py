@@ -603,7 +603,10 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertEqual(light, (adw / "defaults-dark.css").read_text())   # your colours either way
             self.assertIn(f"@define-color accent_bg_color {t['accent']};", light)
             base = (adw / "base.css").read_text()
-            self.assertIn("xl-Cheeselooks title buttons", base)
+            self.assertIn("xl-Cheeselooks for libadwaita", base)          # our layer is appended
+            self.assertIn("windowcontrols > button:not(.osd):hover", base)  # our title buttons
+            self.assertIn("toolbarview > .top-bar", base)                   # title gradient on headers
+            self.assertNotIn("{{", base)
             self.assertNotIn("@mint_button_hover; border-radius: 100%", base)   # Mint's round ones gone
             self.assertFalse(list(adw.glob("*.part")))
             self.assertTrue((adw / "assets").is_dir())

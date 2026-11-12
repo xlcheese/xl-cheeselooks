@@ -30,44 +30,56 @@ check:active, radio:active, scale > trough > slider:active {
 /* --------------------------------------------------------------------------
    Buttons: style edges + gradient
    -------------------------------------------------------------------------- */
-button {
+button:not(.osd) {
   min-height: {{button_min_h}}px;
   border-radius: {{r}}px;
+  border-width: 1px;
+  border-style: solid;
   border-color: {{w.button.border}};
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
   box-shadow: {{w.button.g4_shadow}}; }
-button:hover {
+button:not(.osd):hover {
   border-color: {{w.button.hover_border}};
   background-color: {{w.button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
   box-shadow: {{w.button.hover_g4_shadow}}; }
-button:active, button:checked, button:hover:checked {
+button:not(.osd):active, button:not(.osd):checked, button:not(.osd):hover:checked {
   border-color: {{w.button.pressed_border}};
   background-color: {{pressed}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.button.pressed_g4_shadow}}; }
-button:disabled {
+button:not(.osd):disabled {
   background-image: image({{alpha(button, 0.55)}});
   box-shadow: none; }
-button:disabled:checked, button:disabled:active {
+button:not(.osd):disabled:checked, button:not(.osd):disabled:active {
   background-image: image({{alpha(pressed, 0.6)}}); }
+/* Buttons an app colors itself ("opaque" buttons, libadwaita) keep the app's
+   color: no gradient image on top of it */
+button.opaque, button.opaque:hover, button.opaque:active, button.opaque:checked {
+  background-image: none; }
 
-/* Flat buttons and headerbar buttons: flat until hovered */
-button.flat, button.flat:disabled, headerbar button, .toolbar button, actionbar button,
-button.image-button.flat, popover button.flat {
+/* Round shapes the app asked for (libadwaita's circular and pill buttons) stay round */
+button.circular:not(.osd), button.pill:not(.osd) { border-radius: 9999px; }
+button.circular:not(.osd) { min-width: {{button_min_h}}px; padding: 0; }
+
+/* Flat buttons and headerbar buttons: flat until hovered. :not(.osd) keeps
+   these as specific as the general button rules above, so they win. */
+button.flat:not(.osd), button.flat:not(.osd):disabled, headerbar button:not(.osd),
+.toolbar button:not(.osd), actionbar button:not(.osd), popover button.flat:not(.osd) {
   border-color: {{w.toolbar_button.border}};
   background-color: transparent;
   background-image: none;
   box-shadow: {{w.toolbar_button.g4_shadow}}; }
-button.flat:hover, headerbar button:hover, .toolbar button:hover, actionbar button:hover,
-popover button.flat:hover {
+button.flat:not(.osd):hover, headerbar button:not(.osd):hover, .toolbar button:not(.osd):hover,
+actionbar button:not(.osd):hover, popover button.flat:not(.osd):hover {
   border-color: {{w.toolbar_button.hover_border}};
   background-color: {{w.toolbar_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
   box-shadow: {{w.toolbar_button.hover_g4_shadow}}; }
-button.flat:active, button.flat:checked, headerbar button:active, headerbar button:checked,
-.toolbar button:active, .toolbar button:checked, actionbar button:active, actionbar button:checked {
+button.flat:not(.osd):active, button.flat:not(.osd):checked, headerbar button:not(.osd):active,
+headerbar button:not(.osd):checked, .toolbar button:not(.osd):active, .toolbar button:not(.osd):checked,
+actionbar button:not(.osd):active, actionbar button:not(.osd):checked {
   border-color: {{w.toolbar_button.pressed_border}};
   background-color: {{pressed}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
@@ -81,15 +93,15 @@ spinbutton > button {
   box-shadow: {{w.linked.hover_g4_inset_shadow}}; }
 .linked > button:active, .linked > button:checked, spinbutton > button:active {
   box-shadow: {{w.linked.pressed_g4_inset_shadow}}; }
-headerbar .linked > button, .toolbar .linked > button {
+headerbar .linked > button:not(.osd), .toolbar .linked > button:not(.osd) {
   border-color: {{w.linked.border}};
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}}); }
-headerbar .linked > button:hover, .toolbar .linked > button:hover {
+headerbar .linked > button:not(.osd):hover, .toolbar .linked > button:not(.osd):hover {
   border-color: {{w.linked.hover_border}};
   background-image: linear-gradient(to bottom, {{w.linked.hover_top}}, {{w.linked.hover_bottom}}); }
-headerbar .linked > button:active, headerbar .linked > button:checked,
-.toolbar .linked > button:active, .toolbar .linked > button:checked {
+headerbar .linked > button:not(.osd):active, headerbar .linked > button:not(.osd):checked,
+.toolbar .linked > button:not(.osd):active, .toolbar .linked > button:not(.osd):checked {
   border-color: {{w.linked.pressed_border}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}}); }
 
@@ -114,41 +126,41 @@ row:selected button, headerbar.selection-mode button {
   box-shadow: none; }
 
 /* Suggested (accent) and destructive buttons */
-button.suggested-action, headerbar button.suggested-action {
+button.suggested-action:not(.osd), headerbar button.suggested-action:not(.osd) {
   color: {{accent_fg}};
   border-color: {{w.suggested.border}};
   background-color: {{accent}};
   background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
   box-shadow: {{w.suggested.g4_shadow}}; }
-button.suggested-action:hover, headerbar button.suggested-action:hover {
+button.suggested-action:not(.osd):hover, headerbar button.suggested-action:not(.osd):hover {
   color: {{accent_fg}};
   border-color: {{w.suggested.hover_border}};
   background-color: {{w.suggested.hover_color}};
   background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
   box-shadow: {{w.suggested.hover_g4_shadow}}; }
-button.suggested-action:active, button.suggested-action:checked,
-headerbar button.suggested-action:active {
+button.suggested-action:not(.osd):active, button.suggested-action:not(.osd):checked,
+headerbar button.suggested-action:not(.osd):active {
   color: {{accent_fg}};
   border-color: {{w.suggested.pressed_border}};
   background-color: {{accent_press}};
   background-image: image({{accent_press}});
   box-shadow: {{w.suggested.pressed_g4_shadow}}; }
-button.suggested-action:disabled {
+button.suggested-action:not(.osd):disabled {
   color: {{alpha(accent_fg, 0.6)}};
   background-image: image({{alpha(accent, 0.5)}});
   box-shadow: none; }
 
-button.destructive-action, headerbar button.destructive-action {
+button.destructive-action:not(.osd), headerbar button.destructive-action:not(.osd) {
   color: {{destructive_fg}};
   border-color: {{darker(destructive, 0.14)}};
   background-color: {{destructive}};
   background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
   box-shadow: {{w.destructive.g4_shadow}}; }
-button.destructive-action:hover, headerbar button.destructive-action:hover {
+button.destructive-action:not(.osd):hover, headerbar button.destructive-action:not(.osd):hover {
   color: {{destructive_fg}};
   background-image: linear-gradient(to bottom, {{lighter(destructive_top, 0.12)}}, {{lighter(destructive_bottom, 0.12)}});
   box-shadow: {{w.destructive.hover_g4_shadow}}; }
-button.destructive-action:active, headerbar button.destructive-action:active {
+button.destructive-action:not(.osd):active, headerbar button.destructive-action:not(.osd):active {
   background-image: image({{darker(destructive, 0.14)}});
   box-shadow: {{w.destructive.pressed_g4_shadow}}; }
 
@@ -174,7 +186,7 @@ window.maximized > headerbar, window.tiled > headerbar, window.fullscreen > head
 
 /* Title buttons: nothing at rest; the style's button on hover; close fills with the accent */
 windowcontrols { border-spacing: 2px; }
-windowcontrols > button {
+windowcontrols > button:not(.osd) {
   min-width: {{wb.button_w}}px;
   min-height: {{wb.button_h}}px;
   padding: 0;
@@ -185,28 +197,28 @@ windowcontrols > button {
   background-image: none;
   box-shadow: {{w.title_button.g4_shadow}}; }
 windowcontrols > button > image { background: none; padding: 0; }
-windowcontrols > button:hover, windowcontrols > button:hover:backdrop {
+windowcontrols > button:not(.osd):hover, windowcontrols > button:not(.osd):hover:backdrop {
   color: {{text}};
   border-color: {{w.title_button.hover_border}};
   background-color: {{w.title_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
   box-shadow: {{w.title_button.hover_g4_shadow}}; }
-windowcontrols > button:active {
+windowcontrols > button:not(.osd):active {
   border-color: {{w.title_button.pressed_border}};
   background-color: {{pressed}};
   background-image: image({{pressed}});
   box-shadow: {{w.title_button.pressed_g4_shadow}}; }
-windowcontrols > button.close:hover, windowcontrols > button.close:hover:backdrop {
+windowcontrols > button.close:not(.osd):hover, windowcontrols > button.close:not(.osd):hover:backdrop {
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{w.close_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
   box-shadow: {{w.close_button.hover_g4_shadow}}; }
-windowcontrols > button.close:active {
+windowcontrols > button.close:not(.osd):active {
   color: {{accent_fg}};
   background-color: {{accent_press}};
   background-image: image({{accent_press}}); }
-windowcontrols > button:backdrop { color: {{wb.unfocused_text}}; }
+windowcontrols > button:not(.osd):backdrop { color: {{wb.unfocused_text}}; }
 
 /* Menubar and toolbars: flat, same color as the bottom of the title bar */
 menubar, .toolbar, actionbar > revealer > box {
@@ -261,14 +273,28 @@ stacksidebar row:hover:not(:selected) {
 /* --------------------------------------------------------------------------
    Entries
    -------------------------------------------------------------------------- */
+entry:not(.success):not(.warning):not(.error), spinbutton:not(.vertical) {
+  background-color: {{base}}; }
 entry, spinbutton:not(.vertical), spinbutton.vertical > text {
   min-height: {{entry_min_h}}px;
   border-radius: {{r}}px;
+  border-width: 1px;
+  border-style: solid;
   border-color: {{w.entry.border}};
   box-shadow: {{w.entry.g4_shadow}}; }
 entry:focus-within, spinbutton:focus-within:not(.vertical) {
   border-color: {{w.entry.focus_border}};
   box-shadow: {{w.entry.focus_g4_shadow}}; }
+
+/* Entries and spin buttons inside list rows (libadwaita's entry and spin
+   rows) are part of the row: no frame of their own */
+row.entry entry, row.entry text, row.spin spinbutton, row.spin spinbutton > text,
+row > box > spinbutton.flat {
+  min-height: 0;
+  border-width: 0;
+  border-color: transparent;
+  background: none;
+  box-shadow: none; }
 
 /* --------------------------------------------------------------------------
    Notebook tabs (written by cheeselooks/tabs.py from the style's tab line)

@@ -1,53 +1,33 @@
 {{include "mint-base.part"}}
 
+/* ==========================================================================
+   xl-Cheeselooks for libadwaita: the GTK 4 layer (same rules and tokens as
+   plain GTK 4 apps), then libadwaita-specific additions below.
+   ========================================================================== */
+{{include "../gtk-4.0/xl.css.tmpl"}}
+
 /* --------------------------------------------------------------------------
-   xl-Cheeselooks title buttons, as in GTK 3 headerbars and window borders:
-   glyph only at rest, the style's raised title button on hover, sunken when
-   pressed, accent close on hover.
+   libadwaita-specific
    -------------------------------------------------------------------------- */
-windowcontrols { border-spacing: 2px; }
-windowcontrols > button {
-  min-width: {{wb.button_w}}px;
-  min-height: {{wb.button_h}}px;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: {{wb.button_r}}px;
-  background: none;
-  box-shadow: none;
+/* Header bars in a toolbar view are transparent and the top bar behind them
+   is painted: give it the title bar gradient, as GTK 3 headerbars have
+   (flat when the window is unfocused, so it matches the content below) */
+toolbarview > .top-bar {
   color: {{wb.text}};
-  transition: background {{hover_out_ms}}ms ease-out, border-color {{hover_out_ms}}ms ease-out; }
-windowcontrols > button > image,
-windowcontrols > button:hover > image,
-windowcontrols > button:active > image,
-windowcontrols > button.close > image,
-windowcontrols > button.close:hover > image,
-windowcontrols > button.close:backdrop > image {
-  background: none;
-  color: inherit;
-  padding: 0;
-  filter: none; }
-windowcontrols > button:hover {
-  color: {{text}};
-  border-color: {{w.title_button.hover_border}};
-  background-color: {{w.title_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
-  box-shadow: {{w.title_button.hover_g4_shadow}};
-  transition-duration: {{hover_in_ms}}ms; }
-windowcontrols > button:active {
-  border-color: {{w.title_button.pressed_border}};
-  background-color: {{pressed}};
-  background-image: none;
-  box-shadow: {{w.title_button.pressed_g4_shadow}};
-  transition-duration: 0ms; }
-windowcontrols > button.close:hover {
-  color: {{accent_fg}};
-  border-color: {{accent_press}};
-  background-color: {{w.close_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
-  box-shadow: {{w.close_button.hover_g4_shadow}}; }
-windowcontrols > button.close:active {
-  color: {{accent_fg}};
-  border-color: {{accent_press}};
-  background-color: {{accent_press}};
-  background-image: none; }
-windowcontrols > button:backdrop { color: {{wb.unfocused_text}}; }
+  background-color: {{wb.title}};
+  background-image: linear-gradient(to bottom, {{wb.title_top}}, {{wb.title_bottom}}); }
+toolbarview > .top-bar:backdrop {
+  color: {{wb.unfocused_text}};
+  background-color: {{wb.unfocused}};
+  background-image: image({{wb.unfocused}}); }
+toolbarview > .top-bar headerbar { background: none; box-shadow: none; }
+
+/* Cards and boxed lists: your roundness (window radius) instead of a fixed 12px */
+list.boxed-list, list.content, .card, menubutton.card > button { border-radius: {{r2}}px; }
+list.boxed-list > row:first-child, list.content > row:first-child,
+list.boxed-list > row:first-child.expander row.header, list.content > row:first-child.expander row.header {
+  border-top-left-radius: {{r2}}px; border-top-right-radius: {{r2}}px; }
+list.boxed-list > row:last-child, list.content > row:last-child,
+list.boxed-list > row:last-child.expander:not(:checked), list.boxed-list > row:last-child.expander:not(:checked) row.header,
+list.content > row:last-child.expander:not(:checked) row.header {
+  border-bottom-left-radius: {{r2}}px; border-bottom-right-radius: {{r2}}px; }
