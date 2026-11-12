@@ -407,14 +407,19 @@ def _adapt(layer_color: str, surface: str | None, reference: str | None,
 
 
 # GTK 4 draws a box-shadow blur about half as wide as GTK 3 does for the same
-# value (measured: a 3px fade in GTK 3 is a crisp 1-2px band in GTK 4), so the
-# GTK 4 shadows are written with the blur doubled to look the same.
+# value (measured with its cairo renderer: a 3px fade in GTK 3 is a crisp
+# 1-2px band in GTK 4), so the GTK 4 shadows are written with the blur doubled.
 GTK4_BLUR_SCALE = 2.0
+# GTK 4.14's default GPU renderer (ngl) draws a partly transparent inset shadow
+# as if its colour were already premultiplied, so light ones (white
+# highlights) come out solid white whatever their alpha; black is unaffected.
+# GTK 4 inset layers are therefore written as solid colours: the surface with
+# the layer blended in, which is what the transparent colour would give.
 
 
 def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth: float, dark: bool,
                surface: str | None = None, strength: float = DEFAULT_ADAPT_STRENGTH,
-               blur_scale: float = 1.0) -> str | None:
+               blur_scale: float = 1.0, solid_inset: bool = False) -> str | None:
     scale = depth / 50.0
     alpha = layer.get("alpha_dark", layer.get("alpha", 1.0)) if dark else layer.get("alpha", 1.0)
     base_color = _resolve_color(layer["color"], palette)
@@ -424,6 +429,11 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
     if alpha <= 0.001:
         return None
     color = pal.rgba(base_color, alpha)
+    is_inset = kind in ("highlight", "shade", "inner", "sides", "left", "right") or (
+        kind in ("ring", "outline") and layer.get("inset", kind == "ring"))
+    if solid_inset and is_inset and alpha < 0.999:
+        # the colour this layer gives on the widget's own face, as a solid colour
+        color = pal.mix(surface or palette.get("button", base_color), base_color, alpha)
     grow = scale if layer.get("grow") else 1.0
 
     def px(v: float) -> str:
@@ -479,7 +489,8 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
     layers = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength) for k in LAYER_KINDS if k in edge}
     gtk = [layers[k] for k in LAYER_KINDS if layers.get(k)]
     inset = [layers[k] for k in LAYER_KINDS if layers.get(k) and layers[k].startswith("inset")]
-    layers4 = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength, GTK4_BLUR_SCALE)
+    layers4 = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength, GTK4_BLUR_SCALE,
+                             solid_inset=True)
                for k in LAYER_KINDS if k in edge}
     gtk4 = [layers4[k] for k in LAYER_KINDS if layers4.get(k)]
     inset4 = [layers4[k] for k in LAYER_KINDS if layers4.get(k) and layers4[k].startswith("inset")]

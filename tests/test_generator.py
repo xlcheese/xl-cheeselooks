@@ -275,6 +275,10 @@ class StyleTests(unittest.TestCase):
         t = styles.widget_tokens(st, p, 50)
         self.assertIn("inset 0 4px 2px -2px", t["w.button.shadow"])        # GTK 3
         self.assertIn("inset 0 6px 4px -4px", t["w.button.g4_shadow"])     # GTK 4: blur x2
+        # GTK 4 inset layers are solid colours (GTK 4.14's GPU renderer draws
+        # partly transparent light shadows as solid white)
+        self.assertNotIn("rgba(255, 255, 255", t["w.button.g4_shadow"])
+        self.assertIn("rgba(255, 255, 255, 0.6)", t["w.button.shadow"])  # GTK 3 unchanged
 
     def test_tabs_drop_the_page_facing_layer(self):
         sh = ("inset 0 4px 2px -2px rgba(255, 255, 255, 0.6), inset 3px 0 2px -2px rgba(255, 255, 255, 0.5), "
