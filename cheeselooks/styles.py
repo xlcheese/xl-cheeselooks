@@ -147,6 +147,8 @@ class Style:
     description: str = ""
     defaults: dict[str, Any] = field(default_factory=dict)
     adapt_strength: float = DEFAULT_ADAPT_STRENGTH
+    gradient_shape: str = "smooth"     # "smooth" or "split" (glossy, see palette.gradient_css)
+    split_step: float = 0.4
     edges: dict[str, dict[str, Any]] = field(default_factory=dict)
     widgets: dict[str, dict[str, Any]] = field(default_factory=dict)
     panel: dict[str, Any] = field(default_factory=dict)
@@ -185,8 +187,17 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
         errors.append("'name' is required and must be text")
     for key in data:
         if key not in ("name", "author", "description", "defaults", "edges", "widgets", "panel",
-                       "adapt_strength"):
+                       "adapt_strength", "gradient_shape", "split_step"):
             warnings.append(f"unknown top-level key '{key}' is ignored")
+
+    shape = data.get("gradient_shape", "smooth")
+    if shape not in pal.GRADIENT_SHAPES:
+        errors.append(f"gradient_shape must be one of {', '.join(pal.GRADIENT_SHAPES)} (got {shape!r})")
+    step = data.get("split_step", 0.4)
+    if isinstance(step, bool) or not isinstance(step, (int, float)) or not 0 <= step <= 1:
+        errors.append("split_step must be a number from 0 (smooth) to 1 (strongest step)")
+    elif "split_step" in data and shape != "split":
+        warnings.append("split_step only matters with gradient_shape = \"split\"")
 
     a = data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)
     if isinstance(a, bool) or not isinstance(a, (int, float)) or not 0 <= a <= 1:
@@ -341,6 +352,8 @@ def load(path: Path) -> Style:
         defaults={k: (v if isinstance(v, str) else int(v))
                   for k, v in data.get("defaults", {}).items() if k in DEFAULT_KEYS},
         adapt_strength=float(data.get("adapt_strength", DEFAULT_ADAPT_STRENGTH)),
+        gradient_shape=data.get("gradient_shape", "smooth"),
+        split_step=float(data.get("split_step", 0.4)),
         edges=copy.deepcopy(data.get("edges", {})),
         widgets=copy.deepcopy(data.get("widgets", {})),
         panel=copy.deepcopy(data.get("panel", {})),

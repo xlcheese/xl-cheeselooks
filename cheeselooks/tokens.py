@@ -95,6 +95,17 @@ def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
         tokens[prefix + k] = v
 
 
+def _add_face_gradients(t: dict[str, str], style: sty.Style) -> None:
+    """X_grad for every X_top / X_bottom pair: the whole CSS gradient, smooth or
+    split (glossy) as the style says. GTK templates use these for faces; the
+    title bar and Cinnamon (two-colour gradients only) use the plain pair."""
+    for key in [k for k in t if k.endswith("_top")]:
+        base = key[: -len("_top")]
+        if base + "_bottom" in t and not key.endswith("_rgb"):
+            t[base + "_grad"] = pal.gradient_css(t[key], t[base + "_bottom"],
+                                                 style.gradient_shape, style.split_step)
+
+
 def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PANEL_HEIGHT,
           overlay_scrollbars: bool | None = None) -> dict[str, str]:
     """overlay_scrollbars: Mint's own switch, used when Details doesn't choose a mode."""
@@ -121,6 +132,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["hover_out_ms"] = str(g["hover_out_ms"])
     _add_widgets(t, "", style, theme, depth, amount)
     t["style.extra_css"] = style.extra_css
+    _add_face_gradients(t, style)
     t["tabs.css"] = tabs.css(t)
     t["tabs4.css"] = tabs.css(t, gtk4=True)
     t["tabs_adw.css"] = tabs.adw_css(t)

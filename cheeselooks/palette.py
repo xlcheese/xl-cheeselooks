@@ -95,6 +95,26 @@ def gradient(color: str, amount: float) -> tuple[str, str]:
     return lighter(color, 0.10 * amount), darker(color, 0.20 * amount)
 
 
+GRADIENT_SHAPES = ("smooth", "split")
+
+
+def gradient_css(top: str, bottom: str, shape: str = "smooth", step: float = 0.4) -> str:
+    """A top-to-bottom face as a CSS gradient.
+
+    smooth  top fading to bottom
+    split   a glossy face, as in Clearlooks Gummy / Phenix: the top half fades
+            gently, then a crisp step at the middle (two stops at 50%) and the
+            bottom half fades on to the bottom colour. `step` (0-1) is how much
+            of the top half's fade is saved for that step: 0 = smooth, 1 = a flat
+            top half and the whole first half of the fade in one step.
+    """
+    if shape != "split" or top == bottom:
+        return f"linear-gradient(to bottom, {top}, {bottom})"
+    upper = mix(top, bottom, 0.5 * (1 - step))   # where the top half ends
+    middle = mix(top, bottom, 0.5)               # where the bottom half starts
+    return f"linear-gradient(to bottom, {top}, {upper} 50%, {middle} 50%, {bottom})"
+
+
 def title_gradient(color: str, amount: float) -> tuple[str, str]:
     """Title bar: lighter top, bottom exactly the menubar/toolbar color."""
     return lighter(color, 1.00 * amount), color

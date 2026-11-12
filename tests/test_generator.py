@@ -291,6 +291,20 @@ class StyleTests(unittest.TestCase):
         self.assertIn("g4_", "".join(k for k in t if k.startswith("w.button.g4")))
         self.assertNotEqual(t["tabs.css"], t["tabs4.css"])                 # GTK 4 tabs use GTK 4 blur
 
+    def test_split_gradient(self):
+        self.assertEqual(palette.gradient_css("#FFFFFF", "#000000"), "linear-gradient(to bottom, #FFFFFF, #000000)")
+        split = palette.gradient_css("#FFFFFF", "#000000", "split", 1.0)
+        self.assertIn("#FFFFFF 50%", split)                    # step 1: flat top half
+        self.assertEqual(split.count("50%"), 2)                # two stops at the middle: the step
+        st = styles.Style(name="Fixture", path=None, gradient_shape="split", split_step=0.6)
+        t = tokens.build(defaults(), st)
+        self.assertIn("50%", t["button_grad"])
+        self.assertNotIn("50%", tokens.build(defaults(), styles.Style(name="F", path=None))["button_grad"])
+        d = Path(tempfile.mkdtemp())
+        (d / "style.toml").write_text('name = "T"\ngradient_shape = "wavy"\n')
+        with self.assertRaises(styles.StyleError):
+            styles.load(d)
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

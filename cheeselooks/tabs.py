@@ -128,7 +128,7 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
                 f"  background-color: transparent;\n  background-image: none;\n  box-shadow: none;")
     hover = (f"  color: {t['w.tab.hover_fg']};\n  border-color: {t['w.tab.hover_border']};\n"
              f"  background-color: {t['w.tab.hover_color']};\n"
-             f"  background-image: linear-gradient(to bottom, {t['w.tab.hover_top']}, {t['w.tab.hover_bottom']});\n"
+             f"  background-image: {t['w.tab.hover_grad']};\n"
              f"  box-shadow: {t[k('w.tab.hover_inset_shadow')]};")
 
     if kind == "pills":
@@ -177,7 +177,7 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
         if kind == "pills":
             body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
                     f"  background-color: {t['button']};\n"
-                    f"  background-image: linear-gradient(to bottom, {t['button_top']}, {t['button_bottom']});\n"
+                    f"  background-image: {t['button_grad']};\n"
                     f"  box-shadow: {_join(t[k('w.button.shadow')], m)};")
         else:
             body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
@@ -197,7 +197,7 @@ def adw_css(t: dict[str, str]) -> str:
     r = t["r"]
     border = t["w.button.border"]
     hover = (f"  color: {t['w.tab.hover_fg']};\n  background-color: {t['w.tab.hover_color']};\n"
-             f"  background-image: linear-gradient(to bottom, {t['w.tab.hover_top']}, {t['w.tab.hover_bottom']});\n"
+             f"  background-image: {t['w.tab.hover_grad']};\n"
              f"  box-shadow: inset 0 0 0 1px {t['w.tab.hover_border']}; }}")
     out = [f"/* libadwaita tab bar: {kind}, selected marker: "
            f"{t.get('w.tab.active_marker', 'none')} (cheeselooks/tabs.py) */",
@@ -211,7 +211,7 @@ def adw_css(t: dict[str, str]) -> str:
                 f"tabbar tab:hover:not(:selected) {{\n{hover}",
                 f"tabbar tab:selected, tabbar tab:selected:hover {{\n  color: {t['text']};\n"
                 f"  background-color: {t['button']};\n"
-                f"  background-image: linear-gradient(to bottom, {t['button_top']}, {t['button_bottom']});\n"
+                f"  background-image: {t['button_grad']};\n"
                 f"  box-shadow: {_join(f'inset 0 0 0 1px {border}', t['w.button.g4_inset_shadow'], marker)}; }}"]
     else:
         # sit on the page: no gap below the tabs, square bottom corners

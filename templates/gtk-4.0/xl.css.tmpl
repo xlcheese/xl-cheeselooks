@@ -40,12 +40,12 @@ button:not(.osd) {
   border-style: solid;
   border-color: {{w.button.border}};
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  background-image: {{button_grad}};
   box-shadow: {{w.button.g4_shadow}}; }
 button:not(.osd):hover {
   border-color: {{w.button.hover_border}};
   background-color: {{w.button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  background-image: {{w.button.hover_grad}};
   box-shadow: {{w.button.hover_g4_shadow}}; }
 button:not(.osd):active, button:not(.osd):checked, button:not(.osd):hover:checked {
   border-color: {{w.button.pressed_border}};
@@ -89,7 +89,7 @@ button.flat:not(.osd):hover, headerbar button:not(.osd):hover, .toolbar button:n
 actionbar button:not(.osd):hover, popover button.flat:not(.osd):hover {
   border-color: {{w.toolbar_button.hover_border}};
   background-color: {{w.toolbar_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
+  background-image: {{w.toolbar_button.hover_grad}};
   box-shadow: {{w.toolbar_button.hover_g4_shadow}}; }
 button.flat:not(.osd):active, button.flat:not(.osd):checked, headerbar button:not(.osd):active,
 headerbar button:not(.osd):checked, .toolbar button:not(.osd):active, .toolbar button:not(.osd):checked,
@@ -110,10 +110,10 @@ spinbutton > button {
 headerbar .linked > button:not(.osd), .toolbar .linked > button:not(.osd) {
   border-color: {{w.linked.border}};
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}}); }
+  background-image: {{button_grad}}; }
 headerbar .linked > button:not(.osd):hover, .toolbar .linked > button:not(.osd):hover {
   border-color: {{w.linked.hover_border}};
-  background-image: linear-gradient(to bottom, {{w.linked.hover_top}}, {{w.linked.hover_bottom}}); }
+  background-image: {{w.linked.hover_grad}}; }
 headerbar .linked > button:not(.osd):active, headerbar .linked > button:not(.osd):checked,
 .toolbar .linked > button:not(.osd):active, .toolbar .linked > button:not(.osd):checked {
   border-color: {{w.linked.pressed_border}};
@@ -155,13 +155,13 @@ button.suggested-action:not(.osd), headerbar button.suggested-action:not(.osd) {
   color: {{accent_fg}};
   border-color: {{w.suggested.border}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  background-image: {{accent_grad}};
   box-shadow: {{w.suggested.g4_shadow}}; }
 button.suggested-action:not(.osd):hover, headerbar button.suggested-action:not(.osd):hover {
   color: {{accent_fg}};
   border-color: {{w.suggested.hover_border}};
   background-color: {{w.suggested.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
+  background-image: {{w.suggested.hover_grad}};
   box-shadow: {{w.suggested.hover_g4_shadow}}; }
 button.suggested-action:not(.osd):active, button.suggested-action:not(.osd):checked,
 headerbar button.suggested-action:not(.osd):active {
@@ -179,7 +179,7 @@ button.destructive-action:not(.osd), headerbar button.destructive-action:not(.os
   color: {{destructive_fg}};
   border-color: {{darker(destructive, 0.14)}};
   background-color: {{destructive}};
-  background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
+  background-image: {{destructive_grad}};
   box-shadow: {{w.destructive.g4_shadow}}; }
 button.destructive-action:not(.osd):hover, headerbar button.destructive-action:not(.osd):hover {
   color: {{destructive_fg}};
@@ -226,7 +226,7 @@ windowcontrols > button:not(.osd):hover, windowcontrols > button:not(.osd):hover
   color: {{text}};
   border-color: {{w.title_button.hover_border}};
   background-color: {{w.title_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
+  background-image: {{w.title_button.hover_grad}};
   box-shadow: {{w.title_button.hover_g4_shadow}}; }
 windowcontrols > button:not(.osd):active {
   border-color: {{w.title_button.pressed_border}};
@@ -237,7 +237,7 @@ windowcontrols > button.close:not(.osd):hover, windowcontrols > button.close:not
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{w.close_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
+  background-image: {{w.close_button.hover_grad}};
   box-shadow: {{w.close_button.hover_g4_shadow}}; }
 windowcontrols > button.close:not(.osd):active {
   color: {{accent_fg}};
@@ -261,13 +261,13 @@ popover.menu modelbutton {
 popover.menu modelbutton:hover, popover.menu modelbutton:selected {
   color: {{w.menu_item.hover_fg}};
   background-color: {{w.menu_item.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+  background-image: {{w.menu_item.hover_grad}}; }
 menubar > item:hover, menubar > item:selected {
   color: {{w.menubar_item.hover_fg}};
   box-shadow: none;
   border-radius: {{r}}px;
   background-color: {{w.menubar_item.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.menubar_item.hover_top}}, {{w.menubar_item.hover_bottom}}); }
+  background-image: {{w.menubar_item.hover_grad}}; }
 
 /* --------------------------------------------------------------------------
    Selection: rows, icons, sidebars
@@ -276,7 +276,7 @@ menubar > item:hover, menubar > item:selected {
 flowbox > flowboxchild:selected, treeview.view:selected {
   color: {{accent_fg}};
   background-color: {{select}};
-  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+  background-image: {{select_grad}}; }
 selection, text selection, label > selection, entry > text > selection {
   color: {{accent_fg}};
   background-color: {{select}}; }
@@ -289,11 +289,11 @@ selection, text selection, label > selection, entry > text > selection {
 .navigation-sidebar > row:hover:not(:selected), placessidebar row:hover:not(:selected),
 stacksidebar row:hover:not(:selected) {
   background-color: {{sidebar_hover}};
-  background-image: linear-gradient(to bottom, {{sidebar_hover_top}}, {{sidebar_hover_bottom}}); }
+  background-image: {{sidebar_hover_grad}}; }
 .navigation-sidebar > row:selected, placessidebar row:selected, stacksidebar row:selected {
   color: {{accent_fg}};
   background-color: {{select}};
-  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+  background-image: {{select_grad}}; }
 
 /* --------------------------------------------------------------------------
    Entries
@@ -347,7 +347,7 @@ check:checked, radio:checked, check:indeterminate, radio:indeterminate {
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+  background-image: {{accent_grad}}; }
 check:checked { -gtk-icon-source: -gtk-recolor(url("assets/check-symbolic.svg")); }
 check:indeterminate, radio:indeterminate { -gtk-icon-source: -gtk-recolor(url("assets/dash-symbolic.svg")); }
 radio:checked { -gtk-icon-source: -gtk-recolor(url("assets/bullet-symbolic.svg")); }
@@ -370,7 +370,7 @@ switch {
 switch:checked {
   border-color: {{accent_press}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+  background-image: {{accent_grad}}; }
 switch:disabled { opacity: 0.5; }
 switch > image { color: transparent; }
 switch > slider {
@@ -392,7 +392,7 @@ progressbar > trough, progressbar > trough > progress {
   border-radius: {{slider.track_r}}px; }
 scale > trough > highlight, progressbar > trough > progress, levelbar > trough > block.filled {
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  background-image: {{accent_grad}};
   border-color: {{accent_press}}; }
 scale > trough > slider {
   min-width: 16px;
@@ -400,10 +400,10 @@ scale > trough > slider {
   border: 1px solid {{w.button.border}};
   border-radius: {{slider.handle_r}}px;
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  background-image: {{button_grad}};
   box-shadow: {{w.button.g4_shadow}}; }
 scale > trough > slider:hover {
-  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  background-image: {{w.button.hover_grad}};
   box-shadow: {{w.button.hover_g4_shadow}}; }
 
 /* --------------------------------------------------------------------------

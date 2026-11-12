@@ -13,6 +13,12 @@ description = "Bright, crisp buttons, sunken fields, boxed tabs with an accent g
 
 adapt_strength = 0.6
 
+# Glossy faces, as in Clearlooks Gummy: a crisp step at the middle of every
+# gradient (buttons, selection, menu and sidebar hover). split_step 0-1: how
+# sharp the step is. The Gradient slider still sets the overall strength.
+gradient_shape = "split"
+split_step = 0.6
+
 [defaults]
 roundness = 20
 gradient = 30

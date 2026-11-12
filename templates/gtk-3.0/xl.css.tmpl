@@ -37,12 +37,12 @@ button {
   border-radius: {{r}}px;
   border-color: {{w.button.border}};
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  background-image: {{button_grad}};
   box-shadow: {{w.button.shadow}}; }
 button:hover {
   border-color: {{w.button.hover_border}};
   background-color: {{w.button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  background-image: {{w.button.hover_grad}};
   box-shadow: {{w.button.hover_shadow}}; }
 button:active, button:checked, button:hover:checked {
   border-color: {{w.button.pressed_border}};
@@ -66,7 +66,7 @@ button.flat:hover, button.sidebar-button:hover,
 .primary-toolbar button:hover, headerbar button:hover, toolbar button:hover {
   border-color: {{w.toolbar_button.hover_border}};
   background-color: {{w.toolbar_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
+  background-image: {{w.toolbar_button.hover_grad}};
   box-shadow: {{w.toolbar_button.hover_shadow}}; }
 button.flat:active, button.flat:checked, button.sidebar-button:active,
 .primary-toolbar button:active, .primary-toolbar button:checked,
@@ -90,12 +90,12 @@ toolbar button:active, toolbar button:checked {
 .path-bar button, .nemo-window .path-bar button {
   border-color: {{w.linked.border}};
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  background-image: {{button_grad}};
   box-shadow: {{w.linked.inset_shadow}}; }
 .primary-toolbar .linked > button:hover, headerbar .linked > button:hover, toolbar .linked > button:hover,
 .path-bar button:hover {
   border-color: {{w.linked.hover_border}};
-  background-image: linear-gradient(to bottom, {{w.linked.hover_top}}, {{w.linked.hover_bottom}});
+  background-image: {{w.linked.hover_grad}};
   box-shadow: {{w.linked.hover_inset_shadow}}; }
 .primary-toolbar .linked > button:active, .primary-toolbar .linked > button:checked,
 headerbar .linked > button:active, headerbar .linked > button:checked,
@@ -176,13 +176,13 @@ button.suggested-action, headerbar button.suggested-action, .primary-toolbar but
   color: {{accent_fg}};
   border-color: {{w.suggested.border}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  background-image: {{accent_grad}};
   box-shadow: {{w.suggested.shadow}}; }
 button.suggested-action:hover, headerbar button.suggested-action:hover, .primary-toolbar button.suggested-action:hover {
   color: {{accent_fg}};
   border-color: {{w.suggested.hover_border}};
   background-color: {{w.suggested.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
+  background-image: {{w.suggested.hover_grad}};
   box-shadow: {{w.suggested.hover_shadow}}; }
 button.suggested-action:active, button.suggested-action:checked,
 headerbar button.suggested-action:active, .primary-toolbar button.suggested-action:active {
@@ -200,7 +200,7 @@ button.destructive-action, headerbar button.destructive-action, .primary-toolbar
   color: {{destructive_fg}};
   border-color: {{darker(destructive, 0.14)}};
   background-color: {{destructive}};
-  background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
+  background-image: {{destructive_grad}};
   box-shadow: {{w.destructive.shadow}}; }
 button.destructive-action:hover, headerbar button.destructive-action:hover {
   color: {{destructive_fg}};
@@ -262,7 +262,7 @@ headerbar button.titlebutton.minimize:hover:backdrop, headerbar button.titlebutt
   color: {{text}};
   border-color: {{w.title_button.hover_border}};
   background-color: {{w.title_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
+  background-image: {{w.title_button.hover_grad}};
   box-shadow: {{w.title_button.hover_shadow}}; }
 headerbar button.titlebutton:active, .titlebar button.titlebutton:active,
 headerbar button.titlebutton.minimize:active, headerbar button.titlebutton.maximize:active,
@@ -278,7 +278,7 @@ headerbar button.titlebutton.close:hover:backdrop, .titlebar button.titlebutton.
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{w.close_button.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
+  background-image: {{w.close_button.hover_grad}};
   box-shadow: {{w.close_button.hover_shadow}}; }
 headerbar button.titlebutton.close:active, .titlebar button.titlebutton.close:active {
   color: {{accent_fg}};
@@ -306,18 +306,18 @@ menu menuitem, .menu menuitem {
 menu menuitem:hover, .menu menuitem:hover, .context-menu menuitem:hover {
   color: {{w.menu_item.hover_fg}};
   background-color: {{w.menu_item.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+  background-image: {{w.menu_item.hover_grad}}; }
 popover modelbutton.flat:hover, popover modelbutton.flat:selected,
 menuitem.button.flat:hover, menuitem.button.flat:selected {
   color: {{w.menu_item.hover_fg}};
   background-color: {{w.menu_item.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+  background-image: {{w.menu_item.hover_grad}}; }
 menubar > menuitem:hover, .menubar > menuitem:hover {
   color: {{w.menubar_item.hover_fg}};
   box-shadow: none;
   border-radius: {{r}}px;
   background-color: {{w.menubar_item.hover_color}};
-  background-image: linear-gradient(to bottom, {{w.menubar_item.hover_top}}, {{w.menubar_item.hover_bottom}}); }
+  background-image: {{w.menubar_item.hover_grad}}; }
 menubar > menuitem:hover label, .menubar > menuitem:hover label {
   color: inherit; }
 
@@ -329,7 +329,7 @@ treeview.view:selected, treeview.view:selected:focus,
 row:selected, row:selected:focus, flowbox flowboxchild:selected {
   color: {{accent_fg}};
   background-color: {{select}};
-  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+  background-image: {{select_grad}}; }
 selection, *:selected selection, entry selection, textview text selection, label selection {
   color: {{accent_fg}};
   background-color: {{select}}; }
@@ -347,12 +347,12 @@ placessidebar row, .sidebar row { min-height: {{row_min_h}}px; }
 .sidebar row:hover:not(:selected), placessidebar row:hover:not(:selected),
 .sidebar .view:hover:not(:selected), .nemo-window .sidebar .view:hover:not(:selected) {
   background-color: {{sidebar_hover}};
-  background-image: linear-gradient(to bottom, {{sidebar_hover_top}}, {{sidebar_hover_bottom}}); }
+  background-image: {{sidebar_hover_grad}}; }
 .sidebar row:selected, placessidebar row:selected, .sidebar .view:selected,
 .nemo-window .sidebar .view:selected {
   color: {{accent_fg}};
   background-color: {{select}};
-  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+  background-image: {{select_grad}}; }
 placessidebar row:selected image, placessidebar row:selected label { color: {{accent_fg}}; }
 
 /* --------------------------------------------------------------------------
@@ -397,7 +397,7 @@ treeview.check:checked, treeview.radio:checked {
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+  background-image: {{accent_grad}}; }
 check:checked, treeview.check:checked { -gtk-icon-source: -gtk-recolor(url("assets/check-symbolic.svg")); }
 check:indeterminate, radio:indeterminate { -gtk-icon-source: -gtk-recolor(url("assets/dash-symbolic.svg")); }
 radio:checked, treeview.radio:checked { -gtk-icon-source: -gtk-recolor(url("assets/bullet-symbolic.svg")); }
@@ -440,7 +440,7 @@ switch {
 switch:checked {
   border-color: {{accent_press}};
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+  background-image: {{accent_grad}}; }
 switch:disabled { opacity: 0.5; }
 switch slider {
   min-width: 18px;
@@ -460,7 +460,7 @@ scale trough, scale fill, scale highlight, progressbar trough, progressbar progr
   border-radius: {{slider.track_r}}px; }
 scale highlight, progressbar progress, levelbar block.filled {
   background-color: {{accent}};
-  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  background-image: {{accent_grad}};
   border-color: {{accent_press}}; }
 scale slider {
   min-width: 16px;
@@ -468,10 +468,10 @@ scale slider {
   border: 1px solid {{w.button.border}};
   border-radius: {{slider.handle_r}}px;
   background-color: {{button}};
-  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  background-image: {{button_grad}};
   box-shadow: {{w.button.shadow}}; }
 scale slider:hover {
-  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  background-image: {{w.button.hover_grad}};
   box-shadow: {{w.button.hover_shadow}}; }
 
 /* --------------------------------------------------------------------------
