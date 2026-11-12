@@ -22,6 +22,7 @@ from . import styles as sty
 from . import metacity, panelmarker, tabs
 
 THEME_NAME = "xl-Cheeselooks"
+SCROLL_SLIDER_BORDER = 4   # px, Mint-Y's transparent border around the scrollbar thumb
 HOVER_CALIBRATION = 0.8
 
 GRADIENT_COLORS = (
@@ -201,7 +202,12 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     sb_width = 6 if mode == "overlay" else 10
     t["scrollbar.mode"] = mode
     t["scrollbar.width"] = str(sb_width)
-    t["scrollbar.r"] = str(shape.radius(sb["roundness"] if sb["custom"] else 100, sb_width))
+    sb_round = sb["roundness"] if sb["custom"] else 100
+    # The thumb sits inside a 4px clear border (Mint-Y's spacing) and the radius
+    # applies to that outer edge, so add the border for the thumb to get it.
+    t["scrollbar.r"] = str(shape.radius(sb_round, sb_width) + SCROLL_SLIDER_BORDER)
+    # the thin overlay line (4px wide, 1px border) when not hovered
+    t["scrollbar.indicator_r"] = str(shape.radius(sb_round, 4) + 1)
     sl = d["sliders"]["roundness"] if d["sliders"]["custom"] else 100
     t["slider.handle_r"] = str(shape.radius(sl, 16))
     t["slider.track_r"] = str(shape.radius(sl, 4))

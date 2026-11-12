@@ -261,6 +261,13 @@ class StyleTests(unittest.TestCase):
         s["details"]["scrollbars"].update(custom=True, mode="overlay")
         self.assertEqual(tokens.build(s, st, overlay_scrollbars=False)["scrollbar.mode"], "overlay")
 
+    def test_scrollbar_radius_includes_the_clear_border(self):
+        st = styles.Style(name="Fixture", path=None)
+        for r, want in ((0, 4), (50, 7), (100, 9)):      # classic: 10px thumb + 4px clear border
+            s = defaults()
+            s["details"]["scrollbars"].update(custom=True, mode="classic", roundness=r)
+            self.assertEqual(tokens.build(s, st)["scrollbar.r"], str(want), r)
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

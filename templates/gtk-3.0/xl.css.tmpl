@@ -481,6 +481,8 @@ scrollbar slider {
   min-width: {{scrollbar.width}}px;
   min-height: {{scrollbar.width}}px;
   border-radius: {{scrollbar.r}}px; }
+scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
+  border-radius: {{scrollbar.indicator_r}}px; }
 
 paned > separator, paned.horizontal > separator, paned.vertical > separator {
   min-width: 1px;
