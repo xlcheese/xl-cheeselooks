@@ -58,9 +58,20 @@ button:not(.osd):disabled {
 button:not(.osd):disabled:checked, button:not(.osd):disabled:active {
   background-image: image({{alpha(pressed, 0.6)}}); }
 /* Buttons an app colors itself ("opaque" buttons, libadwaita) keep the app's
-   color: no gradient image on top of it */
-button.opaque, button.opaque:hover, button.opaque:active, button.opaque:checked {
-  background-image: none; }
+   color: no gradient, and no highlight or shade (GTK 4 layers are solid
+   colours worked out for our own button face, so they'd show as a pale band) */
+button.opaque:not(.osd), button.opaque:not(.osd):hover, button.opaque:not(.osd):active,
+button.opaque:not(.osd):checked {
+  background-image: none;
+  box-shadow: none; }
+
+/* Hover animates colours only, here as specifically as Mint's libadwaita
+   button.flat rule (which also animates shadows). Shadows in between rest and
+   hover are partly transparent, and GTK 4.14's GPU renderer draws those light
+   ones as solid white: a white ring lingering after the pointer leaves. */
+button:not(.osd), button.flat:not(.osd), headerbar button:not(.osd), .toolbar button:not(.osd),
+windowcontrols > button:not(.osd), button.suggested-action:not(.osd), button.destructive-action:not(.osd) {
+  transition-property: color, background-color, border-color, outline-color, opacity; }
 
 /* Round shapes the app asked for (libadwaita's circular and pill buttons) stay round */
 button.circular:not(.osd), button.pill:not(.osd) { border-radius: 9999px; }

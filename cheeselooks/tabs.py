@@ -217,7 +217,8 @@ def adw_css(t: dict[str, str]) -> str:
         # sit on the page: no gap below the tabs, square bottom corners
         rest_bg = t["header"] if kind == "boxed" else "transparent"
         rest_edge = f"inset 0 0 0 1px {border}" if kind == "boxed" else "none"
-        out += ["tabbar tabbox { padding-bottom: 0; }",
+        out += ["tabbar .box { padding-bottom: 0; box-shadow: none; }   /* tabs sit right on the page */",
+                "tabbar tabbox { padding-bottom: 0; }",
                 f"tabbar tabbox > tabboxchild {{ border-radius: {r}px {r}px 0 0; }}",
                 f"tabbar tab {{\n  border-radius: {r}px {r}px 0 0;\n  color: {t['text_dim']};\n"
                 f"  background-color: {rest_bg};\n  box-shadow: {rest_edge}; }}",
