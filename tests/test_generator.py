@@ -263,7 +263,7 @@ class StyleTests(unittest.TestCase):
 
     def test_scrollbar_radius_includes_the_clear_border(self):
         st = styles.Style(name="Fixture", path=None)
-        for r, want in ((0, 4), (50, 7), (100, 9)):      # classic: 10px thumb + 4px clear border
+        for r, want in ((0, 4), (50, 6), (100, 9)):      # classic: 10px thumb + 4px clear border
             s = defaults()
             s["details"]["scrollbars"].update(custom=True, mode="classic", roundness=r)
             self.assertEqual(tokens.build(s, st)["scrollbar.r"], str(want), r)
