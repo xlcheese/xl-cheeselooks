@@ -241,6 +241,17 @@ class StyleTests(unittest.TestCase):
         with self.assertRaises(styles.StyleError):
             styles.load(d)
 
+    def test_scrollbar_widget(self):
+        t = tokens.build(defaults(), styles.Style(name="Fixture", path=None))
+        self.assertEqual(t["w.scrollbar.color"], t["scroll_slider"])
+        self.assertEqual(t["w.scrollbar.pressed_color"], t["accent_press"])
+        self.assertEqual(t["w.scrollbar.outline"], "transparent")
+        st = styles.Style(name="Fixture", path=None, widgets={"scrollbar": {
+            "color": "accent", "hover_color": "accent_hover", "border": "accent_press"}})
+        t = tokens.build(defaults(), st)
+        self.assertEqual(t["w.scrollbar.color"], t["accent"])
+        self.assertEqual(t["w.scrollbar.outline"], t["accent_press"])
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

@@ -75,7 +75,8 @@ def _add_widgets(tokens: dict[str, str], prefix: str, style: sty.Style,
     wt = sty.widget_tokens(style, palette, depth)
     # faces get a gradient pair and a readable text color:
     # w.X.color -> w.X.color_top/_bottom/_fg, w.X.hover_color -> w.X.hover_top/..., etc.
-    faces = {".color": "color_", ".hover_color": "hover_", ".selected_color": "selected_"}
+    faces = {".color": "color_", ".hover_color": "hover_", ".selected_color": "selected_",
+             ".pressed_color": "pressed_"}
     for k, v in list(wt.items()):
         for suffix, out in faces.items():
             if k.endswith(suffix):

@@ -30,29 +30,31 @@ WIDGET_FACE = {
     "toolbar_button": "header", "title_button": "header",
     "close_button": "header", "entry": "base", "combo": "button", "tab": "header",
     "menu_item": "menu_bg", "menubar_item": "header", "panel_button": "pb_rest",
-    "check": "base", "switch": "trough",
+    "check": "base", "switch": "trough", "scrollbar": "scroll_slider",
 }
 EDGE_KEYS = {"border", *LAYER_KINDS}
 
 WIDGETS = (
     "button", "suggested", "destructive", "linked", "toolbar_button", "title_button", "close_button",
     "entry", "combo", "tab", "menu_item", "menubar_item", "panel_button",
-    "check", "switch",
+    "check", "switch", "scrollbar",
 )
 STATES = ("rest", "hover", "pressed", "focus")
 WIDGET_KEYS = {
     "like", "edge", "hover_edge", "pressed_edge", "focus_edge", "border",
     "hover_color", "tab_kind", "active_marker", "hover_border",
     "color", "selected_color", "selected_border", "padding", "spacing", "hover_fg", "selected_fg",
+    "pressed_color",
 }
 # keys only some widgets use so far (others accept them but ignore them)
-WIDGET_ONLY_KEYS = {"color": ("panel_button",), "selected_color": ("panel_button",),
+WIDGET_ONLY_KEYS = {"color": ("panel_button", "scrollbar"), "selected_color": ("panel_button",),
+                    "pressed_color": ("scrollbar",),
                     "selected_border": ("panel_button",), "padding": ("panel_button",),
                     "spacing": ("panel_button",),
                     "hover_fg": ("menu_item", "menubar_item", "tab"), "selected_fg": ("panel_button",)}
 # a text color belongs to its face: a widget that sets its own face doesn't
 # inherit the text color of the widget it is "like"
-FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg"}
+FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg", "pressed_color": "pressed_fg"}
 PADDING_RANGE = (0, 24)   # px, left and right
 SPACING_RANGE = (0, 12)   # px between window-list buttons
 TAB_KINDS = ("boxed", "open", "pills")
@@ -125,6 +127,9 @@ BUILTIN_WIDGETS: dict[str, dict[str, Any]] = {
                      "active_marker": "none", "padding": 4, "spacing": 2},
     "check": {"edge": "sunken", "hover_edge": "sunken", "pressed_edge": "sunken", "focus_edge": "focus"},
     "switch": {"like": "check"},
+    # scrollbar thumb: colors only (no edges); border, if set, is a 1px outline
+    "scrollbar": {"edge": "flat", "hover_edge": "flat", "pressed_edge": "flat", "focus_edge": "flat",
+                  "color": "scroll_slider", "hover_color": "scroll_hover", "pressed_color": "accent_press"},
 }
 
 
@@ -278,7 +283,7 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                 if v not in all_edges:
                     errors.append(f"{where}.{k} refers to an edge that doesn't exist: {v!r}")
             elif k in ("border", "hover_color", "color", "selected_color", "selected_border",
-                       "hover_fg", "selected_fg"):
+                       "hover_fg", "selected_fg", "pressed_color"):
                 if k in WIDGET_ONLY_KEYS and wname not in WIDGET_ONLY_KEYS[k]:
                     warnings.append(f"{where}.{k} is only used by "
                                     f"{', '.join(WIDGET_ONLY_KEYS[k])} so far and is ignored")
@@ -528,9 +533,15 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
         hover_color = spec.get("hover_color")
         if hover_color:
             tokens[f"w.{wname}.hover_color"] = _resolve_color(hover_color, palette)
-        for k in ("color", "selected_color", "selected_border", "hover_fg", "selected_fg"):
+        for k in ("color", "selected_color", "selected_border", "hover_fg", "selected_fg",
+                  "pressed_color"):
             if spec.get(k):
                 tokens[f"w.{wname}.{k}"] = _resolve_color(spec[k], palette)
+        if wname == "scrollbar":
+            # flat edges ignore a border, so the scrollbar's is its outline
+            tokens["w.scrollbar.outline"] = (_resolve_color(spec["border"], palette)
+                                             if spec.get("border") not in (None, "none", "transparent")
+                                             else "transparent")
         for k in ("padding", "spacing"):
             if k in spec:
                 tokens[f"w.{wname}.{k}"] = str(spec[k])

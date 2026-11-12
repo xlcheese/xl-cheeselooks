@@ -2,7 +2,8 @@
 # Light edges all round with little blur, a brighter, crisper sibling of
 # xl-Classic; joined buttons get a stronger bevel on hover; sunken
 # entries; flat toolbar and title buttons that rise on hover; boxed tabs with
-# an accent glow on the selected tab, and on the focused window's panel button.
+# an accent glow on the selected tab, and on the focused window's panel button;
+# accent scrollbar thumbs with a crisp outline, as Clearlooks Gummy had.
 #
 # Alpha values are written for Depth 50. alpha_dark is used on dark themes.
 
@@ -67,3 +68,4 @@ tab            = { tab_kind = "boxed", active_marker = "glow", hover_color = "bg
 menu_item      = { hover_color = "menu_hover" }
 menubar_item   = { hover_color = "menubar_hover" }
 panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "darker(button, 0.03)", hover_color = "lighter(button_hover,0.05)", selected_color = "button", selected_border = "border_hover", active_marker = "glow"}
+scrollbar      = { color = "accent", hover_color = "accent_hover", pressed_color = "accent_press", border = "accent_press" }

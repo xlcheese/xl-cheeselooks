@@ -1787,11 +1787,15 @@ scrollbar {
     border: 4px solid transparent;
     border-radius: {{r2}}px;
     background-clip: padding-box;
-    background-color: {{alpha(mix(bg, text, 0.421), 0.948)}}; }
+    background-color: {{alpha(w.scrollbar.color, 0.948)}};
+    background-image: linear-gradient(to bottom, {{alpha(w.scrollbar.color_top, 0.948)}}, {{alpha(w.scrollbar.color_bottom, 0.948)}});
+    box-shadow: inset 0 0 0 1px {{w.scrollbar.outline}}; }
     scrollbar slider:hover {
-      background-color: {{alpha(mix(bg, text, 0.31), 0.961)}}; }
+      background-color: {{alpha(w.scrollbar.hover_color, 0.961)}};
+      background-image: linear-gradient(to bottom, {{alpha(w.scrollbar.hover_top, 0.961)}}, {{alpha(w.scrollbar.hover_bottom, 0.961)}}); }
     scrollbar slider:hover:active {
-      background-color: {{accent}}; }
+      background-color: {{w.scrollbar.pressed_color}};
+      background-image: linear-gradient(to bottom, {{w.scrollbar.pressed_top}}, {{w.scrollbar.pressed_bottom}}); }
     scrollbar slider:disabled {
       background-color: transparent; }
   scrollbar.fine-tune slider {
@@ -1810,6 +1814,8 @@ scrollbar {
       min-width: 4px;
       min-height: 4px;
       background-color: {{alpha(mix(bg, text, 0.797), 0.909)}};
+      background-image: none;
+      box-shadow: none;
       border: 1px solid {{alpha(base, 0.6)}}; }
     scrollbar.overlay-indicator:not(.dragging):not(.hovering).vertical slider {
       margin: 2px 0;

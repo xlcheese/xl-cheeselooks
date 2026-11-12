@@ -172,6 +172,9 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
         # hovered borders: darker on light themes, lighter on dark (both toward text)
         "border_hover": mix(border_strong, text, 0.15 * hover),
         "trough": pick(mix(bg, text, 0.12), mix(bg, text, 0.14)),
+        # scrollbar thumb at rest and hovered (Mint-Y's; dragging uses the accent)
+        "scroll_slider": mix(bg, text, 0.421),
+        "scroll_hover": mix(bg, text, 0.31),
         "text_dim": mix(text, bg, 0.38),
         "menu_bg": menu_bg,
         "menu_hover": mix(menu_bg, text, 0.10 * hover),
