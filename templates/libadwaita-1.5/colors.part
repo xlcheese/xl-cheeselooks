@@ -1,0 +1,56 @@
+/* xl-Cheeselooks colours for libadwaita. Used for both defaults-light.css
+   and defaults-dark.css (so either variant gets your colours), and for the
+   block in ~/.config/gtk-4.0/gtk.css that reaches libadwaita apps outside
+   Mint's patched libadwaita. */
+@define-color mint_accent {{accent}};
+@define-color mint_header {{header}};
+@define-color mint_button_hover {{w.title_button.hover_color}};
+@define-color mint_button_unfocused {{wb.unfocused_text}};
+
+@define-color accent_bg_color {{accent}};
+@define-color accent_fg_color {{accent_fg}};
+@define-color accent_color {{adw.accent_text}};
+@define-color destructive_bg_color {{destructive}};
+@define-color destructive_fg_color {{destructive_fg}};
+@define-color destructive_color {{adw.destructive_text}};
+@define-color success_bg_color {{adw.success_bg}};
+@define-color success_fg_color #ffffff;
+@define-color success_color {{adw.success_text}};
+@define-color warning_bg_color {{adw.warning_bg}};
+@define-color warning_fg_color rgba(0, 0, 0, 0.8);
+@define-color warning_color {{adw.warning_text}};
+@define-color error_bg_color {{destructive}};
+@define-color error_fg_color {{destructive_fg}};
+@define-color error_color {{adw.destructive_text}};
+@define-color window_bg_color {{bg}};
+@define-color window_fg_color {{text}};
+@define-color view_bg_color {{base}};
+@define-color view_fg_color {{text}};
+@define-color headerbar_bg_color {{header}};
+@define-color headerbar_fg_color {{text}};
+@define-color headerbar_border_color {{text}};
+@define-color headerbar_backdrop_color {{header}};
+@define-color headerbar_shade_color {{adw.shade_strong}};
+@define-color headerbar_darker_shade_color {{adw.shade_strong}};
+@define-color sidebar_bg_color {{sidebar}};
+@define-color sidebar_fg_color {{text}};
+@define-color sidebar_backdrop_color {{sidebar}};
+@define-color sidebar_shade_color {{adw.shade}};
+@define-color sidebar_border_color {{adw.shade}};
+@define-color secondary_sidebar_bg_color {{mix(sidebar, base, 0.4)}};
+@define-color secondary_sidebar_fg_color {{text}};
+@define-color secondary_sidebar_backdrop_color {{mix(sidebar, base, 0.4)}};
+@define-color secondary_sidebar_shade_color {{adw.shade}};
+@define-color secondary_sidebar_border_color {{adw.shade}};
+@define-color card_bg_color {{base}};
+@define-color card_fg_color {{text}};
+@define-color card_shade_color {{adw.shade}};
+@define-color dialog_bg_color {{bg}};
+@define-color dialog_fg_color {{text}};
+@define-color popover_bg_color {{menu_bg}};
+@define-color popover_fg_color {{text}};
+@define-color popover_shade_color {{adw.shade}};
+@define-color thumbnail_bg_color {{base}};
+@define-color thumbnail_fg_color {{text}};
+@define-color shade_color {{adw.shade}};
+@define-color scrollbar_outline_color {{adw.scrollbar_outline}};

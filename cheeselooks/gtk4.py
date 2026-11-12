@@ -39,10 +39,23 @@ def readable_on(color: str, background: str, target: float = 4.5) -> str:
     return out
 
 
+# libadwaita's own success and warning colours (green_4, yellow_5)
+SUCCESS, WARNING = "#2EC27E", "#E5A50A"
+
+
 def tokens(t: dict[str, str]) -> dict[str, str]:
+    dark = pal.luminance(t["bg"]) < 0.18
     return {
         "adw.accent_text": readable_on(t["accent"], t["bg"]),
         "adw.destructive_text": readable_on(t["destructive"], t["bg"]),
+        "adw.success_bg": SUCCESS,
+        "adw.success_text": readable_on(SUCCESS, t["bg"]),
+        "adw.warning_bg": WARNING,
+        "adw.warning_text": readable_on(WARNING, t["bg"]),
+        # shadows and separators: soft text-coloured on light themes, black on dark
+        "adw.shade": "rgba(0, 0, 0, 0.36)" if dark else pal.rgba(t["text"], 0.07),
+        "adw.shade_strong": "rgba(0, 0, 0, 0.9)" if dark else pal.rgba(t["text"], 0.12),
+        "adw.scrollbar_outline": "rgba(0, 0, 0, 0.5)" if dark else "#FFFFFF",
     }
 
 
@@ -62,7 +75,8 @@ def libadwaita_version() -> tuple[int, int] | None:
 def block(templates_dir: Path, t: dict[str, str], css_variables: bool) -> str:
     """The marked block: named colours, plus :root variables for libadwaita 1.6+."""
     part = templates_dir / "libadwaita.css.part"
-    css = render.render_text(part.read_text(encoding="utf-8"), t, str(part))
+    text = render.expand_includes(part.read_text(encoding="utf-8"), part.parent)
+    css = render.render_text(text, t, str(part))
     if css_variables:
         names = "\n".join(f"  --{n.replace('_', '-')}: {v};" for n, v in _DEFINE.findall(css))
         css += f"/* libadwaita 1.6 and newer */\n:root {{\n{names}\n}}\n"

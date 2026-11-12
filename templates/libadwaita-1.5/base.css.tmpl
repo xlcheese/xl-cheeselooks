@@ -1,0 +1,53 @@
+{{include "mint-base.part"}}
+
+/* --------------------------------------------------------------------------
+   xl-Cheeselooks title buttons, as in GTK 3 headerbars and window borders:
+   glyph only at rest, the style's raised title button on hover, sunken when
+   pressed, accent close on hover.
+   -------------------------------------------------------------------------- */
+windowcontrols { border-spacing: 2px; }
+windowcontrols > button {
+  min-width: {{wb.button_w}}px;
+  min-height: {{wb.button_h}}px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: {{wb.button_r}}px;
+  background: none;
+  box-shadow: none;
+  color: {{wb.text}};
+  transition: background {{hover_out_ms}}ms ease-out, border-color {{hover_out_ms}}ms ease-out; }
+windowcontrols > button > image,
+windowcontrols > button:hover > image,
+windowcontrols > button:active > image,
+windowcontrols > button.close > image,
+windowcontrols > button.close:hover > image,
+windowcontrols > button.close:backdrop > image {
+  background: none;
+  color: inherit;
+  padding: 0;
+  filter: none; }
+windowcontrols > button:hover {
+  color: {{text}};
+  border-color: {{w.title_button.hover_border}};
+  background-color: {{w.title_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
+  box-shadow: {{w.title_button.hover_shadow}};
+  transition-duration: {{hover_in_ms}}ms; }
+windowcontrols > button:active {
+  border-color: {{w.title_button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: none;
+  box-shadow: {{w.title_button.pressed_shadow}};
+  transition-duration: 0ms; }
+windowcontrols > button.close:hover {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{w.close_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
+  box-shadow: {{w.close_button.hover_shadow}}; }
+windowcontrols > button.close:active {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{accent_press}};
+  background-image: none; }
+windowcontrols > button:backdrop { color: {{wb.unfocused_text}}; }

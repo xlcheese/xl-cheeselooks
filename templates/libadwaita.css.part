@@ -1,42 +1,4 @@
-/* xl-Cheeselooks colours for GTK 4 / libadwaita apps.
-   Written between the begin/end markers in ~/.config/gtk-4.0/gtk.css by
-   `cheeselooks apply`; anything outside the markers is yours and is kept.
+/* xl-Cheeselooks colours for GTK 4 / libadwaita apps (the block apply keeps in
+   ~/.config/gtk-4.0/gtk.css; anything outside its markers is yours and is kept).
    Turn this off with integration.libadwaita_colors = false. */
-@define-color accent_color {{adw.accent_text}};
-@define-color accent_bg_color {{accent}};
-@define-color accent_fg_color {{accent_fg}};
-@define-color destructive_color {{adw.destructive_text}};
-@define-color destructive_bg_color {{destructive}};
-@define-color destructive_fg_color {{destructive_fg}};
-@define-color window_bg_color {{bg}};
-@define-color window_fg_color {{text}};
-@define-color view_bg_color {{base}};
-@define-color view_fg_color {{text}};
-@define-color headerbar_bg_color {{header}};
-@define-color headerbar_fg_color {{text}};
-@define-color headerbar_border_color {{text}};
-@define-color headerbar_backdrop_color {{header}};
-@define-color headerbar_shade_color {{alpha(text, 0.12)}};
-@define-color headerbar_darker_shade_color {{alpha(text, 0.12)}};
-@define-color sidebar_bg_color {{sidebar}};
-@define-color sidebar_fg_color {{text}};
-@define-color sidebar_backdrop_color {{sidebar}};
-@define-color sidebar_shade_color {{alpha(text, 0.07)}};
-@define-color sidebar_border_color {{alpha(text, 0.07)}};
-@define-color secondary_sidebar_bg_color {{sidebar}};
-@define-color secondary_sidebar_fg_color {{text}};
-@define-color secondary_sidebar_backdrop_color {{sidebar}};
-@define-color secondary_sidebar_shade_color {{alpha(text, 0.07)}};
-@define-color secondary_sidebar_border_color {{alpha(text, 0.07)}};
-@define-color card_bg_color {{base}};
-@define-color card_fg_color {{text}};
-@define-color card_shade_color {{alpha(text, 0.07)}};
-@define-color dialog_bg_color {{bg}};
-@define-color dialog_fg_color {{text}};
-@define-color popover_bg_color {{menu_bg}};
-@define-color popover_fg_color {{text}};
-@define-color popover_shade_color {{alpha(text, 0.07)}};
-@define-color thumbnail_bg_color {{base}};
-@define-color thumbnail_fg_color {{text}};
-@define-color shade_color {{alpha(text, 0.07)}};
-@define-color scrollbar_outline_color {{base}};
+{{include "libadwaita-1.5/colors.part"}}

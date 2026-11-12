@@ -567,6 +567,24 @@ class RenderAndInstallTests(unittest.TestCase):
         self.assertIn(f"--accent-bg-color: {t['accent']};", new_style)
         self.assertTrue(old_style.startswith(gtk4.BEGIN) and old_style.rstrip().endswith(gtk4.END))
 
+    def test_libadwaita_theme_folder(self):
+        # Mint's patched libadwaita reads <theme>/libadwaita-1.5/
+        with tempfile.TemporaryDirectory() as tmp:
+            theme = Path(tmp) / "xl-Cheeselooks"
+            t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
+            install.install(REPO / "templates", t, theme, Path(tmp) / "good")
+            adw = theme / "libadwaita-1.5"
+            for name in ("base.css", "base-hc.css", "defaults-light.css", "defaults-dark.css"):
+                self.assertTrue((adw / name).is_file(), name)
+            light = (adw / "defaults-light.css").read_text()
+            self.assertEqual(light, (adw / "defaults-dark.css").read_text())   # your colours either way
+            self.assertIn(f"@define-color accent_bg_color {t['accent']};", light)
+            base = (adw / "base.css").read_text()
+            self.assertIn("xl-Cheeselooks title buttons", base)
+            self.assertNotIn("@mint_button_hover; border-radius: 100%", base)   # Mint's round ones gone
+            self.assertFalse(list(adw.glob("*.part")))
+            self.assertTrue((adw / "assets").is_dir())
+
     def test_libadwaita_block_keeps_the_users_css(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
         blk = gtk4.block(REPO / "templates", t, css_variables=False)
