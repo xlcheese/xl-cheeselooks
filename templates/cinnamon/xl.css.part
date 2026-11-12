@@ -129,16 +129,17 @@
   background-color: {{panel.accent}};
   color: {{panel.accent_fg}}; }
 
-/* Panel launchers */
-/* gaps follow the style's panel_button spacing, like the window list; no
-   lead-in padding before the first launcher (Mint-Y adds 7px) */
-.panel-launchers { spacing: {{panel.w.panel_button.spacing}}px; padding-left: 0; }
+/* Panel launchers: as tight as Mint-Y-Variable. No gap, no lead-in padding
+   (Mint-Y adds 7px), and no border at rest: the hover outline is a 1px inset
+   shadow, which takes no room (a border would add 2px to every launcher). */
+.panel-launchers { spacing: 0; padding-left: 0; }
 .panel-launchers .launcher {
-  border: 1px solid transparent;
+  border-width: 0;
   border-radius: {{panel.r}}px;
   transition-duration: {{hover_out_ms}}; }
 .panel-launchers .launcher:hover {
-  border-color: {{panel.w.panel_button.hover_border}};
+  box-shadow: inset 0 0 0 1px {{panel.w.panel_button.hover_border}};
+  background-color: {{panel.w.panel_button.hover_color}};
   background-gradient-direction: vertical;
   background-gradient-start: {{panel.w.panel_button.hover_top}};
   background-gradient-end: {{panel.w.panel_button.hover_bottom}};
