@@ -72,6 +72,24 @@ def _load_style(name: str, extra_dir: str | None) -> styles.Style:
     return styles.find(name, dirs)
 
 
+def _where(style: styles.Style) -> str:
+    """The style's file, and whether it replaces a built-in style of the same name."""
+    if style.path is None:
+        return "(built in)"
+    folder = style.path.parent
+    builtin = paths.data_dir() / "styles"
+    try:
+        folder.relative_to(builtin)
+        return str(style.path)
+    except ValueError:
+        pass
+    try:
+        styles.find(style.name, [builtin])
+    except styles.StyleError:
+        return str(style.path)
+    return f"{style.path} (your copy, used instead of the built-in {style.name})"
+
+
 def cmd_apply(args: argparse.Namespace) -> int:
     data = _load_settings(args)
     style = _load_style(data["style"]["name"], args.style_dir)
@@ -88,6 +106,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
     if not args.no_save and not args.settings:
         settings.save(data, paths.settings_file())
     print(f"Wrote {len(written)} files to {theme_dir}")
+    print(f"  style: {style.name} from {_where(style)}")
     for note in tokens.warnings(data):
         print(f"  note: {note}")
     if not args.no_reload and not args.theme_dir:
