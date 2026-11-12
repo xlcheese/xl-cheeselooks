@@ -144,7 +144,7 @@ w('''<?xml version="1.0"?>
 for fn, icon in ICONS.items():
     f = f"{icon}-icon.svg"
     hover_bg, press_bg, fg_hover = (("close-hover.svg", "close-pressed.svg", "{{accent_fg}}") if fn == "close"
-                                    else ("button-hover.svg", "button-pressed.svg", "{{text}}"))
+                                    else ("button-hover.svg", "button-pressed.svg", "{{wbp.text}}"))
     w(f'<draw_ops name="{fn}_focused">\n{img(f, "{{wb.text}}")}\n</draw_ops>')
     w(f'<draw_ops name="{fn}_prelight">\n{img(hover_bg)}\n{img(f, fg_hover)}\n</draw_ops>')
     w(f'<draw_ops name="{fn}_pressed">\n{img(press_bg)}\n{img(f, fg_hover)}\n</draw_ops>')

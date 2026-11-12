@@ -249,37 +249,37 @@ headerbar button.titlebutton, .titlebar button.titlebutton {
   margin: 0 1px;
   border-radius: {{r}}px;
   color: inherit;
-  border-color: {{w.title_button.border}};
+  border-color: {{wbp.w.title_button.border}};
   background-color: transparent;
   background-image: none;
-  box-shadow: {{w.title_button.shadow}}; }
+  box-shadow: {{wbp.w.title_button.shadow}}; }
 headerbar button.titlebutton:hover, .titlebar button.titlebutton:hover,
 headerbar button.titlebutton:hover:backdrop, .titlebar button.titlebutton:hover:backdrop,
 headerbar button.titlebutton.minimize:hover, headerbar button.titlebutton.maximize:hover,
 headerbar button.titlebutton.minimize:hover:backdrop, headerbar button.titlebutton.maximize:hover:backdrop,
 .titlebar button.titlebutton.minimize:hover, .titlebar button.titlebutton.maximize:hover,
 .titlebar button.titlebutton.minimize:hover:backdrop, .titlebar button.titlebutton.maximize:hover:backdrop {
-  color: {{text}};
-  border-color: {{w.title_button.hover_border}};
-  background-color: {{w.title_button.hover_color}};
-  background-image: {{w.title_button.hover_grad}};
-  box-shadow: {{w.title_button.hover_shadow}}; }
+  color: {{wbp.text}};
+  border-color: {{wbp.w.title_button.hover_border}};
+  background-color: {{wbp.w.title_button.hover_color}};
+  background-image: {{wbp.w.title_button.hover_grad}};
+  box-shadow: {{wbp.w.title_button.hover_shadow}}; }
 headerbar button.titlebutton:active, .titlebar button.titlebutton:active,
 headerbar button.titlebutton.minimize:active, headerbar button.titlebutton.maximize:active,
 headerbar button.titlebutton.minimize:active:backdrop, headerbar button.titlebutton.maximize:active:backdrop,
 .titlebar button.titlebutton.minimize:active, .titlebar button.titlebutton.maximize:active,
 .titlebar button.titlebutton.minimize:active:backdrop, .titlebar button.titlebutton.maximize:active:backdrop {
-  border-color: {{w.title_button.pressed_border}};
-  background-color: {{pressed}};
-  background-image: image({{pressed}});
-  box-shadow: {{w.title_button.pressed_shadow}}; }
+  border-color: {{wbp.w.title_button.pressed_border}};
+  background-color: {{wbp.pressed}};
+  background-image: image({{wbp.pressed}});
+  box-shadow: {{wbp.w.title_button.pressed_shadow}}; }
 headerbar button.titlebutton.close:hover, .titlebar button.titlebutton.close:hover,
 headerbar button.titlebutton.close:hover:backdrop, .titlebar button.titlebutton.close:hover:backdrop {
   color: {{accent_fg}};
   border-color: {{accent_press}};
-  background-color: {{w.close_button.hover_color}};
-  background-image: {{w.close_button.hover_grad}};
-  box-shadow: {{w.close_button.hover_shadow}}; }
+  background-color: {{wbp.w.close_button.hover_color}};
+  background-image: {{wbp.w.close_button.hover_grad}};
+  box-shadow: {{wbp.w.close_button.hover_shadow}}; }
 headerbar button.titlebutton.close:active, .titlebar button.titlebutton.close:active {
   color: {{accent_fg}};
   background-color: {{accent_press}};
@@ -288,6 +288,20 @@ headerbar button.titlebutton:backdrop, .titlebar button.titlebutton:backdrop,
 headerbar button.titlebutton.minimize:backdrop, headerbar button.titlebutton.maximize:backdrop,
 .titlebar button.titlebutton.minimize:backdrop, .titlebar button.titlebutton.maximize:backdrop {
   color: {{wb.unfocused_text}}; }
+
+/* Other headerbar buttons: on the title bar, so their hover and pressed faces
+   come from the title bar's palette too (the same as toolbar buttons when the
+   title bar follows the theme) */
+headerbar button:hover {
+  border-color: {{wbp.w.toolbar_button.hover_border}};
+  background-color: {{wbp.w.toolbar_button.hover_color}};
+  background-image: {{wbp.w.toolbar_button.hover_grad}};
+  box-shadow: {{wbp.w.toolbar_button.hover_shadow}}; }
+headerbar button:active, headerbar button:checked {
+  border-color: {{wbp.w.toolbar_button.pressed_border}};
+  background-color: {{wbp.pressed}};
+  background-image: linear-gradient(to bottom, {{wbp.pressed_bottom}}, {{wbp.pressed_top}});
+  box-shadow: {{wbp.w.toolbar_button.pressed_shadow}}; }
 
 /* Menubar and toolbar: flat, same color as the bottom of the title bar */
 menubar, .menubar, .primary-toolbar, toolbar.primary-toolbar,

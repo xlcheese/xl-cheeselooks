@@ -56,7 +56,27 @@ FUNCTIONS = {
     "mix": lambda a, b, t: pal.mix(_color(a), _color(b), _number(t)),
     "lighter": lambda c, t: pal.lighter(_color(c), _number(t)),
     "darker": lambda c, t: pal.darker(_color(c), _number(t)),
+    "lift": None,   # needs the palette: see _lift
 }
+# lift() on dark palettes moves toward the text colour this much of the way,
+# relative to a light palette's move toward white (the palette's own hovers:
+# 0.50 light, 0.08 dark)
+DARK_LIFT = 0.16
+
+
+def _lift(args: list, tokens: dict[str, str]) -> str:
+    """lift(color, amount): a hover that works on light and dark surfaces.
+    Light palettes: exactly lighter(color, amount). Dark palettes (text lighter
+    than the background, e.g. a dark theme or a dark title bar): toward the text
+    colour, gently, instead of jumping toward white."""
+    if len(args) != 2:
+        raise _ExprError("wrong number of arguments for lift()")
+    color, amount = _color(args[0]), _number(args[1])
+    bg, text = tokens.get("bg"), tokens.get("text")
+    dark = (pal.luminance(bg) < pal.luminance(text)) if bg and text else pal.luminance(color) < 0.18
+    if dark:
+        return pal.mix(color, text, amount * DARK_LIFT)
+    return pal.lighter(color, amount)
 
 
 def evaluate(expr: str, tokens: dict[str, str]) -> str:
@@ -97,6 +117,8 @@ def evaluate(expr: str, tokens: dict[str, str]) -> str:
                         pos += 1
                         break
                     raise _ExprError("expected ',' or ')'")
+            if word == "lift":
+                return _lift(args, tokens)
             try:
                 return FUNCTIONS[word](*args)
             except TypeError:

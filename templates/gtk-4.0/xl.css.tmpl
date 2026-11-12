@@ -215,35 +215,48 @@ windowcontrols > button:not(.osd) {
   min-width: {{wb.button_w}}px;
   min-height: {{wb.button_h}}px;
   padding: 0;
-  border: 1px solid {{w.title_button.border}};
+  border: 1px solid {{wbp.w.title_button.border}};
   border-radius: {{r}}px;
   color: inherit;
   background-color: transparent;
   background-image: none;
-  box-shadow: {{w.title_button.g4_shadow}}; }
+  box-shadow: {{wbp.w.title_button.g4_shadow}}; }
 windowcontrols > button > image { background: none; padding: 0; }
 windowcontrols > button:not(.osd):hover, windowcontrols > button:not(.osd):hover:backdrop {
-  color: {{text}};
-  border-color: {{w.title_button.hover_border}};
-  background-color: {{w.title_button.hover_color}};
-  background-image: {{w.title_button.hover_grad}};
-  box-shadow: {{w.title_button.hover_g4_shadow}}; }
+  color: {{wbp.text}};
+  border-color: {{wbp.w.title_button.hover_border}};
+  background-color: {{wbp.w.title_button.hover_color}};
+  background-image: {{wbp.w.title_button.hover_grad}};
+  box-shadow: {{wbp.w.title_button.hover_g4_shadow}}; }
 windowcontrols > button:not(.osd):active {
-  border-color: {{w.title_button.pressed_border}};
-  background-color: {{pressed}};
-  background-image: image({{pressed}});
-  box-shadow: {{w.title_button.pressed_g4_shadow}}; }
+  border-color: {{wbp.w.title_button.pressed_border}};
+  background-color: {{wbp.pressed}};
+  background-image: image({{wbp.pressed}});
+  box-shadow: {{wbp.w.title_button.pressed_g4_shadow}}; }
 windowcontrols > button.close:not(.osd):hover, windowcontrols > button.close:not(.osd):hover:backdrop {
   color: {{accent_fg}};
   border-color: {{accent_press}};
-  background-color: {{w.close_button.hover_color}};
-  background-image: {{w.close_button.hover_grad}};
-  box-shadow: {{w.close_button.hover_g4_shadow}}; }
+  background-color: {{wbp.w.close_button.hover_color}};
+  background-image: {{wbp.w.close_button.hover_grad}};
+  box-shadow: {{wbp.w.close_button.hover_g4_shadow}}; }
 windowcontrols > button.close:not(.osd):active {
   color: {{accent_fg}};
   background-color: {{accent_press}};
   background-image: image({{accent_press}}); }
 windowcontrols > button:not(.osd):backdrop { color: {{wb.unfocused_text}}; }
+
+/* Other headerbar buttons: on the title bar, so their hover and pressed faces
+   come from the title bar's palette too */
+headerbar button:not(.osd):hover {
+  border-color: {{wbp.w.toolbar_button.hover_border}};
+  background-color: {{wbp.w.toolbar_button.hover_color}};
+  background-image: {{wbp.w.toolbar_button.hover_grad}};
+  box-shadow: {{wbp.w.toolbar_button.hover_g4_shadow}}; }
+headerbar button:not(.osd):active, headerbar button:not(.osd):checked {
+  border-color: {{wbp.w.toolbar_button.pressed_border}};
+  background-color: {{wbp.pressed}};
+  background-image: linear-gradient(to bottom, {{wbp.pressed_bottom}}, {{wbp.pressed_top}});
+  box-shadow: {{wbp.w.toolbar_button.pressed_g4_shadow}}; }
 
 /* Menubar and toolbars: flat, same color as the bottom of the title bar */
 menubar, .toolbar:not(.osd), actionbar > revealer > box {

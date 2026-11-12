@@ -56,9 +56,9 @@ border = "none"
 
 [widgets]
 button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
-linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lighter(button_hover, 0.7)" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lift(button_hover, 0.7)" }
 suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
-toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lighter(header, 0.7)" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.7)" }
 title_button   = { like = "toolbar_button" }
 close_button   = { like = "title_button", hover_color = "accent" }
 entry          = { edge = "sunken", focus_edge = "focus" }

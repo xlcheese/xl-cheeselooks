@@ -305,6 +305,23 @@ class StyleTests(unittest.TestCase):
         with self.assertRaises(styles.StyleError):
             styles.load(d)
 
+    def test_lift_is_lighter_on_light_and_gentle_on_dark(self):
+        light = {"bg": "#F5F5F5", "text": "#303030", "header": "#E8E8E8"}
+        self.assertEqual(render.evaluate("lift(header, 0.7)", light), render.evaluate("lighter(header, 0.7)", light))
+        dark = {"bg": "#2B2D31", "text": "#E6E6E6", "header": "#3B4252"}
+        lifted = render.evaluate("lift(header, 0.7)", dark)
+        self.assertLess(palette.luminance(lifted), 0.2)                   # still a dark face
+        self.assertGreater(palette.luminance(lifted), palette.luminance("#3B4252"))
+
+    def test_title_bar_buttons_follow_a_contrasting_title_bar(self):
+        st = styles.load(DEFAULT_STYLE)
+        same = tokens.build(defaults(), st)
+        self.assertEqual(same["wbp.w.title_button.hover_color"], same["w.title_button.hover_color"])
+        s = defaults()
+        s["window_borders"].update(separate_colors=True, title_bar="#3B4252", title_text="#ECEFF4")
+        t = tokens.build(s, st)
+        self.assertLess(palette.luminance(t["wbp.w.title_button.hover_color"]), 0.2)   # dark, not light
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

@@ -195,6 +195,16 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["wb.button_layout"] = LAYOUTS[wb["button_layout"]]
     t["wb.button_style"] = wb["button_style"]
     t.update(metacity.tokens(t))
+    # Title buttons and headerbar buttons sit on the title bar. With the title
+    # bar's own colours, their faces come from a palette built on those (wbp.*),
+    # so a hover face isn't light on a dark title bar; otherwise wbp = the theme.
+    if sep and (title != theme["header"] or title_text != theme["text"]):
+        wb_pal = pal.derive(g["accent"], title, title_text, hover)
+    else:
+        wb_pal = theme
+    _add_colors(t, "wbp.", wb_pal)
+    _add_gradients(t, "wbp.", wb_pal, amount)
+    _add_widgets(t, "wbp.", style, wb_pal, depth, amount)
 
     # --- Terminal
     term = settings["terminal"]
@@ -243,6 +253,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
 
     # --- Integration
     t["adw.accent_name"] = nearest_adw_accent(theme["accent"])
+    _add_face_gradients(t, style)      # again, for the panel, menu and title-bar tokens
     return t
 
 
