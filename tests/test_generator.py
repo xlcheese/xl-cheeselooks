@@ -322,6 +322,17 @@ class StyleTests(unittest.TestCase):
         t = tokens.build(s, st)
         self.assertLess(palette.luminance(t["wbp.w.title_button.hover_color"]), 0.2)   # dark, not light
 
+    def test_claude_tabs_and_preset(self):
+        st = styles.Style(name="Fixture", path=None, widgets={"tab": {"tab_kind": "claude"}})
+        t = tokens.build(defaults(), st)
+        self.assertIn("radial-gradient(ellipse 16px 3px at 50% 0", t["tabs.css"])   # top tabs: bar on top
+        self.assertIn("at 50% 100%", t["tabs.css"])                                 # bottom tabs: on the bottom
+        self.assertIn("radial-gradient", t["tabs_adw.css"])                         # libadwaita tab bar too
+        preset = json.loads((REPO / "presets" / "global" / "claude.json").read_text())
+        p = palette.derive(preset["global"]["accent"], preset["global"]["bg"], preset["global"]["text"])
+        self.assertGreaterEqual(palette.contrast(p["text"], p["bg"]), 7)
+        self.assertGreaterEqual(palette.contrast(p["accent_fg"], p["accent"]), 4.5)  # text on accent readable
+
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")
         none = tokens.build(defaults(), styles.Style(name="Fixture", path=None))

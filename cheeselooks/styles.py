@@ -57,7 +57,7 @@ WIDGET_ONLY_KEYS = {"color": ("panel_button", "scrollbar"), "selected_color": ("
 FACE_FG = {"hover_color": "hover_fg", "selected_color": "selected_fg", "pressed_color": "pressed_fg"}
 PADDING_RANGE = (0, 24)   # px, left and right
 SPACING_RANGE = (0, 12)   # px between window-list buttons
-TAB_KINDS = ("boxed", "open", "pills")
+TAB_KINDS = ("boxed", "open", "pills", "claude")
 # [panel]: the panel's own colors (opacity is a user setting; a style suggests
 # it with [defaults] panel_opacity)
 PANEL_KEYS = ("color",)

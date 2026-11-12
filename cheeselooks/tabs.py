@@ -49,6 +49,19 @@ def _join(*shadows: str) -> str:
     return ", ".join(parts) if parts else "none"
 
 
+# "claude" tabs (designed by Claude): quiet until needed. Unselected tabs are
+# just text, with a soft highlight on hover; the selected tab is a card in the
+# page colour, joined to the page, with a short accent bar centred on its outer
+# edge instead of a full-width line. Softer corners (the window radius).
+_BAR = {"top": "ellipse 16px 3px at 50% 0", "bottom": "ellipse 16px 3px at 50% 100%",
+        "left": "ellipse 3px 16px at 0 50%", "right": "ellipse 3px 16px at 100% 50%"}
+
+
+def claude_bar(pos: str, accent: str) -> str:
+    """The claude tab's short accent bar on the outer edge (a clipped ellipse)."""
+    return f"radial-gradient({_BAR[pos]}, {accent} 60%, transparent 100%)"
+
+
 # the edge of a tab that faces the page, per tab position
 PAGE_SIDE = {"top": "bottom", "bottom": "top", "left": "right", "right": "left"}
 
@@ -126,7 +139,8 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
     else:  # open and pills: nothing drawn until hover
         rest = (f"  color: {t['text_dim']};\n  border-color: transparent;\n"
                 f"  background-color: transparent;\n  background-image: none;\n  box-shadow: none;")
-    hover = (f"  color: {t['w.tab.hover_fg']};\n  border-color: {t['w.tab.hover_border']};\n"
+    hover_edge = "transparent" if kind == "claude" else t["w.tab.hover_border"]
+    hover = (f"  color: {t['w.tab.hover_fg']};\n  border-color: {hover_edge};\n"
              f"  background-color: {t['w.tab.hover_color']};\n"
              f"  background-image: {t['w.tab.hover_grad']};\n"
              f"  box-shadow: {t[k('w.tab.hover_inset_shadow')]};")
@@ -141,7 +155,7 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
         out.append(f"{all_pos()} {{\n  margin: 0 1px;\n  border: 1px solid transparent;\n  border-radius: {r}px; }}")
     else:
         for pos in POSITIONS:
-            radii = _RADII[pos].format(r=r)
+            radii = _RADII[pos].format(r=t["r2"] if kind == "claude" else r)
             out.append(f"{sel(pos)}{', ' + 'notebook > header > tabs > tab' if pos == 'top' else ''} {{\n"
                        f"  border-radius: {radii}; }}")
 
@@ -180,8 +194,9 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
                     f"  background-image: {t['button_grad']};\n"
                     f"  box-shadow: {_join(t[k('w.button.shadow')], m)};")
         else:
+            bar = claude_bar(pos, accent) if kind == "claude" else "none"
             body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
-                    f"  background-color: {t['base']};\n  background-image: none;\n"
+                    f"  background-color: {t['base']};\n  background-image: {bar};\n"
                     f"  box-shadow: {_join(m)};")
         selectors = sel(pos, ":checked") + (",\nnotebook > header > tabs > tab:checked" if pos == "top" else "")
         out.append(f"{selectors} {{\n{body} }}")
@@ -216,14 +231,16 @@ def adw_css(t: dict[str, str]) -> str:
     else:
         # sit on the page: no gap below the tabs, square bottom corners
         rest_bg = t["header"] if kind == "boxed" else "transparent"
+        bar = claude_bar("top", t["accent"]) if kind == "claude" else "none"
+        rr = t["r2"] if kind == "claude" else r
         rest_edge = f"inset 0 0 0 1px {border}" if kind == "boxed" else "none"
         out += ["tabbar .box { padding-bottom: 0; box-shadow: none; }   /* tabs sit right on the page */",
                 "tabbar tabbox { padding-bottom: 0; }",
-                f"tabbar tabbox > tabboxchild {{ border-radius: {r}px {r}px 0 0; }}",
-                f"tabbar tab {{\n  border-radius: {r}px {r}px 0 0;\n  color: {t['text_dim']};\n"
+                f"tabbar tabbox > tabboxchild {{ border-radius: {rr}px {rr}px 0 0; }}",
+                f"tabbar tab {{\n  border-radius: {rr}px {rr}px 0 0;\n  color: {t['text_dim']};\n"
                 f"  background-color: {rest_bg};\n  box-shadow: {rest_edge}; }}",
                 f"tabbar tab:hover:not(:selected) {{\n{hover}",
                 f"tabbar tab:selected, tabbar tab:selected:hover {{\n  color: {t['text']};\n"
-                f"  background-color: {t['base']};\n"
+                f"  background-color: {t['base']};\n  background-image: {bar};\n"
                 f"  box-shadow: {_join(f'inset 1px 0 {border}', f'inset -1px 0 {border}', f'inset 0 1px {border}', marker)}; }}"]
     return "\n".join(out) + "\n"

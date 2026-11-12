@@ -1,0 +1,9 @@
+{
+  "name": "Claude",
+  "description": "Designed by Claude: warm ivory paper, warm charcoal ink and a terracotta accent. Pairs with tab_kind = \"claude\".",
+  "global": {
+    "accent": "#B85A38",
+    "bg": "#F4F2EC",
+    "text": "#2E2A25"
+  }
+}
