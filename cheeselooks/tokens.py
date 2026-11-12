@@ -19,7 +19,7 @@ import colorsys
 from . import palette as pal
 from . import shape
 from . import styles as sty
-from . import panelmarker, tabs
+from . import metacity, panelmarker, tabs
 
 THEME_NAME = "xl-Cheeselooks"
 HOVER_CALIBRATION = 0.8
@@ -176,6 +176,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["wb.button_w"] = str(round(btn_h * 1.12))
     t["wb.button_layout"] = LAYOUTS[wb["button_layout"]]
     t["wb.button_style"] = wb["button_style"]
+    t.update(metacity.tokens(t))
 
     # --- Terminal
     term = settings["terminal"]

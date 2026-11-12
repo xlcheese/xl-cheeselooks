@@ -516,6 +516,31 @@ class RenderAndInstallTests(unittest.TestCase):
             render.render_text("a {{accent}}\nb {{nope}}", {"accent": "#000000"}, "x.css")
         self.assertIn("x.css:2", ctx.exception.problems[0])
 
+    def test_window_borders_xml(self):
+        import xml.dom.minidom
+        st = styles.load(DEFAULT_STYLE)
+        for width in (0, 1, 6):
+            s = defaults()
+            s["window_borders"]["border_width"] = width
+            with tempfile.TemporaryDirectory() as tmp:
+                theme = Path(tmp) / "xl-Cheeselooks"
+                install.install(REPO / "templates", tokens.build(s, st), theme, Path(tmp) / "good")
+                meta = theme / "metacity-1"
+                text = (meta / "metacity-theme-3.xml").read_text()
+                doc = xml.dom.minidom.parseString(text)          # well-formed
+                border = [d for d in doc.getElementsByTagName("draw_ops")
+                          if d.getAttribute("name") == "border_focused"][0]
+                drawn = border.getElementsByTagName("rectangle") + border.getElementsByTagName("arc")
+                self.assertEqual(bool(drawn), width > 0, width)   # nothing at all at width 0
+                # Metacity/Muffin reject newer features without version guards
+                for title in doc.getElementsByTagName("title"):
+                    if title.hasAttribute("ellipsize_width"):
+                        self.assertEqual(title.getAttribute("version"), ">= 3.1")
+                for name in ("button-hover.svg", "button-pressed.svg", "close-hover.svg",
+                             "close-pressed.svg", "close-icon.svg", "max-icon.svg"):
+                    self.assertTrue((meta / name).exists(), name)
+                self.assertNotIn("{{", text)
+
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)
         with tempfile.TemporaryDirectory() as tmp:
