@@ -377,7 +377,8 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 - **libadwaita accent:** the generator also sets GNOME's `accent-color` key (`org.gnome.desktop.interface`) to the named color nearest the user's accent (blue, teal, green, yellow, orange, red, pink, purple, slate). That gets libadwaita apps that ignore custom CSS close to the accent. It can be turned off in the app.
 
 ### Flatpak apps
-- Flatpak apps can't see `~/.themes` by default. An opt-in button in the app grants read access to the theme folder for all Flatpak apps, one time. It shows the exact command before running it and offers to undo it. The command will be confirmed during the build.
+- Flatpak apps can't see `~/.themes` (GTK 3 and GTK 4 themes) or `~/.config/gtk-4.0/gtk.css` (the libadwaita colours) by default. `cheeselooks flatpak --enable` (the app's button later) shows and, after a yes, runs `flatpak override --user --filesystem=~/.themes:ro --filesystem=xdg-config/gtk-4.0:ro`: read-only, for all Flatpak apps. Apps learn the theme's name from Cinnamon's XSettings, so nothing else is needed. It records which of the two entries it added (`~/.config/xl-cheeselooks/flatpak-added`); `--disable` removes only those from Flatpak's user override file (`~/.local/share/flatpak/overrides/global`), keeping every other override, including a `~/.themes` grant you made yourself (`flatpak override --reset` would wipe them all). `cheeselooks flatpak` shows the state. Tested with Flatpak 1.14.
+- Flatpak libadwaita apps use their runtime's libadwaita (often 1.6+, upstream: colours only), so the gtk.css block always includes the CSS variables too; GTK 4.14 accepts them without warnings.
 
 ### Details tab
 Fine-grained overrides. Each row has its own switch. **Off** means the item follows the theme; **on** reveals its controls, pre-filled with the theme's current values.

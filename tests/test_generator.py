@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from cheeselooks import cli, gtk4, install, tabs, palette, render, settings, shape, styles, tokens
+from cheeselooks import cli, flatpak, gtk4, install, tabs, palette, render, settings, shape, styles, tokens
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_STYLE = REPO / "styles" / "xl-Cheeselooks"
@@ -668,6 +668,19 @@ class RenderAndInstallTests(unittest.TestCase):
             fresh = Path(tmp) / "new" / "gtk.css"
             gtk4.write(fresh, blk)                                     # no file yet: created
             self.assertTrue(fresh.read_text().startswith(gtk4.BEGIN))
+
+    def test_flatpak_undo_keeps_other_overrides(self):
+        text = "[Context]\nfilesystems=~/Music:ro;xdg-config/gtk-4.0:ro;~/.themes:ro;\n[Environment]\nFOO=1\n"
+        out = flatpak.remove_ours(text)
+        self.assertIn("filesystems=~/Music:ro;", out)
+        self.assertNotIn("~/.themes", out)
+        self.assertIn("FOO=1", out)                                   # other sections untouched
+        only_ours = "[Context]\nfilesystems=~/.themes:ro;xdg-config/gtk-4.0:ro;\n"
+        self.assertNotIn("filesystems", flatpak.remove_ours(only_ours))
+        # only what we added is removed: a ~/.themes grant you had stays
+        kept = flatpak.remove_ours("[Context]\nfilesystems=~/.themes:ro;xdg-config/gtk-4.0:ro;\n",
+                                   ["xdg-config/gtk-4.0:ro"])
+        self.assertIn("~/.themes:ro", kept)
 
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)

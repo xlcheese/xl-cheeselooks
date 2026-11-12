@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import __version__, gtk4, install, paths, reload, settings, styles, tokens
+from . import __version__, flatpak, gtk4, install, paths, reload, settings, styles, tokens
 from .shape import DEFAULT_PANEL_HEIGHT
 
 
@@ -95,8 +95,9 @@ def _libadwaita(data: dict, table: dict) -> list[str]:
     GNOME's accent key, each only if switched on in Integration."""
     log = []
     integ = data["integration"]
-    version = gtk4.libadwaita_version()
-    new = (gtk4.block(paths.templates_dir(), table, css_variables=bool(version and version >= (1, 6)))
+    # CSS variables for libadwaita 1.6+ always: Flatpak apps bring their own,
+    # newer libadwaita, and GTK 4.14 accepts the variables without warnings
+    new = (gtk4.block(paths.templates_dir(), table, css_variables=True)
            if integ["libadwaita_colors"] else None)
     log.append(gtk4.write(paths.gtk4_css(), new))
     if integ["libadwaita_accent"]:
@@ -186,6 +187,51 @@ def cmd_check_style(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_flatpak(args: argparse.Namespace) -> int:
+    if not flatpak.available():
+        print("Flatpak isn't installed: nothing to do.")
+        return 0
+    command = " ".join(flatpak.COMMAND)
+    have = flatpak.granted()
+    if args.enable:
+        if len(have) == len(flatpak.FILESYSTEMS):
+            print("Flatpak apps can already see the theme.")
+            return 0
+        print("This gives every Flatpak app read-only access to your themes folder and")
+        print("your GTK 4 colours, so they can use xl-Cheeselooks. It runs:\n")
+        print(f"  {command}\n")
+        if not args.yes and input("Go ahead? [y/N] ").strip().lower() not in ("y", "yes"):
+            print("Nothing changed.")
+            return 0
+        flatpak.enable()
+        _set_flatpak_setting(True)
+        print("Done. Restart any open Flatpak apps. Undo with: cheeselooks flatpak --disable")
+        return 0
+    if args.disable:
+        if flatpak.disable():
+            print(f"Removed xl-Cheeselooks' access from {flatpak.overrides_file()} "
+                  "(your other Flatpak overrides are kept).")
+        else:
+            print("Flatpak apps had no access from xl-Cheeselooks: nothing to remove.")
+        _set_flatpak_setting(False)
+        return 0
+    if len(have) == len(flatpak.FILESYSTEMS):
+        print("Flatpak apps can see the theme. Undo with: cheeselooks flatpak --disable")
+    else:
+        print("Flatpak apps can't see the theme yet. To allow it (read-only, undoable):")
+        print("  cheeselooks flatpak --enable")
+        print(f"which runs: {command}")
+    return 0
+
+
+def _set_flatpak_setting(on: bool) -> None:
+    path = paths.settings_file()
+    if path.exists():
+        data = settings.load(path)
+        data["integration"]["flatpak_access"] = on
+        settings.save(data, path)
+
+
 def cmd_presets(args: argparse.Namespace) -> int:
     for f in preset_files():
         data = json.loads(f.read_text(encoding="utf-8"))
@@ -240,6 +286,13 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("check-style", help="check a style file for problems")
     p.add_argument("path")
     p.set_defaults(func=cmd_check_style)
+
+    p = sub.add_parser("flatpak", help="let Flatpak apps see the theme (or undo it)")
+    group = p.add_mutually_exclusive_group()
+    group.add_argument("--enable", action="store_true", help="grant read-only access (asks first)")
+    group.add_argument("--disable", action="store_true", help="remove that access again")
+    p.add_argument("--yes", action="store_true", help="don't ask before enabling")
+    p.set_defaults(func=cmd_flatpak)
 
     p = sub.add_parser("presets", help="list available presets")
     p.set_defaults(func=cmd_presets)
