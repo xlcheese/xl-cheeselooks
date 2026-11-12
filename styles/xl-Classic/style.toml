@@ -1,5 +1,6 @@
-# xl-Classic: a traditional bevel.
-# Light top and left edges, a faint dark bottom and right; sunken entries;
+# xl-Classic: a traditional bevel, slightly soft.
+# Softly blurred light top and left edges, a faint dark bottom and right;
+# sunken entries;
 # flat toolbar and title buttons that rise on hover; boxed tabs with an
 # accent line on the selected tab; accent menu hovers; raised panel buttons
 # with an accent line under the focused window.
@@ -8,7 +9,7 @@
 
 name = "xl-Classic"
 author = "xl_cheese"
-description = "Raised buttons with a light top edge, sunken fields, boxed tabs."
+description = "A soft traditional bevel, sunken fields, boxed tabs with an accent line."
 
 adapt_strength = 0.6
 

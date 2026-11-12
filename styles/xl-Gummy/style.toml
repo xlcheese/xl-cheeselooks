@@ -1,5 +1,6 @@
-# xl-Gummy: soft and rounded.
-# Thick, softly blurred light edges for a gummy, pillowy button; sunken
+# xl-Gummy: bright and crisp.
+# Light edges all round with little blur, a brighter, crisper sibling of
+# xl-Classic; joined buttons get a stronger bevel on hover; sunken
 # entries; flat toolbar and title buttons that rise on hover; boxed tabs with
 # an accent glow on the selected tab, and on the focused window's panel button.
 #
@@ -7,7 +8,7 @@
 
 name = "xl-Gummy"
 author = "xl_cheese"
-description = "Soft, pillowy buttons, sunken fields, boxed tabs with an accent glow."
+description = "Bright, crisp buttons, sunken fields, boxed tabs with an accent glow."
 
 adapt_strength = 0.6
 
