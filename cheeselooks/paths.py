@@ -38,6 +38,11 @@ def config_dir() -> Path:
     return _xdg("XDG_CONFIG_HOME", HOME / ".config") / "xl-cheeselooks"
 
 
+def gtk4_css() -> Path:
+    """GTK 4's per-user stylesheet, where the libadwaita colours go."""
+    return _xdg("XDG_CONFIG_HOME", HOME / ".config") / "gtk-4.0" / "gtk.css"
+
+
 def settings_file() -> Path:
     return config_dir() / "settings.json"
 

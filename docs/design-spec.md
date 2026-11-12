@@ -364,6 +364,8 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
 ### GTK 4 / libadwaita (colors only)
 - The generator writes a **marked block** into `~/.config/gtk-4.0/gtk.css`, between `/* xl-cheeselooks begin */` and `/* xl-cheeselooks end */`. The libadwaita named colors go there as both `@define-color` and `:root` variables.
 - Anything the user wrote outside the block is preserved. A backup is made the first time.
+- Colours: accent and destructive (backgrounds use the palette colours; `accent_color` and `destructive_color`, used as text, are darkened or lightened until they read at 4.5:1 on the window background), window, view, headerbar, sidebar, card, dialog, popover. libadwaita 1.5 and older take `@define-color` names; 1.6 and newer CSS variables, which are added only when the installed libadwaita (`dpkg-query libadwaita-1-0`) is 1.6+, since older GTK 4 warns on them. Template: `templates/libadwaita.css.part`; code: `cheeselooks/gtk4.py`. `revert` rewrites the block from the restored settings.
+- The GNOME `accent-color` key exists from GNOME 47; on Mint 22 (GNOME 46 schemas) it is skipped quietly.
 - An option in the app turns this off.
 - **libadwaita accent:** the generator also sets GNOME's `accent-color` key (`org.gnome.desktop.interface`) to the named color nearest the user's accent (blue, teal, green, yellow, orange, red, pink, purple, slate). That gets libadwaita apps that ignore custom CSS close to the accent. It can be turned off in the app.
 

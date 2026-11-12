@@ -19,7 +19,7 @@ import colorsys
 from . import palette as pal
 from . import shape
 from . import styles as sty
-from . import metacity, panelmarker, tabs
+from . import gtk4, metacity, panelmarker, tabs
 
 THEME_NAME = "xl-Cheeselooks"
 SCROLL_SLIDER_BORDER = 4   # px, Mint-Y's transparent border around the scrollbar thumb
@@ -122,6 +122,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     _add_widgets(t, "", style, theme, depth, amount)
     t["style.extra_css"] = style.extra_css
     t["tabs.css"] = tabs.css(t)
+    t.update(gtk4.tokens(t))
 
     # --- Panel & Menu: shared colors, separate shapes
     p = settings["panel"]

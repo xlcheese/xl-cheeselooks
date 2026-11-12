@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from cheeselooks import cli, install, palette, render, settings, shape, styles, tokens
+from cheeselooks import cli, gtk4, install, palette, render, settings, shape, styles, tokens
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_STYLE = REPO / "styles" / "xl-Cheeselooks"
@@ -556,6 +556,41 @@ class RenderAndInstallTests(unittest.TestCase):
                              "close-pressed.svg", "close-icon.svg", "max-icon.svg"):
                     self.assertTrue((meta / name).exists(), name)
                 self.assertNotIn("{{", text)
+
+    def test_libadwaita_block(self):
+        t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
+        self.assertGreaterEqual(palette.contrast(t["adw.accent_text"], t["bg"]), 4.5)
+        old_style = gtk4.block(REPO / "templates", t, css_variables=False)
+        new_style = gtk4.block(REPO / "templates", t, css_variables=True)
+        self.assertIn(f"@define-color accent_bg_color {t['accent']};", old_style)
+        self.assertNotIn(":root", old_style)
+        self.assertIn(f"--accent-bg-color: {t['accent']};", new_style)
+        self.assertTrue(old_style.startswith(gtk4.BEGIN) and old_style.rstrip().endswith(gtk4.END))
+
+    def test_libadwaita_block_keeps_the_users_css(self):
+        t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
+        blk = gtk4.block(REPO / "templates", t, css_variables=False)
+        with tempfile.TemporaryDirectory() as tmp:
+            css = Path(tmp) / "gtk.css"
+            css.write_text("window { font-size: 12pt; }\n")
+            self.assertIn("added", gtk4.write(css, blk))
+            backup = css.with_name("gtk.css.xl-cheeselooks-backup")
+            self.assertEqual(backup.read_text(), "window { font-size: 12pt; }\n")
+            self.assertEqual(gtk4.write(css, blk), "")                 # unchanged: nothing to do
+            blk2 = blk.replace(t["accent"], "#123456")
+            gtk4.write(css, blk2)
+            text = css.read_text()
+            self.assertEqual(text.count(gtk4.BEGIN), 1)                # replaced, not added twice
+            self.assertIn("#123456", text)
+            self.assertIn("window { font-size: 12pt; }", text)         # the user's line is kept
+            backup.write_text("first backup")
+            gtk4.write(css, blk)
+            self.assertEqual(backup.read_text(), "first backup")       # backup only the first time
+            self.assertIn("removed", gtk4.write(css, None))
+            self.assertEqual(css.read_text().strip(), "window { font-size: 12pt; }")
+            fresh = Path(tmp) / "new" / "gtk.css"
+            gtk4.write(fresh, blk)                                     # no file yet: created
+            self.assertTrue(fresh.read_text().startswith(gtk4.BEGIN))
 
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)

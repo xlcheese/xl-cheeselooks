@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import __version__, install, paths, reload, settings, styles, tokens
+from . import __version__, gtk4, install, paths, reload, settings, styles, tokens
 from .shape import DEFAULT_PANEL_HEIGHT
 
 
@@ -90,6 +90,20 @@ def _where(style: styles.Style) -> str:
     return f"{style.path} (your copy, used instead of the built-in {style.name})"
 
 
+def _libadwaita(data: dict, table: dict) -> list[str]:
+    """GTK 4 / libadwaita: the colour block in ~/.config/gtk-4.0/gtk.css and
+    GNOME's accent key, each only if switched on in Integration."""
+    log = []
+    integ = data["integration"]
+    version = gtk4.libadwaita_version()
+    new = (gtk4.block(paths.templates_dir(), table, css_variables=bool(version and version >= (1, 6)))
+           if integ["libadwaita_colors"] else None)
+    log.append(gtk4.write(paths.gtk4_css(), new))
+    if integ["libadwaita_accent"]:
+        log.append(reload.set_adw_accent(table["adw.accent_name"]) or "")
+    return [line for line in log if line]
+
+
 def cmd_apply(args: argparse.Namespace) -> int:
     data = _load_settings(args)
     style = _load_style(data["style"]["name"], args.style_dir)
@@ -111,6 +125,9 @@ def cmd_apply(args: argparse.Namespace) -> int:
     print(f"  style: {style.name} from {_where(style)}")
     for note in tokens.warnings(data):
         print(f"  note: {note}")
+    if not args.theme_dir:
+        for line in _libadwaita(data, table):
+            print(f"  {line}")
     if not args.no_reload and not args.theme_dir:
         layout = table["wb.button_layout"] if (theme_dir / "metacity-1").is_dir() else None
         sb = data["details"]["scrollbars"]
@@ -126,8 +143,17 @@ def cmd_apply(args: argparse.Namespace) -> int:
 def cmd_revert(args: argparse.Namespace) -> int:
     data = install.revert(paths.theme_dir(), paths.last_good_dir())
     if data:
-        settings.save(settings.from_dict(data), paths.settings_file())
+        data = settings.from_dict(data)
+        settings.save(data, paths.settings_file())
     print("Restored the previous theme.")
+    if data:
+        # the libadwaita colours live outside the theme folder: rewrite them to match
+        try:
+            style = _load_style(data["style"]["name"], None)
+            for line in _libadwaita(data, tokens.build(data, style)):
+                print(f"  {line}")
+        except styles.StyleError as exc:
+            _err(f"libadwaita colours left as they were: {exc}")
     if not args.no_reload:
         for line in reload.apply(tokens.THEME_NAME, theme_dir=paths.theme_dir()):
             print(f"  {line}")

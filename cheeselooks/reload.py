@@ -75,6 +75,21 @@ def set_overlay_scrollbars(enabled: bool) -> str | None:
     return f"overlay scroll bars turned {'on' if enabled else 'off'} (Details > Scrollbars)"
 
 
+ADW_ACCENT_KEY = ("org.gnome.desktop.interface", "accent-color")
+
+
+def set_adw_accent(name: str) -> str | None:
+    """GNOME's named accent (GNOME 47+), for libadwaita apps that ignore custom CSS.
+    Skipped quietly where the key doesn't exist (Mint 22 has GNOME 46 schemas)."""
+    if not available():
+        return None
+    current = get(*ADW_ACCENT_KEY)
+    if current is None or current == name:
+        return None
+    set_value(*ADW_ACCENT_KEY, name)
+    return f"GNOME accent colour set to {name} (nearest to your accent)"
+
+
 def apply(theme_name: str, button_layout: str | None = None, activate: bool = False,
           pause: float = 0.3, theme_dir=None) -> list[str]:
     """Reload (and optionally switch to) the theme. Returns what was done, for the log."""
