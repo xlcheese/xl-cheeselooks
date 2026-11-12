@@ -406,8 +406,15 @@ def _adapt(layer_color: str, surface: str | None, reference: str | None,
     return max(0.15, (want / have) ** strength)
 
 
+# GTK 4 draws a box-shadow blur about half as wide as GTK 3 does for the same
+# value (measured: a 3px fade in GTK 3 is a crisp 1-2px band in GTK 4), so the
+# GTK 4 shadows are written with the blur doubled to look the same.
+GTK4_BLUR_SCALE = 2.0
+
+
 def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth: float, dark: bool,
-               surface: str | None = None, strength: float = DEFAULT_ADAPT_STRENGTH) -> str | None:
+               surface: str | None = None, strength: float = DEFAULT_ADAPT_STRENGTH,
+               blur_scale: float = 1.0) -> str | None:
     scale = depth / 50.0
     alpha = layer.get("alpha_dark", layer.get("alpha", 1.0)) if dark else layer.get("alpha", 1.0)
     base_color = _resolve_color(layer["color"], palette)
@@ -427,7 +434,7 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         # a line inside the left and/or right edge: x = width in px (default 1),
         # blur = fade inward over that many px (0 = crisp line)
         w = abs(layer.get("x", 1))
-        blur = layer.get("blur", 0)
+        blur = layer.get("blur", 0) * blur_scale
         if blur:
             # Keep the fade on its own edge: a blurred inset shadow would also
             # glow along the top and bottom. Shrink it by the blur (negative
@@ -445,7 +452,7 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         return f"{'inset ' if inset else ''}0 0 0 {px(width)} {color}"
     x = layer.get("x", 0)
     y = layer.get("y", 0) * grow
-    blur = layer.get("blur", 0) * grow
+    blur = layer.get("blur", 0) * grow * blur_scale
     spread = layer.get("spread", 0)
     inset = kind in ("highlight", "shade", "inner")
     if kind in ("highlight", "shade") and blur and "spread" not in layer and y:
@@ -472,11 +479,17 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
     layers = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength) for k in LAYER_KINDS if k in edge}
     gtk = [layers[k] for k in LAYER_KINDS if layers.get(k)]
     inset = [layers[k] for k in LAYER_KINDS if layers.get(k) and layers[k].startswith("inset")]
+    layers4 = {k: _layer_css(k, edge[k], palette, depth, dark, surface, strength, GTK4_BLUR_SCALE)
+               for k in LAYER_KINDS if k in edge}
+    gtk4 = [layers4[k] for k in LAYER_KINDS if layers4.get(k)]
+    inset4 = [layers4[k] for k in LAYER_KINDS if layers4.get(k) and layers4[k].startswith("inset")]
     st = next((layers[k] for k in ST_PRIORITY if layers.get(k)), None)
     return {
         "border": border,
         "shadow": ", ".join(gtk) if gtk else "none",
         "inset_shadow": ", ".join(inset) if inset else "none",
+        "g4_shadow": ", ".join(gtk4) if gtk4 else "none",
+        "g4_inset_shadow": ", ".join(inset4) if inset4 else "none",
         "st_shadow": st or "none",
     }
 
@@ -524,6 +537,8 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
             tokens[prefix + "border"] = css["border"]
             tokens[prefix + "shadow"] = css["shadow"]
             tokens[prefix + "inset_shadow"] = css["inset_shadow"]
+            tokens[prefix + "g4_shadow"] = css["g4_shadow"]               # GTK 4: blur doubled
+            tokens[prefix + "g4_inset_shadow"] = css["g4_inset_shadow"]
             # the inner shadows plus a 1px line just outside the right edge, for
             # joined buttons that must draw the edge they share with the next one
             seam = f"1px 0 0 0 {css['border']}"

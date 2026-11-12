@@ -20,8 +20,8 @@ depth = 50
 
 [edges.raised]
 border    = "border_strong"
-highlight = { y = 2, blur = 3, color = "white", alpha = 0.60 }
-left      = { x = 1, blur = 1, color = "white", alpha = 0.50 }
+highlight = { y = 2, blur = 2, color = "white", alpha = 0.60 }
+left      = { x = 1, blur = 2, color = "white", alpha = 0.50 }
 shade     = { y = -2, blur = 3, color = "black", alpha = 0.03 }
 right     = { x = 2, blur = 3, color = "black", alpha = 0.03 }
 shadow    = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }

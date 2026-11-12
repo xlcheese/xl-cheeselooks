@@ -49,7 +49,64 @@ def _join(*shadows: str) -> str:
     return ", ".join(parts) if parts else "none"
 
 
-def css(t: dict[str, str]) -> str:
+# the edge of a tab that faces the page, per tab position
+PAGE_SIDE = {"top": "bottom", "bottom": "top", "left": "right", "right": "left"}
+
+
+def split_shadows(value: str) -> list[str]:
+    """Split a box-shadow list on its top-level commas (not those inside rgba())."""
+    parts, depth, cur = [], 0, ""
+    for ch in value:
+        depth += ch == "("
+        depth -= ch == ")"
+        if ch == "," and depth == 0:
+            parts.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    if cur.strip():
+        parts.append(cur.strip())
+    return parts
+
+
+def _edge_of(shadow: str) -> str | None:
+    """Which edge an inset shadow layer lies along (from its offsets), if any."""
+    bits = shadow.split()
+    if not bits or bits[0] != "inset":
+        return None
+    try:
+        x, y = (float(b.rstrip("px") or 0) for b in bits[1:3])
+    except ValueError:
+        return None
+    if y > 0 and x == 0:
+        return "top"
+    if y < 0 and x == 0:
+        return "bottom"
+    if x > 0 and y == 0:
+        return "left"
+    if x < 0 and y == 0:
+        return "right"
+    return None
+
+
+def without_side(value: str, side: str) -> str:
+    """The shadow list minus the inset layers along `side` (the page-facing edge)."""
+    if value == "none":
+        return value
+    kept = [p for p in split_shadows(value) if _edge_of(p) != side]
+    return ", ".join(kept) if kept else "none"
+
+
+def css(t: dict[str, str], gtk4: bool = False) -> str:
+    """Notebook tab CSS. gtk4=True uses the GTK 4 shadows (blur doubled)."""
+    def k(name: str) -> str:
+        # w.button.inset_shadow -> w.button.g4_inset_shadow for GTK 4
+        if not gtk4:
+            return name
+        head, _, last = name.rpartition(".")
+        state = next((p for p in ("hover_", "pressed_", "focus_") if last.startswith(p)), "")
+        return f"{head}.{state}g4_{last[len(state):]}"
+
     kind = t.get("w.tab.tab_kind", "boxed")
     marker = t.get("w.tab.active_marker", "none")
     r = t["r"]
@@ -65,14 +122,14 @@ def css(t: dict[str, str]) -> str:
     if kind == "boxed":
         rest = (f"  color: {t['text_dim']};\n  border-color: {t['w.button.border']};\n"
                 f"  background-color: {t['header']};\n  background-image: none;\n"
-                f"  box-shadow: {t['w.button.inset_shadow']};")
+                f"  box-shadow: {t[k('w.button.inset_shadow')]};")
     else:  # open and pills: nothing drawn until hover
         rest = (f"  color: {t['text_dim']};\n  border-color: transparent;\n"
                 f"  background-color: transparent;\n  background-image: none;\n  box-shadow: none;")
     hover = (f"  color: {t['w.tab.hover_fg']};\n  border-color: {t['w.tab.hover_border']};\n"
              f"  background-color: {t['w.tab.hover_color']};\n"
              f"  background-image: linear-gradient(to bottom, {t['w.tab.hover_top']}, {t['w.tab.hover_bottom']});\n"
-             f"  box-shadow: {t['w.tab.hover_inset_shadow']};")
+             f"  box-shadow: {t[k('w.tab.hover_inset_shadow')]};")
 
     if kind == "pills":
         # the whole tab strip is the trough, edge to edge, in the toolbar/menubar color
@@ -100,6 +157,18 @@ def css(t: dict[str, str]) -> str:
                        f"  border-{side}-style: solid;\n  border-{side}-width: 1px;\n"
                        f"  border-{side}-color: {t['w.button.border']}; }}")
     out.append(f"{all_pos(':hover:not(:checked)')} {{\n{hover} }}")
+    if kind != "pills":
+        # boxed and open tabs are joined to the page: no highlight or shade on
+        # the edge that faces it (e.g. no bottom shade on top tabs)
+        rest_sh = t[k("w.button.inset_shadow")] if kind == "boxed" else "none"
+        hover_sh = t[k("w.tab.hover_inset_shadow")]
+        for pos in POSITIONS:
+            side = PAGE_SIDE[pos]
+            also = ",\nnotebook > header > tabs > tab" if pos == "top" else ""
+            out.append(f"{sel(pos, ':not(:checked)')}{also + ':not(:checked)' if also else ''} {{\n"
+                       f"  box-shadow: {without_side(rest_sh, side)}; }}")
+            out.append(f"{sel(pos, ':hover:not(:checked)')}{also + ':hover:not(:checked)' if also else ''} {{\n"
+                       f"  box-shadow: {without_side(hover_sh, side)}; }}")
 
     # selected tab
     accent = t["accent"]
@@ -109,7 +178,7 @@ def css(t: dict[str, str]) -> str:
             body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
                     f"  background-color: {t['button']};\n"
                     f"  background-image: linear-gradient(to bottom, {t['button_top']}, {t['button_bottom']});\n"
-                    f"  box-shadow: {_join(t['w.button.shadow'], m)};")
+                    f"  box-shadow: {_join(t[k('w.button.shadow')], m)};")
         else:
             body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
                     f"  background-color: {t['base']};\n  background-image: none;\n"

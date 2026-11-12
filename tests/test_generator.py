@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from cheeselooks import cli, gtk4, install, palette, render, settings, shape, styles, tokens
+from cheeselooks import cli, gtk4, install, tabs, palette, render, settings, shape, styles, tokens
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_STYLE = REPO / "styles" / "xl-Cheeselooks"
@@ -267,6 +267,25 @@ class StyleTests(unittest.TestCase):
             s = defaults()
             s["details"]["scrollbars"].update(custom=True, mode="classic", roundness=r)
             self.assertEqual(tokens.build(s, st)["scrollbar.r"], str(want), r)
+
+    def test_gtk4_shadows_double_the_blur(self):
+        st = styles.Style(name="Fixture", path=None, edges={"raised": {
+            "border": "border_strong", "highlight": {"y": 2, "blur": 2, "color": "white", "alpha": 0.6}}})
+        p = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        t = styles.widget_tokens(st, p, 50)
+        self.assertIn("inset 0 4px 2px -2px", t["w.button.shadow"])        # GTK 3
+        self.assertIn("inset 0 6px 4px -4px", t["w.button.g4_shadow"])     # GTK 4: blur x2
+
+    def test_tabs_drop_the_page_facing_layer(self):
+        sh = ("inset 0 4px 2px -2px rgba(255, 255, 255, 0.6), inset 3px 0 2px -2px rgba(255, 255, 255, 0.5), "
+              "inset -5px 0 3px -3px rgba(0, 0, 0, 0.03), inset 0 -5px 3px -3px rgba(0, 0, 0, 0.03)")
+        self.assertNotIn("inset 0 4px", tabs.without_side(sh, "top"))       # bottom tabs: no highlight
+        self.assertNotIn("inset -5px", tabs.without_side(sh, "right"))      # left tabs: no right edge
+        self.assertEqual(len(tabs.split_shadows(tabs.without_side(sh, "bottom"))), 3)
+        self.assertEqual(tabs.without_side("none", "top"), "none")
+        t = tokens.build(defaults(), styles.load(REPO / "styles" / "xl-Classic"))
+        self.assertIn("g4_", "".join(k for k in t if k.startswith("w.button.g4")))
+        self.assertNotEqual(t["tabs.css"], t["tabs4.css"])                 # GTK 4 tabs use GTK 4 blur
 
     def test_panel_marker(self):
         p = palette.derive("#FA8562", "#F5F5F5", "#303030")

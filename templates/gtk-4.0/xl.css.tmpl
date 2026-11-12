@@ -36,17 +36,17 @@ button {
   border-color: {{w.button.border}};
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
-  box-shadow: {{w.button.shadow}}; }
+  box-shadow: {{w.button.g4_shadow}}; }
 button:hover {
   border-color: {{w.button.hover_border}};
   background-color: {{w.button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
-  box-shadow: {{w.button.hover_shadow}}; }
+  box-shadow: {{w.button.hover_g4_shadow}}; }
 button:active, button:checked, button:hover:checked {
   border-color: {{w.button.pressed_border}};
   background-color: {{pressed}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
-  box-shadow: {{w.button.pressed_shadow}}; }
+  box-shadow: {{w.button.pressed_g4_shadow}}; }
 button:disabled {
   background-image: image({{alpha(button, 0.55)}});
   box-shadow: none; }
@@ -59,28 +59,28 @@ button.image-button.flat, popover button.flat {
   border-color: {{w.toolbar_button.border}};
   background-color: transparent;
   background-image: none;
-  box-shadow: {{w.toolbar_button.shadow}}; }
+  box-shadow: {{w.toolbar_button.g4_shadow}}; }
 button.flat:hover, headerbar button:hover, .toolbar button:hover, actionbar button:hover,
 popover button.flat:hover {
   border-color: {{w.toolbar_button.hover_border}};
   background-color: {{w.toolbar_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
-  box-shadow: {{w.toolbar_button.hover_shadow}}; }
+  box-shadow: {{w.toolbar_button.hover_g4_shadow}}; }
 button.flat:active, button.flat:checked, headerbar button:active, headerbar button:checked,
 .toolbar button:active, .toolbar button:checked, actionbar button:active, actionbar button:checked {
   border-color: {{w.toolbar_button.pressed_border}};
   background-color: {{pressed}};
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
-  box-shadow: {{w.toolbar_button.pressed_shadow}}; }
+  box-shadow: {{w.toolbar_button.pressed_g4_shadow}}; }
 
 /* Grouped (linked) buttons: inside edges only, so neighbours don't overlap */
 .linked > button, .linked > dropdown > button, .linked > combobox > box > button.combo,
 spinbutton > button {
-  box-shadow: {{w.linked.inset_shadow}}; }
+  box-shadow: {{w.linked.g4_inset_shadow}}; }
 .linked > button:hover, .linked > dropdown > button:hover, spinbutton > button:hover {
-  box-shadow: {{w.linked.hover_inset_shadow}}; }
+  box-shadow: {{w.linked.hover_g4_inset_shadow}}; }
 .linked > button:active, .linked > button:checked, spinbutton > button:active {
-  box-shadow: {{w.linked.pressed_inset_shadow}}; }
+  box-shadow: {{w.linked.pressed_g4_inset_shadow}}; }
 headerbar .linked > button, .toolbar .linked > button {
   border-color: {{w.linked.border}};
   background-color: {{button}};
@@ -119,20 +119,20 @@ button.suggested-action, headerbar button.suggested-action {
   border-color: {{w.suggested.border}};
   background-color: {{accent}};
   background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
-  box-shadow: {{w.suggested.shadow}}; }
+  box-shadow: {{w.suggested.g4_shadow}}; }
 button.suggested-action:hover, headerbar button.suggested-action:hover {
   color: {{accent_fg}};
   border-color: {{w.suggested.hover_border}};
   background-color: {{w.suggested.hover_color}};
   background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
-  box-shadow: {{w.suggested.hover_shadow}}; }
+  box-shadow: {{w.suggested.hover_g4_shadow}}; }
 button.suggested-action:active, button.suggested-action:checked,
 headerbar button.suggested-action:active {
   color: {{accent_fg}};
   border-color: {{w.suggested.pressed_border}};
   background-color: {{accent_press}};
   background-image: image({{accent_press}});
-  box-shadow: {{w.suggested.pressed_shadow}}; }
+  box-shadow: {{w.suggested.pressed_g4_shadow}}; }
 button.suggested-action:disabled {
   color: {{alpha(accent_fg, 0.6)}};
   background-image: image({{alpha(accent, 0.5)}});
@@ -143,14 +143,14 @@ button.destructive-action, headerbar button.destructive-action {
   border-color: {{darker(destructive, 0.14)}};
   background-color: {{destructive}};
   background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
-  box-shadow: {{w.destructive.shadow}}; }
+  box-shadow: {{w.destructive.g4_shadow}}; }
 button.destructive-action:hover, headerbar button.destructive-action:hover {
   color: {{destructive_fg}};
   background-image: linear-gradient(to bottom, {{lighter(destructive_top, 0.12)}}, {{lighter(destructive_bottom, 0.12)}});
-  box-shadow: {{w.destructive.hover_shadow}}; }
+  box-shadow: {{w.destructive.hover_g4_shadow}}; }
 button.destructive-action:active, headerbar button.destructive-action:active {
   background-image: image({{darker(destructive, 0.14)}});
-  box-shadow: {{w.destructive.pressed_shadow}}; }
+  box-shadow: {{w.destructive.pressed_g4_shadow}}; }
 
 /* --------------------------------------------------------------------------
    Headerbars
@@ -183,25 +183,25 @@ windowcontrols > button {
   color: inherit;
   background-color: transparent;
   background-image: none;
-  box-shadow: {{w.title_button.shadow}}; }
+  box-shadow: {{w.title_button.g4_shadow}}; }
 windowcontrols > button > image { background: none; padding: 0; }
 windowcontrols > button:hover, windowcontrols > button:hover:backdrop {
   color: {{text}};
   border-color: {{w.title_button.hover_border}};
   background-color: {{w.title_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
-  box-shadow: {{w.title_button.hover_shadow}}; }
+  box-shadow: {{w.title_button.hover_g4_shadow}}; }
 windowcontrols > button:active {
   border-color: {{w.title_button.pressed_border}};
   background-color: {{pressed}};
   background-image: image({{pressed}});
-  box-shadow: {{w.title_button.pressed_shadow}}; }
+  box-shadow: {{w.title_button.pressed_g4_shadow}}; }
 windowcontrols > button.close:hover, windowcontrols > button.close:hover:backdrop {
   color: {{accent_fg}};
   border-color: {{accent_press}};
   background-color: {{w.close_button.hover_color}};
   background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
-  box-shadow: {{w.close_button.hover_shadow}}; }
+  box-shadow: {{w.close_button.hover_g4_shadow}}; }
 windowcontrols > button.close:active {
   color: {{accent_fg}};
   background-color: {{accent_press}};
@@ -265,15 +265,15 @@ entry, spinbutton:not(.vertical), spinbutton.vertical > text {
   min-height: {{entry_min_h}}px;
   border-radius: {{r}}px;
   border-color: {{w.entry.border}};
-  box-shadow: {{w.entry.shadow}}; }
+  box-shadow: {{w.entry.g4_shadow}}; }
 entry:focus-within, spinbutton:focus-within:not(.vertical) {
   border-color: {{w.entry.focus_border}};
-  box-shadow: {{w.entry.focus_shadow}}; }
+  box-shadow: {{w.entry.focus_g4_shadow}}; }
 
 /* --------------------------------------------------------------------------
    Notebook tabs (written by cheeselooks/tabs.py from the style's tab line)
    -------------------------------------------------------------------------- */
-{{tabs.css}}
+{{tabs4.css}}
 
 /* --------------------------------------------------------------------------
    Check boxes and radios (drawn in CSS; glyphs recolored from symbolic SVGs).
@@ -288,7 +288,7 @@ check, radio {
   color: transparent;
   background-color: {{base}};
   background-image: none;
-  box-shadow: {{w.check.shadow}};
+  box-shadow: {{w.check.g4_shadow}};
   -gtk-icon-source: none; }
 radio { border-radius: 50%; }
 check:hover, radio:hover { border-color: {{accent}}; }
@@ -315,7 +315,7 @@ switch {
   color: transparent;
   background-color: {{trough}};
   background-image: none;
-  box-shadow: {{w.switch.shadow}}; }
+  box-shadow: {{w.switch.g4_shadow}}; }
 switch:checked {
   border-color: {{accent_press}};
   background-color: {{accent}};
@@ -350,10 +350,10 @@ scale > trough > slider {
   border-radius: {{slider.handle_r}}px;
   background-color: {{button}};
   background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
-  box-shadow: {{w.button.shadow}}; }
+  box-shadow: {{w.button.g4_shadow}}; }
 scale > trough > slider:hover {
   background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
-  box-shadow: {{w.button.hover_shadow}}; }
+  box-shadow: {{w.button.hover_g4_shadow}}; }
 
 /* --------------------------------------------------------------------------
    Scrollbars, panes, tooltips, focus, terminal
