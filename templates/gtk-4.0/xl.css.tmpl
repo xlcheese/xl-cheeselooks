@@ -1,0 +1,411 @@
+/* ==========================================================================
+   xl-Cheeselooks layer for GTK 4, drawn on top of base.css (Mint-Y GTK 4).
+   Style: {{style_name}}. The same rules and tokens as the GTK 3 layer
+   (templates/gtk-3.0/xl.css.tmpl), with GTK 4's node names: windowcontrols
+   for title buttons, popover menus with modelbuttons, menubar > item.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Hover timing: hover appears at "Hover in", fades at "Hover out",
+   pressing is always instant.
+   -------------------------------------------------------------------------- */
+button, entry, spinbutton, dropdown > button, combobox button, modelbutton,
+menubar > item, notebook > header > tabs > tab, row, gridview > child, listview > row,
+flowboxchild, switch, switch > slider, check, radio, scale > trough > slider,
+scrollbar slider, headerbar button, windowcontrols > button {
+  transition-duration: {{hover_out_ms}}ms;
+  transition-timing-function: ease-out;
+  transition-delay: 0; }
+
+button:hover, entry:hover, spinbutton:hover, modelbutton:hover, menubar > item:hover,
+notebook > header > tabs > tab:hover, row:hover, gridview > child:hover, listview > row:hover,
+flowboxchild:hover, switch:hover, check:hover, radio:hover, scale > trough > slider:hover,
+scrollbar slider:hover, headerbar button:hover, windowcontrols > button:hover {
+  transition-duration: {{hover_in_ms}}ms; }
+
+button:active, button:checked, modelbutton:active, row:active, switch:active,
+check:active, radio:active, scale > trough > slider:active {
+  transition: none; }
+
+/* --------------------------------------------------------------------------
+   Buttons: style edges + gradient
+   -------------------------------------------------------------------------- */
+button {
+  min-height: {{button_min_h}}px;
+  border-radius: {{r}}px;
+  border-color: {{w.button.border}};
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+button:hover {
+  border-color: {{w.button.hover_border}};
+  background-color: {{w.button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  box-shadow: {{w.button.hover_shadow}}; }
+button:active, button:checked, button:hover:checked {
+  border-color: {{w.button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
+  box-shadow: {{w.button.pressed_shadow}}; }
+button:disabled {
+  background-image: image({{alpha(button, 0.55)}});
+  box-shadow: none; }
+button:disabled:checked, button:disabled:active {
+  background-image: image({{alpha(pressed, 0.6)}}); }
+
+/* Flat buttons and headerbar buttons: flat until hovered */
+button.flat, button.flat:disabled, headerbar button, .toolbar button, actionbar button,
+button.image-button.flat, popover button.flat {
+  border-color: {{w.toolbar_button.border}};
+  background-color: transparent;
+  background-image: none;
+  box-shadow: {{w.toolbar_button.shadow}}; }
+button.flat:hover, headerbar button:hover, .toolbar button:hover, actionbar button:hover,
+popover button.flat:hover {
+  border-color: {{w.toolbar_button.hover_border}};
+  background-color: {{w.toolbar_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.toolbar_button.hover_top}}, {{w.toolbar_button.hover_bottom}});
+  box-shadow: {{w.toolbar_button.hover_shadow}}; }
+button.flat:active, button.flat:checked, headerbar button:active, headerbar button:checked,
+.toolbar button:active, .toolbar button:checked, actionbar button:active, actionbar button:checked {
+  border-color: {{w.toolbar_button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
+  box-shadow: {{w.toolbar_button.pressed_shadow}}; }
+
+/* Grouped (linked) buttons: inside edges only, so neighbours don't overlap */
+.linked > button, .linked > dropdown > button, .linked > combobox > box > button.combo,
+spinbutton > button {
+  box-shadow: {{w.linked.inset_shadow}}; }
+.linked > button:hover, .linked > dropdown > button:hover, spinbutton > button:hover {
+  box-shadow: {{w.linked.hover_inset_shadow}}; }
+.linked > button:active, .linked > button:checked, spinbutton > button:active {
+  box-shadow: {{w.linked.pressed_inset_shadow}}; }
+headerbar .linked > button, .toolbar .linked > button {
+  border-color: {{w.linked.border}};
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}}); }
+headerbar .linked > button:hover, .toolbar .linked > button:hover {
+  border-color: {{w.linked.hover_border}};
+  background-image: linear-gradient(to bottom, {{w.linked.hover_top}}, {{w.linked.hover_bottom}}); }
+headerbar .linked > button:active, headerbar .linked > button:checked,
+.toolbar .linked > button:active, .toolbar .linked > button:checked {
+  border-color: {{w.linked.pressed_border}};
+  background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}}); }
+
+/* Joined buttons share the edge between them: the next button colors it to
+   match when its neighbour is hovered or pressed (see the GTK 3 layer) */
+.linked:not(.vertical) > button:hover + button,
+headerbar .linked:not(.vertical) > button:hover + button {
+  border-left-color: {{w.linked.hover_border}}; }
+.linked:not(.vertical) > button:checked + button, .linked:not(.vertical) > button:active + button,
+headerbar .linked:not(.vertical) > button:checked + button,
+headerbar .linked:not(.vertical) > button:active + button {
+  border-left-color: {{w.linked.pressed_border}}; }
+.linked.vertical > button:hover + button {
+  border-top-color: {{w.linked.hover_border}}; }
+.linked.vertical > button:checked + button, .linked.vertical > button:active + button {
+  border-top-color: {{w.linked.pressed_border}}; }
+
+/* Buttons on colored backgrounds keep the see-through look */
+infobar.info button, infobar.question button, infobar.warning button, infobar.error button,
+row:selected button, headerbar.selection-mode button {
+  background-image: none;
+  box-shadow: none; }
+
+/* Suggested (accent) and destructive buttons */
+button.suggested-action, headerbar button.suggested-action {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.border}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  box-shadow: {{w.suggested.shadow}}; }
+button.suggested-action:hover, headerbar button.suggested-action:hover {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.hover_border}};
+  background-color: {{w.suggested.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.suggested.hover_top}}, {{w.suggested.hover_bottom}});
+  box-shadow: {{w.suggested.hover_shadow}}; }
+button.suggested-action:active, button.suggested-action:checked,
+headerbar button.suggested-action:active {
+  color: {{accent_fg}};
+  border-color: {{w.suggested.pressed_border}};
+  background-color: {{accent_press}};
+  background-image: image({{accent_press}});
+  box-shadow: {{w.suggested.pressed_shadow}}; }
+button.suggested-action:disabled {
+  color: {{alpha(accent_fg, 0.6)}};
+  background-image: image({{alpha(accent, 0.5)}});
+  box-shadow: none; }
+
+button.destructive-action, headerbar button.destructive-action {
+  color: {{destructive_fg}};
+  border-color: {{darker(destructive, 0.14)}};
+  background-color: {{destructive}};
+  background-image: linear-gradient(to bottom, {{destructive_top}}, {{destructive_bottom}});
+  box-shadow: {{w.destructive.shadow}}; }
+button.destructive-action:hover, headerbar button.destructive-action:hover {
+  color: {{destructive_fg}};
+  background-image: linear-gradient(to bottom, {{lighter(destructive_top, 0.12)}}, {{lighter(destructive_bottom, 0.12)}});
+  box-shadow: {{w.destructive.hover_shadow}}; }
+button.destructive-action:active, headerbar button.destructive-action:active {
+  background-image: image({{darker(destructive, 0.14)}});
+  box-shadow: {{w.destructive.pressed_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Headerbars
+   -------------------------------------------------------------------------- */
+headerbar, .titlebar:not(headerbar) {
+  min-height: {{wb.height_inner}}px;
+  color: {{wb.text}};
+  border-color: {{wb.border}};
+  background-color: {{wb.title}};
+  background-image: linear-gradient(to bottom, {{wb.title_top}}, {{wb.title_bottom}}); }
+headerbar:backdrop, .titlebar:not(headerbar):backdrop {
+  color: {{wb.unfocused_text}};
+  background-color: {{wb.unfocused}};
+  background-image: image({{wb.unfocused}}); }
+window.csd > .titlebar, window.csd > headerbar,
+window.csd > .titlebar:backdrop, window.csd > headerbar:backdrop {
+  border-radius: {{r2}}px {{r2}}px 0 0; }
+window.maximized > .titlebar, window.tiled > .titlebar, window.fullscreen > .titlebar,
+window.maximized > headerbar, window.tiled > headerbar, window.fullscreen > headerbar {
+  border-radius: 0; }
+
+/* Title buttons: nothing at rest; the style's button on hover; close fills with the accent */
+windowcontrols { border-spacing: 2px; }
+windowcontrols > button {
+  min-width: {{wb.button_w}}px;
+  min-height: {{wb.button_h}}px;
+  padding: 0;
+  border: 1px solid {{w.title_button.border}};
+  border-radius: {{r}}px;
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: {{w.title_button.shadow}}; }
+windowcontrols > button > image { background: none; padding: 0; }
+windowcontrols > button:hover, windowcontrols > button:hover:backdrop {
+  color: {{text}};
+  border-color: {{w.title_button.hover_border}};
+  background-color: {{w.title_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.title_button.hover_top}}, {{w.title_button.hover_bottom}});
+  box-shadow: {{w.title_button.hover_shadow}}; }
+windowcontrols > button:active {
+  border-color: {{w.title_button.pressed_border}};
+  background-color: {{pressed}};
+  background-image: image({{pressed}});
+  box-shadow: {{w.title_button.pressed_shadow}}; }
+windowcontrols > button.close:hover, windowcontrols > button.close:hover:backdrop {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{w.close_button.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.close_button.hover_top}}, {{w.close_button.hover_bottom}});
+  box-shadow: {{w.close_button.hover_shadow}}; }
+windowcontrols > button.close:active {
+  color: {{accent_fg}};
+  background-color: {{accent_press}};
+  background-image: image({{accent_press}}); }
+windowcontrols > button:backdrop { color: {{wb.unfocused_text}}; }
+
+/* Menubar and toolbars: flat, same color as the bottom of the title bar */
+menubar, .toolbar, actionbar > revealer > box {
+  background-color: {{header}};
+  background-image: none; }
+
+/* --------------------------------------------------------------------------
+   Menus (popover menus)
+   -------------------------------------------------------------------------- */
+popover.menu > contents, popover.background > contents {
+  background-color: {{menu_bg}}; }
+popover.menu modelbutton {
+  padding: {{menu_pad}}px;
+  border-radius: {{r}}px; }
+popover.menu modelbutton:hover, popover.menu modelbutton:selected {
+  color: {{w.menu_item.hover_fg}};
+  background-color: {{w.menu_item.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.menu_item.hover_top}}, {{w.menu_item.hover_bottom}}); }
+menubar > item:hover, menubar > item:selected {
+  color: {{w.menubar_item.hover_fg}};
+  box-shadow: none;
+  border-radius: {{r}}px;
+  background-color: {{w.menubar_item.hover_color}};
+  background-image: linear-gradient(to bottom, {{w.menubar_item.hover_top}}, {{w.menubar_item.hover_bottom}}); }
+
+/* --------------------------------------------------------------------------
+   Selection: rows, icons, sidebars
+   -------------------------------------------------------------------------- */
+.view:selected, row:selected, listview > row:selected, gridview > child:selected,
+flowbox > flowboxchild:selected, treeview.view:selected {
+  color: {{accent_fg}};
+  background-color: {{select}};
+  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+selection, text selection, label > selection, entry > text > selection {
+  color: {{accent_fg}};
+  background-color: {{select}}; }
+
+.sidebar, .navigation-sidebar, placessidebar, stacksidebar {
+  background-color: {{sidebar}}; }
+.navigation-sidebar > row, placessidebar row, stacksidebar row {
+  min-height: {{row_min_h}}px;
+  border-radius: {{r}}px; }
+.navigation-sidebar > row:hover:not(:selected), placessidebar row:hover:not(:selected),
+stacksidebar row:hover:not(:selected) {
+  background-color: {{sidebar_hover}};
+  background-image: linear-gradient(to bottom, {{sidebar_hover_top}}, {{sidebar_hover_bottom}}); }
+.navigation-sidebar > row:selected, placessidebar row:selected, stacksidebar row:selected {
+  color: {{accent_fg}};
+  background-color: {{select}};
+  background-image: linear-gradient(to bottom, {{select_top}}, {{select_bottom}}); }
+
+/* --------------------------------------------------------------------------
+   Entries
+   -------------------------------------------------------------------------- */
+entry, spinbutton:not(.vertical), spinbutton.vertical > text {
+  min-height: {{entry_min_h}}px;
+  border-radius: {{r}}px;
+  border-color: {{w.entry.border}};
+  box-shadow: {{w.entry.shadow}}; }
+entry:focus-within, spinbutton:focus-within:not(.vertical) {
+  border-color: {{w.entry.focus_border}};
+  box-shadow: {{w.entry.focus_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Notebook tabs (written by cheeselooks/tabs.py from the style's tab line)
+   -------------------------------------------------------------------------- */
+{{tabs.css}}
+
+/* --------------------------------------------------------------------------
+   Check boxes and radios (drawn in CSS; glyphs recolored from symbolic SVGs).
+   In GTK 4 the checks in popover menus are ordinary check nodes too.
+   -------------------------------------------------------------------------- */
+check, radio {
+  min-width: 14px;
+  min-height: 14px;
+  margin: 0 4px;
+  border: 1px solid {{w.check.border}};
+  border-radius: {{r_check}}px;
+  color: transparent;
+  background-color: {{base}};
+  background-image: none;
+  box-shadow: {{w.check.shadow}};
+  -gtk-icon-source: none; }
+radio { border-radius: 50%; }
+check:hover, radio:hover { border-color: {{accent}}; }
+check:checked, radio:checked, check:indeterminate, radio:indeterminate {
+  color: {{accent_fg}};
+  border-color: {{accent_press}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+check:checked { -gtk-icon-source: -gtk-recolor(url("assets/check-symbolic.svg")); }
+check:indeterminate, radio:indeterminate { -gtk-icon-source: -gtk-recolor(url("assets/dash-symbolic.svg")); }
+radio:checked { -gtk-icon-source: -gtk-recolor(url("assets/bullet-symbolic.svg")); }
+check:disabled, radio:disabled { opacity: 0.5; }
+row:selected check, row:selected radio { border-color: {{accent_fg}}; }
+
+/* --------------------------------------------------------------------------
+   Switches
+   -------------------------------------------------------------------------- */
+switch {
+  min-width: 40px;
+  min-height: 20px;
+  padding: 0;
+  border: 1px solid {{w.switch.border}};
+  border-radius: {{switch.r}}px;
+  color: transparent;
+  background-color: {{trough}};
+  background-image: none;
+  box-shadow: {{w.switch.shadow}}; }
+switch:checked {
+  border-color: {{accent_press}};
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}}); }
+switch:disabled { opacity: 0.5; }
+switch > image { color: transparent; }
+switch > slider {
+  min-width: 18px;
+  min-height: 18px;
+  margin: 1px;
+  border: 1px solid {{alpha(black, 0.12)}};
+  border-radius: {{switch.knob_r}}px;
+  background-color: {{knob}};
+  background-image: none;
+  box-shadow: 0 1px 2px {{alpha(black, 0.25)}}; }
+switch:hover > slider { background-color: {{lighter(knob, 0.3)}}; }
+
+/* --------------------------------------------------------------------------
+   Sliders and progress bars
+   -------------------------------------------------------------------------- */
+scale > trough, scale > trough > fill, scale > trough > highlight,
+progressbar > trough, progressbar > trough > progress {
+  border-radius: {{slider.track_r}}px; }
+scale > trough > highlight, progressbar > trough > progress, levelbar > trough > block.filled {
+  background-color: {{accent}};
+  background-image: linear-gradient(to bottom, {{accent_top}}, {{accent_bottom}});
+  border-color: {{accent_press}}; }
+scale > trough > slider {
+  min-width: 16px;
+  min-height: 16px;
+  border: 1px solid {{w.button.border}};
+  border-radius: {{slider.handle_r}}px;
+  background-color: {{button}};
+  background-image: linear-gradient(to bottom, {{button_top}}, {{button_bottom}});
+  box-shadow: {{w.button.shadow}}; }
+scale > trough > slider:hover {
+  background-image: linear-gradient(to bottom, {{w.button.hover_top}}, {{w.button.hover_bottom}});
+  box-shadow: {{w.button.hover_shadow}}; }
+
+/* --------------------------------------------------------------------------
+   Scrollbars, panes, tooltips, focus, terminal
+   -------------------------------------------------------------------------- */
+scrollbar slider {
+  min-width: {{scrollbar.width}}px;
+  min-height: {{scrollbar.width}}px;
+  border-radius: {{scrollbar.r}}px;
+  background-color: {{alpha(w.scrollbar.color, 0.948)}};
+  box-shadow: inset 0 0 0 1px {{w.scrollbar.outline}}; }
+scrollbar slider:hover { background-color: {{alpha(w.scrollbar.hover_color, 0.961)}}; }
+scrollbar slider:active { background-color: {{w.scrollbar.pressed_color}}; }
+scrollbar.overlay-indicator:not(.dragging):not(.hovering) slider {
+  border-radius: {{scrollbar.indicator_r}}px;
+  box-shadow: none; }
+
+paned > separator {
+  min-width: 1px;
+  min-height: 1px;
+  background-image: image({{border}});
+  background-size: 1px 1px; }
+
+tooltip, tooltip.background {
+  color: {{tooltip.text}};
+  background-color: {{tooltip.bg}};
+  background-image: none;
+  border: 1px solid {{mix(tooltip.bg, tooltip.text, 0.2)}};
+  border-radius: {{r2}}px; }
+tooltip label { color: {{tooltip.text}}; }
+
+button:focus-visible, entry:focus-visible, check:focus-visible, radio:focus-visible,
+switch:focus-visible, notebook > header > tabs > tab:focus-visible, row:focus-visible {
+  outline-color: {{focus.ring}};
+  outline-style: {{focus.style}};
+  outline-width: {{focus.width}}px; }
+
+vte-terminal {
+  color: {{term.text}};
+  background-color: {{term.bg}};
+  caret-color: {{term.cursor}}; }
+
+/* --------------------------------------------------------------------------
+   Named colors some GTK 4 apps read from the theme
+   -------------------------------------------------------------------------- */
+@define-color theme_base_color {{base}};
+@define-color base_color {{base}};
+@define-color content_view_bg {{base}};
+@define-color insensitive_base_color {{base}};
+@define-color theme_unfocused_base_color {{base}};
+@define-color insensitive_fg_color {{alpha(text, 0.5)}};
+
+/* --------------------------------------------------------------------------
+   Extra CSS from the style (extra.css), if any
+   -------------------------------------------------------------------------- */
+{{style.extra_css}}

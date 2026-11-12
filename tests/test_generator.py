@@ -585,6 +585,23 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertFalse(list(adw.glob("*.part")))
             self.assertTrue((adw / "assets").is_dir())
 
+    def test_gtk4_theme_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            theme = Path(tmp) / "xl-Cheeselooks"
+            t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
+            install.install(REPO / "templates", t, theme, Path(tmp) / "good")
+            g4 = theme / "gtk-4.0"
+            for name in ("gtk.css", "gtk-dark.css", "base.css", "xl.css",
+                         "assets/check-symbolic.svg", "assets/bullet-symbolic.svg"):
+                self.assertTrue((g4 / name).is_file(), name)
+            base = (g4 / "base.css").read_text()
+            self.assertNotIn("#35A854", base.upper())        # Mint's green accent is gone
+            self.assertNotIn('url("assets/checkbox', base)   # green check images removed
+            xl = (g4 / "xl.css").read_text()
+            self.assertIn("windowcontrols > button:hover", xl)
+            self.assertNotIn("-gtk-outline-radius", xl)      # GTK 4 would warn
+            self.assertIn(t["accent"], xl)
+
     def test_libadwaita_block_keeps_the_users_css(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))
         blk = gtk4.block(REPO / "templates", t, css_variables=False)
