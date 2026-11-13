@@ -209,42 +209,7 @@ window.maximized > .titlebar, window.tiled > .titlebar, window.fullscreen > .tit
 window.maximized > headerbar, window.tiled > headerbar, window.fullscreen > headerbar {
   border-radius: 0; }
 
-/* Title buttons: nothing at rest; the style's button on hover; close fills with the accent */
-windowcontrols { border-spacing: 2px; }
-windowcontrols > button:not(.osd) {
-  min-width: {{wb.button_w}}px;
-  min-height: {{wb.button_h}}px;
-  padding: 0;
-  border: 1px solid {{wbp.w.title_button.border}};
-  border-radius: {{r}}px;
-  color: inherit;
-  background-color: transparent;
-  background-image: none;
-  box-shadow: {{wbp.w.title_button.g4_shadow}}; }
-windowcontrols > button > image { background: none; padding: 0; }
-windowcontrols > button:not(.osd):hover, windowcontrols > button:not(.osd):hover:backdrop {
-  color: {{wbp.text}};
-  border-color: {{wbp.w.title_button.hover_border}};
-  background-color: {{wbp.w.title_button.hover_color}};
-  background-image: {{wbp.w.title_button.hover_grad}};
-  box-shadow: {{wbp.w.title_button.hover_g4_shadow}}; }
-windowcontrols > button:not(.osd):active {
-  border-color: {{wbp.w.title_button.pressed_border}};
-  background-color: {{wbp.pressed}};
-  background-image: image({{wbp.pressed}});
-  box-shadow: {{wbp.w.title_button.pressed_g4_shadow}}; }
-windowcontrols > button.close:not(.osd):hover, windowcontrols > button.close:not(.osd):hover:backdrop {
-  color: {{accent_fg}};
-  border-color: {{accent_press}};
-  background-color: {{wbp.w.close_button.hover_color}};
-  background-image: {{wbp.w.close_button.hover_grad}};
-  box-shadow: {{wbp.w.close_button.hover_g4_shadow}}; }
-windowcontrols > button.close:not(.osd):active {
-  color: {{accent_fg}};
-  background-color: {{accent_press}};
-  background-image: image({{accent_press}}); }
-windowcontrols > button:not(.osd):backdrop { color: {{wb.unfocused_text}}; }
-
+{{titlebuttons4.css}}
 /* Other headerbar buttons: on the title bar, so their hover and pressed faces
    come from the title bar's palette too */
 headerbar button:not(.osd):hover {
@@ -487,3 +452,7 @@ vte-terminal {
    Extra CSS from the style (extra.css), if any
    -------------------------------------------------------------------------- */
 {{style.extra_css}}
+
+/* Hovered list rows follow Hover strength */
+row.activatable:hover:not(:selected), row.activatable.has-open-popup:not(:selected) {
+  background-color: {{row_hover}}; }

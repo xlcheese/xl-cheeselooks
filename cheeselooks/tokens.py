@@ -19,7 +19,7 @@ import colorsys
 from . import palette as pal
 from . import render, shape
 from . import styles as sty
-from . import gtk4, metacity, panelmarker, tabs
+from . import gtk4, metacity, titlebuttons, panelmarker, tabs
 
 THEME_NAME = "xl-Cheeselooks"
 SCROLL_SLIDER_BORDER = 4   # px, Mint-Y's transparent border around the scrollbar thumb
@@ -126,6 +126,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
 
     # --- Global palette, gradients, shape, timing, style edges
     _add_colors(t, "", theme)
+    # hovered list rows (activatable rows on a list): a text tint that follows
+    # Hover strength (Mint-Y's is a fixed 3%)
+    t["row_hover"] = pal.rgba(theme["text"], 0.075 * hover)
     _add_gradients(t, "", theme, amount)
     for k, v in shape.shape_tokens(g["size"], g["roundness"]).items():
         t[k] = str(v)
@@ -206,6 +209,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     _add_colors(t, "wbp.", wb_pal)
     _add_gradients(t, "wbp.", wb_pal, amount)
     _add_widgets(t, "wbp.", style, wb_pal, depth, amount)
+    t.update(titlebuttons.tokens(t))
 
     # --- Terminal
     term = settings["terminal"]

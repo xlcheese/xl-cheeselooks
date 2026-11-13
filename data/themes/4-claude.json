@@ -9,6 +9,9 @@
       "accent": "#B85A38",
       "bg": "#F4F2EC",
       "text": "#2E2A25"
+    },
+    "window_borders": {
+      "button_style": "claude"
     }
   }
 }

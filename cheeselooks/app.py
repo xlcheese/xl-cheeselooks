@@ -34,7 +34,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 from gi.repository import Gdk, GLib, Gtk  # noqa: E402
 
-from . import cli, flatpak, palette as pal, panelmarker, paths, render, settings, styles, themes, tokens  # noqa: E402
+from . import cli, flatpak, palette as pal, panelmarker, paths, render, settings, styles, themes, titlebuttons, tokens  # noqa: E402
 
 APP_TITLE = "xl-Cheeselooks"
 PREVIEW_DELAY_MS = 120
@@ -52,6 +52,7 @@ LABELS = {
     "title_bar": "Title bar", "title_text": "Title text", "border": "Border",
     "title_bar_height": "Title bar height", "border_width": "Border width",
     "title_gradient": "Title bar gradient", "button_layout": "Buttons on the",
+    "button_style": "Button style",
     "mode": "Mode", "color": "Color", "width": "Width",
     "libadwaita_colors": "Colors for libadwaita apps", "libadwaita_accent": "GNOME accent color",
 }
@@ -64,7 +65,8 @@ SECTION_NOTES = {
     "terminal": "Left on “Follow theme”, the terminal uses the theme's content colors.",
 }
 GATES = {"separate_colors": True, "custom": True, "follow_global": False}  # value set when a sibling changes
-HIDDEN = set(GATES) | {"button_style", "flatpak_access"}
+HIDDEN = set(GATES) | {"flatpak_access"}
+CHOICE_LABELS = {"button_style": titlebuttons.STYLES}   # choices shown by name instead of id
 
 
 def _get(data: dict, path: tuple[str, ...]) -> Any:
@@ -124,6 +126,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
         header.pack_start(self.apply_btn)          # opposite the window buttons, at the outer edge
         # shown after Apply: puts the previous desktop theme back
         self.revert_btn = Gtk.Button(label="Revert")
+        self.revert_btn.get_style_context().add_class("xl-drawn")    # a drawn button, not flat
         self.revert_btn.set_tooltip_text("Put the previous theme back on the desktop (your settings here stay)")
         self.revert_btn.connect("clicked", self.on_revert)
         self.revert_btn.set_no_show_all(True)
@@ -238,8 +241,9 @@ class SettingsWindow(Gtk.ApplicationWindow):
             self.controls[path] = (buttons, "inline")
             return box
         combo = Gtk.ComboBoxText()
+        names = CHOICE_LABELS.get(path[-1], {})
         for choice in extra:
-            combo.append(choice, choice.replace("_", " ").capitalize())
+            combo.append(choice, names.get(choice, choice.replace("_", " ").capitalize()))
         combo.connect("changed", lambda c: c.get_active_id() and self.changed(path, c.get_active_id()))
         self.controls[path] = (combo, kind)
         return combo
@@ -393,6 +397,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
         frame.get_style_context().add_class("xl-prev-window")
         win = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         hb = Gtk.HeaderBar(show_close_button=True, title="Preview")
+        self.prev_hb = hb
         hb.get_style_context().add_class("titlebar")
         win.pack_start(hb, False, False, 0)
         menubar = Gtk.MenuBar()
@@ -484,6 +489,14 @@ button.xl-prev-pb.focused {{ border-color: {t[pb + 'selected_border']}; backgrou
   background-image: linear-gradient(to bottom, {t[pb + 'selected_top']}, {t[pb + 'selected_bottom']});
   box-shadow: {marker}; }}
 button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: bold; }}
+headerbar button.xl-drawn {{ border-color: {t['wbp.w.button.border']}; background-color: {t['wbp.button']};
+  background-image: {t['wbp.button_grad']}; box-shadow: {t['wbp.w.button.shadow']}; }}
+headerbar button.xl-drawn:hover {{ border-color: {t['wbp.w.button.hover_border']};
+  background-color: {t['wbp.w.button.hover_color']}; background-image: {t['wbp.w.button.hover_grad']};
+  box-shadow: {t['wbp.w.button.hover_shadow']}; }}
+headerbar button.xl-drawn:active {{ border-color: {t['wbp.w.button.pressed_border']};
+  background-color: {t['wbp.pressed']}; background-image: image({t['wbp.pressed']});
+  box-shadow: {t['wbp.w.button.pressed_shadow']}; }}
 frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.border']};
   border-radius: {t['r2']}px {t['r2']}px 0 0; }}
 .xl-prev-terminal {{ font-family: monospace; color: {t['term.text']}; background-color: {t['term.bg']}; padding: 6px; }}
@@ -500,6 +513,9 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
         if self.preview_dir.exists():
             shutil.rmtree(self.preview_dir)
         render.render_tree(paths.templates_dir(), self.preview_dir, t)
+        # the preview's title bar shows all three buttons, on your side
+        left = self.data["window_borders"]["button_layout"] == "left"
+        self.prev_hb.set_decoration_layout("close,minimize,maximize:" if left else ":minimize,maximize,close")
         try:
             self.theme_css.load_from_path(str(self.preview_dir / "gtk-3.0" / "gtk.css"))
             self.extra_css.load_from_data(self._extra_css(t).encode())

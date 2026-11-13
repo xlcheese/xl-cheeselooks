@@ -76,7 +76,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
                "menu_shape":  { "follow_global": true, "roundness": 15, "gradient": 10 } },
   "window_borders": { "separate_colors": false, "title_bar": null, "title_text": null, "border": null,
                       "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
-                      "button_layout": "right", "button_style": "theme" },
+                      "button_layout": "right", "button_style": "flat" },
   "terminal": { "separate_colors": false, "bg": null, "text": null },
   "details": {
     "tooltips":    { "custom": false, "bg": null, "text": null },
@@ -297,7 +297,7 @@ Cinnamon's CSS allows **one** box shadow per widget and two-color gradients. Whe
 
 ### xl-Cheeselooks (default style, v1)
 - **Buttons:** raised. 1px `border_strong`, top highlight, faint bottom shade, small drop shadow.
-- **Toolbar and title buttons:** flat until hover, then raised.
+- **Toolbar and title buttons:** flat until hover, then raised. Title buttons follow the chosen button style (below).
 - **Entries:** sunken, with a 1px accent ring and accent border on focus.
 - **Tabs (in-app notebooks, not the settings app's own tabs):**
   - Active tab: `base` background with a `border_strong` border on top and sides. **No accent line.**
@@ -356,7 +356,18 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
   - Buttons: Mint-Y's grey glyphs (GPL-3+), recoloured per state with `colorize`. Hover and pressed faces are SVGs written from the title-button tokens (`button-hover.svg`, `button-pressed.svg`, `close-hover.svg`, `close-pressed.svg`), so they follow the style.
   - Newer theme features carry version guards (`ellipsize_width` 3.1, attached dialogs 3.2, tiled states 3.3), as Mint-Y does; without them Muffin and Metacity fall back to Adwaita.
   - Test without Cinnamon: `tools/wm-preview.sh THEME_DIR OUT` runs GNOME's Metacity (same theme format) on a virtual display and screenshots two windows.
-- **Button styles:** v1 ships **Theme** only. Dots, Wide and Circles are planned ([§13](#13-roadmap)). Each must be drawn in both the XML and the CSS.
+- **Button styles** (`window_borders.button_style`, drawn by `cheeselooks/titlebuttons.py`): one description per style (a face behind the glyph for each kind of button, minimize / maximize / close / other, and each state: rest, hover, pressed, unfocused) drives all three places title buttons are drawn, so they match: Muffin's window borders (SVG faces and glyphs written at apply time, `"file:<path>"` tokens), GTK 3 header bars and GTK 4 / libadwaita window controls (CSS tokens `titlebuttons.css`, `titlebuttons4.css`). The styles:
+  - `flat` (**xl-Cheeselooks-flat**, default; theme xl-Cheeselooks): glyph only at rest; the style's title button on hover; close fills with the accent.
+  - `drawn` (**xl-Cheeselooks**; theme xl-Gummy): the style's normal button at rest, its hover and pressed faces; close is a normal button that hovers in the accent.
+  - `classic` (theme xl-Classic): small square buttons in the title bar's own colour (a lighter gradient, an outline toward the title text, a soft top highlight), as Clearlooks; close looks like the others.
+  - `dots`: red / yellow / green dots, grey for other buttons and unfocused windows; the glyph shows on the hovered dot (window managers can't show it on all three at once).
+  - `gargantuan`: wide (1.45 × title bar height), full-height buttons with no gap, flush with the window edge; the style's hover face, close in the accent; close's outer top corner follows the window's roundness (square when maximized or tiled).
+  - `gargantuan-circles`: the same size, with a circle on hover.
+  - `arrows`: circles at rest (title bar tinted toward the text), chevron glyphs (down = minimize, up = maximize, a diamond = restore, ×), close hovers in the accent.
+  - `arrows-flat`: the same, with no circle until hover.
+  - `claude` (theme Claude): muted glyphs at rest; on hover a soft squircle with a short accent bar under the glyph, echoing the claude tabs; close fills with the accent.
+
+  Our own glyphs (chevrons, the dots' marks) are generated SVGs in the title colour and shown in GTK as a background layer over a hidden icon. Old names are migrated (`theme` → `flat`, `wide` → `gargantuan`, `circles` → `arrows`).
 - Window shadows are drawn by Muffin and are out of the theme's reach.
 
 ### Terminal
@@ -528,7 +539,7 @@ xl-cheeselooks/
 | Phase | Contents |
 |---|---|
 | **v1** | Generator + templates; Global (colors, size, roundness, gradient, hover in/out); Style tab with **xl-Cheeselooks** and Depth; Panel & Menu (colors, panel shape, menu shape, label weight); Window Borders (colors, height, border width, layout, **Theme** buttons); Terminal; Details (tooltips, scrollbars, sliders, switches, focus ring); libadwaita colors and accent; Flatpak access button; presets; CLI; README; `creating-styles.md`; `AGENTS.md` |
-| **v1.x** | Accent from wallpaper. Window button styles: Dots, Wide, Circles. Float shipped as a selectable style. Import/export polish. **Full styling for Flatpak libadwaita apps** (opt-in, off by default): Flatpak apps use upstream libadwaita, which ignores themes, so v1 gives them colours only. The whole libadwaita layer could go into the shared `~/.config/gtk-4.0/gtk.css` block instead; trade-offs to test first: that file outranks an app's own CSS (app-coloured buttons lose their colours), and it also applies to apps from Mint's repositories on top of the theme folder |
+| **v1.x** | Accent from wallpaper. More window button styles. Float shipped as a selectable style. Import/export polish. **Full styling for Flatpak libadwaita apps** (opt-in, off by default): Flatpak apps use upstream libadwaita, which ignores themes, so v1 gives them colours only. The whole libadwaita layer could go into the shared `~/.config/gtk-4.0/gtk.css` block instead; trade-offs to test first: that file outranks an app's own CSS (app-coloured buttons lose their colours), and it also applies to apps from Mint's repositories on top of the theme folder |
 | **Release** | The **xl-Claude** style (done: `styles/xl-Claude`, soft paper buttons with a faint top light and a border that warms on hover, terracotta focus ring, menus hovered with a light accent tint and dark text, `claude` tabs, a panel a shade darker than the windows with outline-free paper-chip buttons and a line marker; roundness 35, gradient 10, depth 45), with a **Claude** preset (done: `presets/global/claude.json`, warm ivory #F4F2EC, warm charcoal #2E2A25, terracotta #B85A38; text 12.7:1, white on the accent 4.6:1) and the `claude` tab kind, both designed by Claude |
 | **v2** | Icons tab (recolor the user's Yaru-based folders with the accent); more original styles; in-app style editor |
 | **Later (lowest priority)** | **GNOME / Ubuntu.** (1) *Apps only:* GTK 3 and plain GTK 4 themes already work on any desktop; the tool needs to detect GNOME and use its settings (`org.gnome.desktop.interface gtk-theme`, accent-color) instead of Cinnamon's. Window title bars there come from the GTK 3 headerbar rules (Mutter ignores `metacity-1/`). libadwaita apps get colours only (the gtk.css block and the accent key): upstream libadwaita doesn't read themes, which is a Mint patch. (2) *Desktop:* a GNOME Shell theme (`gnome-shell/gnome-shell.css`, loaded through the User Themes extension); same St CSS dialect as Cinnamon but different class names, so a new template about the size of the Cinnamon one |
@@ -571,7 +582,7 @@ The mockup wasn't updated for the review on 9 Nov. These spec items replace what
 
 Agreed but not built yet. Delete each line once it's done.
 - *(done)* **Icon and theme thumbnails:** the static swirly rainbow (`data/icons/xl-cheeselooks.svg`, drawn by `tools/make_icon.py`: an Archimedean spiral of short round-capped strokes, hue around the wheel, thickening outward). `tools/make_icon.sh` renders the 256px app icon and the 224×160 thumbnails (`gtk-3.0`, `cinnamon`, `metacity-1`; Mint's Themes settings scales them to fit 112×80) into the templates, so every install has them.
-- **xl-Claude extras, with the title button styles:** (1) a `bar` active marker of Claude's design: a short accent bar centred under the focused window's panel button (and the tab's outer edge), echoing the `claude` tabs. Cinnamon can't draw a short centred gradient and allows one shadow, so it needs a small generated image at the bottom centre; St also can't put an image over a gradient, so the focused button drops its gradient. Needs testing on a live panel. (2) A title button style designed by Claude for xl-Claude, when Dots / Wide / Circles are built.
+- **xl-Claude extras, with the title button styles:** (1) a `bar` active marker of Claude's design: a short accent bar centred under the focused window's panel button (and the tab's outer edge), echoing the `claude` tabs. Cinnamon can't draw a short centred gradient and allows one shadow, so it needs a small generated image at the bottom centre; St also can't put an image over a gradient, so the focused button drops its gradient. Needs testing on a live panel. (2) Done: the `claude` title button style.
 
 ## Settings app (v1, step 6)
 - `bin/cheeselooks-settings` (`cheeselooks/app.py`), GTK 3 + Python like Cinnamon's own settings tools; launcher `data/io.github.xlcheese.Cheeselooks.desktop`. Sidebar tabs: Global, Style, Panel & Menu, Window Borders, Terminal, Details, Integration, Import & Export.

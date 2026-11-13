@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from . import palette, shape
+from . import palette, shape, titlebuttons
 
 SETTINGS_VERSION = 1
 
@@ -34,7 +34,7 @@ DEFAULTS: dict[str, Any] = {
     "window_borders": {
         "separate_colors": False, "title_bar": None, "title_text": None, "border": None,
         "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
-        "button_layout": "right", "button_style": "theme",
+        "button_layout": "right", "button_style": "flat",
     },
     "terminal": {"separate_colors": False, "bg": None, "text": None},
     "details": {
@@ -80,7 +80,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("window_borders", "border_width"), "int", (0, 6)),
     (("window_borders", "title_gradient"), "int", (0, 100)),
     (("window_borders", "button_layout"), "choice", ("right", "left")),
-    (("window_borders", "button_style"), "choice", ("theme", "dots", "wide", "circles")),
+    (("window_borders", "button_style"), "choice", tuple(titlebuttons.STYLES)),
     (("terminal", "separate_colors"), "bool", None),
     (("terminal", "bg"), "color?", None),
     (("terminal", "text"), "color?", None),
@@ -170,6 +170,9 @@ def validate(data: dict) -> list[str]:
 def from_dict(data: dict) -> dict:
     """Merge user data over defaults and validate. Raises SettingsError."""
     merged = _deep_merge(DEFAULTS, data or {})
+    wb = merged.get("window_borders")
+    if isinstance(wb, dict) and wb.get("button_style") in titlebuttons.OLD_NAMES:
+        wb["button_style"] = titlebuttons.OLD_NAMES[wb["button_style"]]     # names before v1
     merged["version"] = SETTINGS_VERSION
     problems = validate(merged)
     if problems:

@@ -18,10 +18,6 @@ ICONS = {"close": "close", "maximize": "max", "unmaximize": "restore", "minimize
          "menu": "menu", "shade": "shade", "unshade": "unshade", "stick": "stick", "unstick": "unstick"}
 CENTER = 'x="(width-object_width)/2" y="(height-object_height)/2" width="object_width" height="object_height"'
 
-def img(f, colorize=None):
-    c = f' colorize="{colorize}"' if colorize else ""
-    return f'\t<image filename="{f}"{c} {CENTER}/>'
-
 out = []
 w = out.append
 w('''<?xml version="1.0"?>
@@ -47,8 +43,8 @@ w('''<?xml version="1.0"?>
 \t<distance name="title_vertical_pad" value="0"/>
 \t<border name="title_border" left="12" right="12" top="0" bottom="0"/>
 \t<border name="button_border" left="{{wb.button_gap}}" right="{{wb.button_gap}}" top="{{wb.button_pad_top}}" bottom="{{wb.button_pad_bottom}}"/>
-\t<distance name="button_width" value="{{wb.button_w}}"/>
-\t<distance name="button_height" value="{{wb.button_h}}"/>
+\t<distance name="button_width" value="{{wb.tb_w}}"/>
+\t<distance name="button_height" value="{{wb.tb_h}}"/>
 </frame_geometry>
 
 <frame_geometry name="maximized" parent="normal" rounded_top_left="false" rounded_top_right="false">
@@ -138,26 +134,25 @@ w('''<?xml version="1.0"?>
 <draw_ops name="blank">
 </draw_ops>
 
-<!-- ::: BUTTONS: glyph only at rest; the style's raised title button on hover,
-     sunken when pressed; close turns accent on hover ::: -->
+<!-- ::: BUTTONS: drawn by cheeselooks/titlebuttons.py in your button style;
+     close has square-cornered versions for maximized and tiled windows ::: -->
 ''')
-for fn, icon in ICONS.items():
-    f = f"{icon}-icon.svg"
-    hover_bg, press_bg, fg_hover = (("close-hover.svg", "close-pressed.svg", "{{accent_fg}}") if fn == "close"
-                                    else ("button-hover.svg", "button-pressed.svg", "{{wbp.text}}"))
-    w(f'<draw_ops name="{fn}_focused">\n{img(f, "{{wb.text}}")}\n</draw_ops>')
-    w(f'<draw_ops name="{fn}_prelight">\n{img(hover_bg)}\n{img(f, fg_hover)}\n</draw_ops>')
-    w(f'<draw_ops name="{fn}_pressed">\n{img(press_bg)}\n{img(f, fg_hover)}\n</draw_ops>')
-    w(f'<draw_ops name="{fn}_unfocused">\n{img(f, "{{wb.unfocused_text}}")}\n</draw_ops>\n')
+for fn in ICONS:
+    for state in ("focused", "prelight", "pressed", "unfocused"):
+        w(f'<draw_ops name="{fn}_{state}">\n{{{{wb.ops.{fn}_{state}}}}}\n</draw_ops>')
+        if fn == "close":
+            w(f'<draw_ops name="close_{state}_square">\n{{{{wb.ops.close_{state}_square}}}}\n</draw_ops>')
+    w("")
 
 FUNCS = ["close", "maximize", "minimize", "menu", "shade", "unshade", "stick", "unstick"]
-def buttons(suffix_normal, maximized=False):
+def buttons(suffix_normal, maximized=False, square=False):
     lines = []
     for fn in FUNCS:
         name = "unmaximize" if (fn == "maximize" and maximized) else fn
-        lines.append(f'\t<button function="{fn}" state="normal" draw_ops="{name}_{suffix_normal}"/>')
-        lines.append(f'\t<button function="{fn}" state="prelight" draw_ops="{name}_prelight"/>')
-        lines.append(f'\t<button function="{fn}" state="pressed" draw_ops="{name}_pressed"/>')
+        sq = "_square" if (square and fn == "close") else ""
+        lines.append(f'\t<button function="{fn}" state="normal" draw_ops="{name}_{suffix_normal}{sq}"/>')
+        lines.append(f'\t<button function="{fn}" state="prelight" draw_ops="{name}_prelight{sq}"/>')
+        lines.append(f'\t<button function="{fn}" state="pressed" draw_ops="{name}_pressed{sq}"/>')
     for fn in ("above", "unabove"):
         for st in ("normal", "prelight", "pressed"):
             lines.append(f'\t<button function="{fn}" state="{st}" draw_ops="blank"/>')
@@ -170,9 +165,9 @@ def empty_buttons():
             lines.append(f'\t<button function="{fn}" state="{st}" draw_ops="blank"/>')
     return "\n".join(lines)
 
-def style(name, geometry, focus, border_ops, maximized=False, parent=None, buttons_kind="normal"):
+def style(name, geometry, focus, border_ops, maximized=False, parent=None, buttons_kind="normal", square=False):
     p = f' parent="{parent}"' if parent else ""
-    b = {"normal": buttons(focus, maximized), "none": empty_buttons()}[buttons_kind]
+    b = {"normal": buttons(focus, maximized, square), "none": empty_buttons()}[buttons_kind]
     return f'''<frame_style name="{name}" geometry="{geometry}"{p}>
 \t<piece position="entire_background" draw_ops="background_{focus}"/>
 \t<piece position="titlebar" draw_ops="titlebar_{focus}"/>
@@ -185,9 +180,9 @@ def style(name, geometry, focus, border_ops, maximized=False, parent=None, butto
 w("<!-- ::: FRAME STYLES ::: -->\n")
 for focus in ("focused", "unfocused"):
     w(style(f"normal_{focus}", "normal", focus, f"border_{focus}"))
-    w(style(f"maximized_{focus}", "maximized", focus, "blank", maximized=True))
-    w(style(f"tiled_left_{focus}", "tiled_left", focus, f"border_tiled_left_{focus}"))
-    w(style(f"tiled_right_{focus}", "tiled_right", focus, f"border_tiled_right_{focus}"))
+    w(style(f"maximized_{focus}", "maximized", focus, "blank", maximized=True, square=True))
+    w(style(f"tiled_left_{focus}", "tiled_left", focus, f"border_tiled_left_{focus}", square=True))
+    w(style(f"tiled_right_{focus}", "tiled_right", focus, f"border_tiled_right_{focus}", square=True))
     w(style(f"utility_{focus}", "utility", focus, "blank"))
     w(style(f"attached_{focus}", "attached", focus, f"border_{focus}", buttons_kind="none"))
 w('''<frame_style name="border" geometry="border">

@@ -208,6 +208,17 @@ def render_tree(src: Path, dest: Path, tokens: dict[str, str]) -> list[Path]:
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, target)
         written.append(target)
+    # generated files: tokens named "file:<path>" (title button SVGs...)
+    for key, content in tokens.items():
+        if key.startswith("file:"):
+            rel = Path(key[5:])
+            if rel.is_absolute() or ".." in rel.parts:
+                problems.append(f"bad generated file path {rel}")
+                continue
+            target = dest / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding="utf-8")
+            written.append(target)
     if problems:
         raise TemplateError(problems)
     return written

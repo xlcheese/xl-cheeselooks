@@ -9,6 +9,9 @@
       "accent": "#FA8562",
       "bg": "#F5F5F5",
       "text": "#303030"
+    },
+    "window_borders": {
+      "button_style": "drawn"
     }
   }
 }

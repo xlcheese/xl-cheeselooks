@@ -1,0 +1,509 @@
+"""Title button styles: the minimize, maximize and close buttons.
+
+One description per style drives all three places title buttons are drawn,
+so they match: Muffin's window borders (metacity-1, SVG faces and glyphs),
+GTK 3 header bars and GTK 4 / libadwaita window controls (CSS).
+
+A style says, for each kind of button (button, minimize, maximize, close) and
+each state (rest, hover, pressed, backdrop = unfocused window), what face to
+draw behind the glyph and in what colour the glyph is. Faces are "none", a
+"rect" (rounded rectangle, filling the button) or a "circle" (centred).
+
+    flat                glyph only; the style's title button on hover
+                        (xl-Cheeselooks-flat, the original look)
+    drawn               the style's normal button at rest (xl-Cheeselooks)
+    classic             small square buttons in the title bar's colour
+    dots                coloured dots; the glyph shows on hover
+    gargantuan          wide, full-height buttons flush with the edge
+    gargantuan-circles  the same size, with a circle on hover
+    arrows              circles with chevron glyphs
+    arrows-flat         chevrons, a circle only on hover
+    claude              soft squircle hover with a small accent bar
+"""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from . import palette as pal
+
+STYLES = {
+    "flat": "xl-Cheeselooks-flat",
+    "drawn": "xl-Cheeselooks",
+    "classic": "Classic",
+    "dots": "Dots",
+    "gargantuan": "Gargantuan",
+    "gargantuan-circles": "Gargantuan circles",
+    "arrows": "Arrows",
+    "arrows-flat": "Arrows flat",
+    "claude": "Claude",
+}
+OLD_NAMES = {"theme": "flat", "wide": "gargantuan", "circles": "arrows"}
+
+KINDS = ("button", "minimize", "maximize", "close")
+STATES = ("rest", "hover", "pressed", "backdrop")
+EDGE_PAD = 6          # px from the frame edge to the first/last button (headerbar padding)
+GTK3_HEADER_PAD = 7   # Mint-Y's headerbar side padding (GTK 3)
+GTK4_HEADER_PAD = 6   # and GTK 4 / libadwaita
+
+# Our own glyphs (16px box, drawn as 1.6px strokes), for styles that don't
+# use the theme's: arrows use chevrons, dots use small marks.
+GLYPHS = {
+    "chevron-down": "M4 6.2 8 10.2 12 6.2",
+    "chevron-up": "M4 9.8 8 5.8 12 9.8",
+    "diamond": "M8 3.6 12.4 8 8 12.4 3.6 8Z",
+    "x": "M4.6 4.6 11.4 11.4M11.4 4.6 4.6 11.4",
+    "minus": "M3.8 8H12.2",
+    "plus": "M8 3.8V12.2M3.8 8H12.2",
+}
+# glyph per window function, for styles with their own glyphs
+CUSTOM_GLYPHS = {
+    "arrows": {"close": "x", "minimize": "chevron-down", "maximize": "chevron-up", "unmaximize": "diamond"},
+    "dots": {"close": "x", "minimize": "minus", "maximize": "plus", "unmaximize": "plus"},
+}
+CUSTOM_GLYPHS["arrows-flat"] = CUSTOM_GLYPHS["arrows"]
+
+DOTS = {"close": ("#EF6A5F", "#E2554B"), "minimize": ("#F2C04F", "#E6AE33"),
+        "maximize": ("#6BC46A", "#55B054")}
+
+
+@dataclass(frozen=True)
+class Face:
+    shape: str = "none"            # none, rect, circle
+    top: str = "transparent"
+    bottom: str = "transparent"
+    border: str | None = None      # a colour, or rgba(...) in CSS (the SVG gets its opacity)
+    radius: int = 0
+    corner: str | None = None      # gargantuan close: only this outer top corner rounded
+    shadow3: str = "none"
+    shadow4: str = "none"
+    glyph: str | None = None       # glyph colour; None hides it
+    bar: str | None = None         # claude: small accent bar under the glyph
+    size: int = 0                  # circle diameter / rect side when smaller than the button
+
+
+@dataclass(frozen=True)
+class Geometry:
+    w: int                         # button size
+    h: int
+    gap: int                       # between buttons
+    edge: int                      # frame edge to the outer button (metacity, without the border)
+    pad_top: int                   # metacity: title bar top to the button
+    pad_bottom: int
+    glyph: int = 0                 # glyph size for our own glyphs (0 = the theme's natural size)
+    full_height: bool = False      # gargantuan: buttons fill the title bar
+
+
+def geometry(style: str, t: dict[str, str]) -> Geometry:
+    height, ctl = int(t["wb.height"]), int(t["wb.button_h"])
+    bw = int(t["wb.border_width"])
+
+    def centred(w: int, h: int, gap: int, glyph: int = 0) -> Geometry:
+        top = (height - h) // 2
+        return Geometry(w, h, gap, EDGE_PAD, top, height - h - top, glyph)
+
+    if style in ("gargantuan", "gargantuan-circles"):
+        h = height - bw
+        return Geometry(round(height * 1.45), h, 0, 0, bw, 0, 0, True)
+    if style == "classic":
+        side = max(14, round(ctl * 0.72))
+        return centred(side, side, 4)
+    if style == "dots":
+        d = 14 if height >= 26 else 12
+        return centred(d, d, 8, 12)
+    if style in ("arrows", "arrows-flat"):
+        return centred(ctl, ctl, max(4, round(ctl * 0.3)), 16)
+    return centred(round(ctl * 1.12), ctl, 2)
+
+
+def _kind(fn: str) -> str:
+    return {"close": "close", "minimize": "minimize", "maximize": "maximize",
+            "unmaximize": "maximize"}.get(fn, "button")
+
+
+def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
+    """(kind, state) -> Face for every kind and state."""
+    g = geometry(style, t)
+    title, unf = t["wb.title"], t["wb.unfocused"]
+    text, utext = t["wb.text"], t["wb.unfocused_text"]
+    ptext = t["wbp.text"]
+    tb, cb, bt = "wbp.w.title_button.", "wbp.w.close_button.", "wbp.w.button."
+    acc_fg, acc_press = t["accent_fg"], t["accent_press"]
+    r = min(int(t["r"]), g.h // 2)
+
+    def rect(top, bottom, border=None, s3="none", s4="none", glyph=None, **kw):
+        return Face("rect", top, bottom, border, kw.pop("radius", r), shadow3=s3, shadow4=s4, glyph=glyph, **kw)
+
+    def circle(color, glyph, border=None, size=None):
+        return Face("circle", color, color, border, glyph=glyph, size=size or min(g.w, g.h))
+
+    none = lambda glyph: Face(glyph=glyph)  # noqa: E731
+    style_hover = rect(t[tb + "hover_top"], t[tb + "hover_bottom"], t[tb + "hover_border"],
+                       t[tb + "hover_shadow"], t[tb + "hover_g4_shadow"], ptext)
+    style_pressed = rect(t["wbp.pressed"], t["wbp.pressed"], t[tb + "pressed_border"],
+                         t[tb + "pressed_shadow"], t[tb + "pressed_g4_shadow"], ptext)
+    close_hover = rect(t[cb + "hover_top"], t[cb + "hover_bottom"], acc_press,
+                       t[cb + "hover_shadow"], t[cb + "hover_g4_shadow"], acc_fg)
+    close_pressed = rect(acc_press, acc_press, acc_press, glyph=acc_fg)
+
+    f: dict[tuple[str, str], Face] = {}
+
+    def put(kinds, **states):
+        for k in kinds:
+            for s, face in states.items():
+                f[(k, s)] = face
+
+    if style == "drawn":
+        rest = rect(t["wbp.button_top"], t["wbp.button_bottom"], t[bt + "border"],
+                    t[bt + "shadow"], t[bt + "g4_shadow"], text)
+        hover = rect(t[bt + "hover_top"], t[bt + "hover_bottom"], t[bt + "hover_border"],
+                     t[bt + "hover_shadow"], t[bt + "hover_g4_shadow"], ptext)
+        pressed = rect(t["wbp.pressed"], t["wbp.pressed"], t[bt + "pressed_border"],
+                       t[bt + "pressed_shadow"], t[bt + "pressed_g4_shadow"], ptext)
+        backdrop = rect(t["wbp.button"], t["wbp.button"], t[bt + "border"], glyph=utext)
+        put(KINDS, rest=rest, hover=hover, pressed=pressed, backdrop=backdrop)
+        put(["close"], hover=close_hover, pressed=close_pressed)
+    elif style == "classic":
+        # Clearlooks: small squares in the title bar's own colour, a lighter
+        # outline toward the title text and a soft highlight along the top
+        cr = min(r, 3)
+        edge = pal.mix(title, text, 0.38)
+        hi = "inset 0 1px 0 rgba(255, 255, 255, 0.22)"
+        rest = rect(pal.lighter(title, 0.22), title, edge, hi, hi, text, radius=cr)
+        hover = rect(pal.lighter(title, 0.42), pal.lighter(title, 0.14), pal.mix(title, text, 0.5),
+                     hi, hi, text, radius=cr)
+        pressed = rect(pal.darker(title, 0.10), pal.darker(title, 0.03), pal.mix(title, text, 0.5),
+                       "inset 0 1px 2px rgba(0, 0, 0, 0.15)", "inset 0 1px 2px rgba(0, 0, 0, 0.15)",
+                       text, radius=cr)
+        backdrop = rect(unf, unf, pal.mix(unf, utext, 0.3), glyph=utext, radius=cr)
+        put(KINDS, rest=rest, hover=hover, pressed=pressed, backdrop=backdrop)
+    elif style == "dots":
+        grey = pal.mix(title, text, 0.25)
+        ring = "rgba(0, 0, 0, 0.14)"
+        for k in KINDS:
+            top, bottom = DOTS.get(k, (grey, grey))
+            dot = pal.mix(top, bottom, 0.5)
+            mark = pal.darker(dot, 0.6)
+            f[(k, "rest")] = circle(dot, None, ring)
+            f[(k, "hover")] = circle(dot, mark, ring)
+            f[(k, "pressed")] = circle(pal.darker(dot, 0.15), mark, ring)
+            f[(k, "backdrop")] = circle(pal.mix(unf, utext, 0.22), None, "rgba(0, 0, 0, 0.10)")
+    elif style in ("gargantuan", "gargantuan-circles"):
+        hover_c = pal.mix(t[tb + "hover_top"], t[tb + "hover_bottom"], 0.5)
+        if style == "gargantuan":
+            hover = rect(hover_c, hover_c, glyph=ptext, radius=0)
+            pressed = rect(t["wbp.pressed"], t["wbp.pressed"], glyph=ptext, radius=0)
+            ch = rect(t[cb + "hover_top"], t[cb + "hover_bottom"], glyph=acc_fg, radius=0)
+            cp = rect(acc_press, acc_press, glyph=acc_fg, radius=0)
+        else:
+            d = int(t["wb.button_h"])
+            hover_c = pal.mix(title, text, 0.12)       # a white circle barely shows on a light bar
+            hover = circle(hover_c, ptext, size=d)
+            pressed = circle(t["wbp.pressed"], ptext, size=d)
+            ch = circle(pal.mix(t[cb + "hover_top"], t[cb + "hover_bottom"], 0.5), acc_fg, size=d)
+            cp = circle(acc_press, acc_fg, size=d)
+        put(KINDS, rest=none(text), hover=hover, pressed=pressed, backdrop=none(utext))
+        put(["close"], hover=ch, pressed=cp)
+    elif style in ("arrows", "arrows-flat"):
+        flat = style == "arrows-flat"
+        rest = none(text) if flat else circle(pal.mix(title, text, 0.10), text)
+        backdrop = none(utext) if flat else circle(pal.mix(unf, utext, 0.08), utext)
+        put(KINDS, rest=rest, hover=circle(pal.mix(title, text, 0.18), text),
+            pressed=circle(pal.mix(title, text, 0.27), text), backdrop=backdrop)
+        put(["close"], hover=circle(t["accent"], acc_fg), pressed=circle(acc_press, acc_fg))
+    elif style == "claude":
+        # quiet at rest; a soft squircle with a short accent bar on hover,
+        # echoing the claude tabs; close fills with the accent
+        sq = max(r, round(g.h * 0.3))
+        soft = pal.mix(t[tb + "hover_top"], t[tb + "hover_bottom"], 0.5)
+        put(KINDS, rest=none(pal.mix(text, title, 0.22)),
+            hover=rect(soft, soft, glyph=ptext, radius=sq, bar=t["accent"]),
+            pressed=rect(t["wbp.pressed"], t["wbp.pressed"], glyph=ptext, radius=sq, bar=acc_press),
+            backdrop=none(utext))
+        put(["close"], hover=rect(t["accent"], t["accent"], glyph=acc_fg, radius=sq),
+            pressed=rect(acc_press, acc_press, glyph=acc_fg, radius=sq))
+    else:  # flat
+        put(KINDS, rest=none(text), hover=style_hover, pressed=style_pressed, backdrop=none(utext))
+        put(["close"], hover=close_hover, pressed=close_pressed)
+    return f
+
+
+def outer_corner(style: str, layout: str, t: dict[str, str]) -> tuple[str | None, int]:
+    """Gargantuan: the close button sits in the window's corner, so its outer
+    top corner follows the window's roundness. Returns (side, radius)."""
+    if style != "gargantuan":
+        return None, 0
+    side = "right" if layout.endswith("close") else "left"
+    return side, max(0, int(t["r2"]) - int(t["wb.border_width"]))
+
+
+# ------------------------------------------------------------------ SVG (metacity)
+
+def _split_color(c: str) -> tuple[str, float]:
+    m = re.match(r"rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)", c)
+    if m:
+        r, g, b, a = m.groups()
+        return pal.from_rgb(int(r), int(g), int(b)), float(a)
+    return c, 1.0
+
+
+def glyph_svg(name: str, color: str) -> str:
+    c, a = _split_color(color)
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">'
+            f'<path d="{GLYPHS[name]}" fill="none" stroke="{c}" stroke-opacity="{a:g}" stroke-width="1.6" '
+            'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
+def face_svg(face: Face, w: int, h: int, corner: tuple[str | None, int] = (None, 0)) -> str:
+    """The face as an SVG the size of the button (metacity centres it)."""
+    parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">',
+             '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">'
+             f'<stop offset="0" stop-color="{face.top}"/><stop offset="1" stop-color="{face.bottom}"/>'
+             '</linearGradient></defs>']
+    stroke = ""
+    if face.border:
+        c, a = _split_color(face.border)
+        stroke = f' stroke="{c}" stroke-opacity="{a:g}"'
+    if face.shape == "circle":
+        d = face.size or min(w, h)
+        rad = d / 2 - (0.5 if face.border else 0)
+        parts.append(f'<circle cx="{w / 2:g}" cy="{h / 2:g}" r="{rad:g}" fill="url(#g)"{stroke}/>')
+    elif face.shape == "rect":
+        side, cr = corner
+        inset = 0.5 if face.border else 0
+        x0, y0, x1, y1 = inset, inset, w - inset, h - inset
+        if side and cr:
+            if side == "right":
+                path = f"M{x0} {y0}H{x1 - cr}A{cr} {cr} 0 0 1 {x1} {y0 + cr}V{y1}H{x0}Z"
+            else:
+                path = f"M{x0 + cr} {y0}H{x1}V{y1}H{x0}V{y0 + cr}A{cr} {cr} 0 0 1 {x0 + cr} {y0}Z"
+            parts.append(f'<path d="{path}" fill="url(#g)"{stroke}/>')
+        else:
+            parts.append(f'<rect x="{x0:g}" y="{y0:g}" width="{x1 - x0:g}" height="{y1 - y0:g}" '
+                         f'rx="{face.radius}" fill="url(#g)"{stroke}/>')
+    if face.bar:
+        bw_, bh = 10, 2
+        parts.append(f'<rect x="{(w - bw_) / 2:g}" y="{h - 5:g}" width="{bw_}" height="{bh}" rx="1" '
+                     f'fill="{face.bar}"/>')
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def _name(*parts: str) -> str:
+    return "tb-" + "-".join(p.lstrip("#").lower() for p in parts if p) + ".svg"
+
+
+METACITY_ICONS = {"close": "close", "maximize": "max", "unmaximize": "restore", "minimize": "min",
+                  "menu": "menu", "shade": "shade", "unshade": "unshade", "stick": "stick", "unstick": "unstick"}
+CENTER = 'x="(width-object_width)/2" y="(height-object_height)/2" width="object_width" height="object_height"'
+
+
+def metacity(style: str, t: dict[str, str]) -> tuple[dict[str, str], dict[str, str]]:
+    """(tokens, files): draw ops for every function x state, and the SVG files they use."""
+    g = geometry(style, t)
+    fc = faces(style, t)
+    corner = outer_corner(style, t["wb.button_layout"], t)
+    glyphs = CUSTOM_GLYPHS.get(style, {})
+    files: dict[str, str] = {}
+    tok: dict[str, str] = {}
+
+    def face_op(face: Face, corner_=(None, 0)) -> str:
+        if face.shape == "none":
+            return ""
+        name = _name("face", face.shape, face.top, face.bottom, face.border and _split_color(face.border)[0],
+                     str(face.radius), face.bar, corner_[0], str(corner_[1]), str(face.size))
+        files[name] = face_svg(face, g.w, g.h, corner_)
+        return f'\t<image filename="{name}" {CENTER}/>\n'
+
+    def glyph_op(fn: str, color: str | None) -> str:
+        if color is None:
+            return ""
+        if fn in glyphs:
+            c, _a = _split_color(color)
+            name = _name(glyphs[fn], c)
+            files[name] = glyph_svg(glyphs[fn], color)
+            s = g.glyph or 16
+            return (f'\t<image filename="{name}" x="(width-{s})/2" y="(height-{s})/2" '
+                    f'width="{s}" height="{s}"/>\n')
+        return f'\t<image filename="{METACITY_ICONS[fn]}-icon.svg" colorize="{color}" {CENTER}/>\n'
+
+    for fn in METACITY_ICONS:
+        k = _kind(fn)
+        for state, op_state in (("rest", "focused"), ("hover", "prelight"), ("pressed", "pressed"),
+                                ("backdrop", "unfocused")):
+            face = fc[(k, state)]
+            c = corner if fn == "close" else (None, 0)
+            tok[f"wb.ops.{fn}_{op_state}"] = (face_op(face, c) + glyph_op(fn, face.glyph)) or "\t"
+            if fn == "close" and corner[0]:
+                # maximized and tiled windows have square corners
+                tok[f"wb.ops.{fn}_{op_state}_square"] = (face_op(face) + glyph_op(fn, face.glyph)) or "\t"
+            elif fn == "close":
+                tok[f"wb.ops.{fn}_{op_state}_square"] = tok[f"wb.ops.{fn}_{op_state}"]
+    return tok, files
+
+
+# ------------------------------------------------------------------ CSS (GTK 3 and 4)
+
+def _bg(face: Face, g: Geometry, glyph_url: str | None, gsize: int) -> list[str]:
+    layers, sizes = [], []
+    if glyph_url:
+        layers.append(f'url("{glyph_url}")')
+        sizes.append(f"{gsize}px {gsize}px")
+    if face.bar:
+        # a 10x2 accent bar 3px above the bottom
+        layers.append(f"linear-gradient(to right, {face.bar}, {face.bar})")
+        sizes.append("10px 2px")
+    if face.shape == "rect":
+        layers.append(f"linear-gradient(to bottom, {face.top}, {face.bottom})")
+        sizes.append("100% 100%")
+    elif face.shape == "circle":
+        rad = (face.size or min(g.w, g.h)) / 2
+        c = face.top
+        # fade to the same colour at alpha 0, not "transparent" (black), or the
+        # antialiased edge turns grey
+        if face.border:
+            ring = face.border
+            edge = re.sub(r",\s*[\d.]+\)$", ", 0)", ring) if ring.startswith("rgba") else pal.rgba(ring, 0)
+            stops = (f"{c} 0, {c} {rad - 1.5:g}px, {ring} {rad - 1:g}px, "
+                     f"{ring} {rad - 0.5:g}px, {edge} {rad + 0.5:g}px")
+        else:
+            stops = f"{c} 0, {c} {rad - 0.5:g}px, {pal.rgba(c, 0)} {rad + 0.5:g}px"
+        layers.append(f"radial-gradient(circle {rad + 1:g}px at center, {stops})")
+        sizes.append("100% 100%")
+    if not layers:
+        return ["background-color: transparent;", "background-image: none;"]
+    positions = ["center"] * len(layers)
+    if face.bar:
+        positions[1 if glyph_url else 0] = f"50% {g.h // 2 + 7}px"     # just under the glyph
+    return [
+        "background-color: transparent;" if face.shape != "rect" else f"background-color: {face.bottom};",
+        f"background-image: {', '.join(layers)};",
+        f"background-size: {', '.join(sizes)};",
+        f"background-position: {', '.join(positions)};",
+        "background-repeat: no-repeat;",
+    ]
+
+
+def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[str, str]]:
+    """(css, asset files) for title buttons in GTK 3 header bars or GTK 4 window controls."""
+    g = geometry(style, t)
+    fc = faces(style, t)
+    glyphs = CUSTOM_GLYPHS.get(style, {})
+    side, cr = outer_corner(style, t["wb.button_layout"], t)
+    files: dict[str, str] = {}
+    pad = GTK4_HEADER_PAD if gtk4 else GTK3_HEADER_PAD
+
+    if gtk4:
+        bases = ["windowcontrols > button:not(.osd)"]
+        img = "windowcontrols > button > image"
+    else:
+        bases = ["headerbar button.titlebutton", ".titlebar button.titlebutton"]
+        img = "headerbar button.titlebutton image, .titlebar button.titlebutton image"
+
+    def sel(cls: str, pseudo: str) -> str:
+        return ", ".join(f"{b}{cls}{pseudo}" for b in bases)
+
+    out = [f"/* Title buttons: {STYLES[style]} (cheeselooks/titlebuttons.py) */"]
+    if gtk4:
+        out.append("windowcontrols { border-spacing: 0; }")
+    h = g.h
+    margin = f"0 {g.gap // 2}px"
+    if g.full_height:
+        h = int(t["wb.height_inner"])
+        margin = "0"
+    out.append(f"{sel('', '')} {{\n  min-width: {g.w}px;\n  min-height: {h}px;\n  padding: 0;\n"
+               f"  margin: {margin};\n  -gtk-icon-shadow: none; }}")
+    if g.full_height:
+        if gtk4:
+            out.append(f"headerbar windowcontrols.end > button:last-child:not(.osd) {{ margin-right: -{pad}px; }}\n"
+                       f"headerbar windowcontrols.start > button:first-child:not(.osd) {{ margin-left: -{pad}px; }}")
+        else:
+            out.append(f"headerbar box.right > button.titlebutton:last-child,\n"
+                       f".titlebar box.right > button.titlebutton:last-child {{ margin-right: -{pad}px; }}\n"
+                       f"headerbar box.left > button.titlebutton:first-child,\n"
+                       f".titlebar box.left > button.titlebutton:first-child {{ margin-left: -{pad}px; }}")
+    if glyphs:
+        out.append(f"{img} {{ color: transparent; opacity: 0; }}")
+
+    pseudos = {"rest": [""], "backdrop": [":backdrop"], "hover": [":hover", ":hover:backdrop"],
+               "pressed": [":active", ":active:backdrop", ":checked"]}
+    classes = {"button": "", "minimize": ".minimize", "maximize": ".maximize", "close": ".close"}
+    assets = "assets/"
+    for kind, cls in classes.items():
+        for state in STATES:
+            face = fc[(kind, state)]
+            selectors = ",\n".join(sel(cls, p) for p in pseudos[state])
+            decl = []
+            radius = "50%" if face.shape == "circle" else f"{face.radius}px"
+            if face.shape == "circle":
+                radius = "0"
+            if face.shape == "rect" and kind == "close" and side and cr:
+                radius = f"0 {cr}px 0 0" if side == "right" else f"{cr}px 0 0 0"
+            decl.append(f"border-radius: {radius};")
+            decl.append(f"border: 1px solid {face.border if face.shape == 'rect' and face.border else 'transparent'};")
+            if face.shape == "rect" and not face.border:
+                decl[-1] = "border: 1px solid transparent;"
+            decl.append(f"box-shadow: {(face.shadow4 if gtk4 else face.shadow3) if face.shape == 'rect' else 'none'};")
+            gl_url = None
+            if glyphs and face.glyph:
+                # one glyph file per function would need a class per function;
+                # minimize / maximize / close have their own, others share close's
+                fn = {"close": "close", "minimize": "minimize", "maximize": "maximize"}.get(kind)
+                if fn:
+                    c, _a = _split_color(face.glyph)
+                    name = _name(glyphs[fn], c)
+                    files[name] = glyph_svg(glyphs[fn], face.glyph)
+                    gl_url = assets + name
+            decl += _bg(face, g, gl_url, g.glyph or 16)
+            decl.append(f"color: {face.glyph or 'transparent'};")
+            out.append(selectors + " {\n  " + "\n  ".join(decl) + " }")
+    if glyphs and "unmaximize" in glyphs and glyphs["unmaximize"] != glyphs["maximize"]:
+        # a maximized window's maximize button restores: its own glyph
+        for state in STATES:
+            face = fc[("maximize", state)]
+            if not face.glyph:
+                continue
+            c, _a = _split_color(face.glyph)
+            name = _name(glyphs["unmaximize"], c)
+            files[name] = glyph_svg(glyphs["unmaximize"], face.glyph)
+            win = "window.maximized" if gtk4 else ".maximized"
+            selectors = ",\n".join(f"{win} {b}.maximize{p}" for b in bases for p in pseudos[state])
+            bg = _bg(face, g, assets + name, g.glyph or 16)
+            out.append(selectors + " {\n  " + "\n  ".join(bg) + " }")
+    if side and cr:
+        # maximized and tiled windows have square corners
+        win = "window" if gtk4 else ""
+        sq = ", ".join(f"{win}.{s} {b}.close" for s in ("maximized", "tiled", "fullscreen") for b in bases)
+        out.append(f"{sq} {{ border-radius: 0; }}")
+    return "\n".join(out) + "\n", files
+
+
+def tokens(t: dict[str, str]) -> dict[str, str]:
+    """Title button tokens: metacity geometry and draw ops, the GTK 3 and GTK 4
+    CSS, and the SVG files they use (as "file:<path>" tokens)."""
+    style = t["wb.button_style"]
+    g = geometry(style, t)
+    out = {
+        "wb.tb_w": str(g.w), "wb.tb_h": str(g.h),
+        "wb.button_pad_top": str(g.pad_top), "wb.button_pad_bottom": str(g.pad_bottom),
+        "wb.button_gap": str(g.gap // 2),
+        "wb.edge": str(g.edge + int(t["wb.border_width"])),
+    }
+    ops, mfiles = metacity(style, t)
+    out.update(ops)
+    for name, svg in mfiles.items():
+        out[f"file:metacity-1/{name}"] = svg
+    c3, f3 = css(style, t)
+    c4, f4 = css(style, t, gtk4=True)
+    out["titlebuttons.css"] = c3
+    out["titlebuttons4.css"] = c4
+    for name, svg in f3.items():
+        out[f"file:gtk-3.0/assets/{name}"] = svg
+    for name, svg in f4.items():
+        out[f"file:gtk-4.0/assets/{name}"] = svg
+        out[f"file:libadwaita-1.5/assets/{name}"] = svg
+    return out
+
+
+__all__ = ["STYLES", "OLD_NAMES", "Face", "Geometry", "geometry", "faces", "metacity", "css", "tokens"]

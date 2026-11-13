@@ -627,10 +627,45 @@ class RenderAndInstallTests(unittest.TestCase):
                 for title in doc.getElementsByTagName("title"):
                     if title.hasAttribute("ellipsize_width"):
                         self.assertEqual(title.getAttribute("version"), ">= 3.1")
-                for name in ("button-hover.svg", "button-pressed.svg", "close-hover.svg",
-                             "close-pressed.svg", "close-icon.svg", "max-icon.svg"):
+                for name in ("close-icon.svg", "max-icon.svg"):
                     self.assertTrue((meta / name).exists(), name)
+                # every image a draw op names is in the theme
+                for img in doc.getElementsByTagName("image"):
+                    self.assertTrue((meta / img.getAttribute("filename")).exists(), img.getAttribute("filename"))
                 self.assertNotIn("{{", text)
+
+    def test_title_button_styles(self):
+        import xml.dom.minidom
+        from cheeselooks import titlebuttons
+        st = styles.load(DEFAULT_STYLE)
+        for name in titlebuttons.STYLES:
+            for layout in ("right", "left"):
+                s = defaults()
+                s["window_borders"]["button_style"] = name
+                s["window_borders"]["button_layout"] = layout
+                with tempfile.TemporaryDirectory() as tmp:
+                    theme = Path(tmp) / "xl-Cheeselooks"
+                    install.install(REPO / "templates", tokens.build(s, st), theme, Path(tmp) / "good")
+                    meta = theme / "metacity-1"
+                    doc = xml.dom.minidom.parseString((meta / "metacity-theme-3.xml").read_text())
+                    for img in doc.getElementsByTagName("image"):
+                        f = meta / img.getAttribute("filename")
+                        self.assertTrue(f.exists(), (name, f.name))
+                        if f.name.startswith("tb-"):
+                            xml.dom.minidom.parseString(f.read_text())     # well-formed SVG
+                    for css in ("gtk-3.0/xl.css", "gtk-4.0/xl.css"):
+                        text = (theme / css).read_text()
+                        self.assertIn(f"Title buttons: {titlebuttons.STYLES[name]}", text)
+                    import re as _re
+                    for folder in ("gtk-3.0", "gtk-4.0", "libadwaita-1.5"):
+                        for css in (theme / folder).glob("*.css"):
+                            for url in _re.findall(r'url\("(assets/tb-[^"]+)"\)', css.read_text()):
+                                self.assertTrue((theme / folder / url).exists(), (name, folder, url))
+
+    def test_old_button_style_names(self):
+        s = defaults()
+        s["window_borders"]["button_style"] = "theme"
+        self.assertEqual(settings.from_dict(s)["window_borders"]["button_style"], "flat")
 
     def test_libadwaita_block(self):
         t = tokens.build(defaults(), styles.load(DEFAULT_STYLE))

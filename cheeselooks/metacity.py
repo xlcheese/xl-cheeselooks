@@ -5,8 +5,8 @@ file is a template (templates/metacity-1/metacity-theme-3.xml.tmpl); this
 module adds what a template can't express, since its drawing language has no
 conditionals:
 
-    geometry   button padding so the title bar is exactly the chosen height,
-               corner radius, distance from the frame edge to the buttons
+    geometry   corner radius and side widths (button geometry and drawing
+               come from cheeselooks/titlebuttons.py)
     borders    0-6 px borders: filled bands on each side plus one arc per
                pixel of width around the rounded top corners (nothing at all
                at width 0)
@@ -18,9 +18,6 @@ so both kinds of window match.
 from __future__ import annotations
 
 from . import palette as pal
-
-EDGE_PAD = 6          # px from the frame edge to the first/last button (headerbar padding)
-BUTTON_GAP = 2        # px between title buttons
 
 
 def _band(x: str, y: str, w: str, h: str, color: str) -> str:
@@ -62,19 +59,10 @@ def border_ops(color: str, width: int, radius: int, sides: str = "tlrb") -> str:
 
 def tokens(t: dict[str, str]) -> dict[str, str]:
     """Window-border tokens for the metacity template (needs the wb.*, r and r2 tokens)."""
-    height, btn_h = int(t["wb.height"]), int(t["wb.button_h"])
     bw, radius = int(t["wb.border_width"]), int(t["r2"])
-    pad_top = (height - btn_h) // 2
     unfocused_border = pal.mix(t["wb.border"], t["wb.unfocused"], 0.3)
     out = {
         "wb.radius": str(radius),
-        "wb.button_r": str(min(int(t["r"]), btn_h // 2)),
-        "wb.button_pad_top": str(pad_top),
-        "wb.button_pad_bottom": str(height - btn_h - pad_top),
-        "wb.button_gap": str(BUTTON_GAP // 2),
-        "wb.face_w": str(int(t["wb.button_w"]) - 1),     # button faces: a 1px stroke inset by 0.5
-        "wb.face_h": str(btn_h - 1),
-        "wb.edge": str(EDGE_PAD + bw),
         "wb.side": str(bw),
         "wb.border_unfocused": unfocused_border,
     }
