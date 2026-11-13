@@ -361,13 +361,13 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
   - `drawn` (**xl-Cheeselooks**; theme xl-Gummy): the style's normal button at rest, its hover and pressed faces; close is a normal button that hovers in the accent.
   - `classic` (theme xl-Classic): small square buttons in the title bar's own colour (a lighter gradient, an outline toward the title text, a soft top highlight), as Clearlooks; close looks like the others.
   - `dots`: red / yellow / green dots, grey for other buttons and unfocused windows; the glyph shows on the hovered dot (window managers can't show it on all three at once).
-  - `gargantuan`: wide (1.45 × title bar height), full-height buttons with no gap, flush with the window edge; the style's hover face, close in the accent; close's outer top corner follows the window's roundness (square when maximized or tiled).
+  - `gargantuan`: wide (1.16 × title bar height), full-height buttons with no gap, flush with the window edge, with thin 1px glyphs at 150% of the theme's (minus, square, two squares for restore, ×); the style's hover face, close in the accent; close's outer top corner follows the window's roundness (square when maximized or tiled).
   - `gargantuan-circles`: the same size, with a circle on hover.
   - `arrows`: circles at rest (title bar tinted toward the text), chevron glyphs (down = minimize, up = maximize, a diamond = restore, ×), close hovers in the accent.
   - `arrows-flat`: the same, with no circle until hover.
   - `claude` (theme Claude): muted glyphs at rest; on hover a soft squircle with a short accent bar under the glyph, echoing the claude tabs; close fills with the accent.
 
-  Our own glyphs (chevrons, the dots' marks) are generated SVGs in the title colour and shown in GTK as a background layer over a hidden icon. Old names are migrated (`theme` → `flat`, `wide` → `gargantuan`, `circles` → `arrows`).
+  Our own glyphs (chevrons, the dots' marks, Gargantuan's thin glyphs) are generated SVGs in the title colour and shown in GTK as a background layer over a hidden icon. In GTK every state of a style is built the same way, so hover fades between like things: circles are the button itself (a round border box with a background colour, never a radial gradient), flat faces are background colours, and the claude bar is a layer in every state (clear when hidden), faded from a clear version of the same colour rather than `transparent`. Fading between differently built backgrounds flashed: a dark ring around circles, an accent wash behind the claude bar (Mint-Y also sizes title button backgrounds at 80px, so every state sets its own size). Old names are migrated (`theme` → `flat`, `wide` → `gargantuan`, `circles` → `arrows`).
 - Window shadows are drawn by Muffin and are out of the theme's reach.
 
 ### Terminal
