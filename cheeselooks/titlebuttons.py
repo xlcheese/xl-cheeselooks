@@ -93,36 +93,55 @@ class Face:
 
 @dataclass(frozen=True)
 class Geometry:
-    w: int                         # button size
+    w: int                         # button size: the area you can click
     h: int
-    gap: int                       # between buttons
+    fw: int                        # the face drawn inside it (equal to w, h for flat / drawn / gargantuan)
+    fh: int
+    gap: int                       # between buttons (outside the click area)
     edge: int                      # frame edge to the outer button (metacity, without the border)
     pad_top: int                   # metacity: title bar top to the button
     pad_bottom: int
     glyph: int = 0                 # glyph size for our own glyphs (0 = the theme's natural size)
     full_height: bool = False      # gargantuan: buttons fill the title bar
+    inner: bool = False            # the face is smaller than the button (drawn on the icon node in GTK)
+
+
+def _even(n: float) -> int:
+    """Nearest even number: an even face centres a 12/16/24px glyph on whole pixels."""
+    return int(round(n / 2) * 2)
 
 
 def geometry(style: str, t: dict[str, str]) -> Geometry:
     height, ctl = int(t["wb.height"]), int(t["wb.button_h"])
     bw = int(t["wb.border_width"])
 
-    def centred(w: int, h: int, gap: int, glyph: int = 0) -> Geometry:
+    def centred(w: int, h: int, fw: int, fh: int, gap: int, glyph: int = 0, inner: bool = True) -> Geometry:
+        h = min(h, height - bw - 2)
         top = (height - h) // 2
-        return Geometry(w, h, gap, EDGE_PAD, top, height - h - top, glyph)
+        return Geometry(w, h, fw, fh, gap, EDGE_PAD, top, height - h - top, glyph, False, inner)
 
     if style in ("gargantuan", "gargantuan-circles"):
         h = height - bw
-        return Geometry(round(height * 1.16), h, 0, 0, bw, 0, 24, True)     # thin glyphs, 150% of the theme's
+        w = round(height * 1.16)
+        if style == "gargantuan":
+            return Geometry(w, h, w, h, 0, 0, bw, 0, 24, True)
+        d = min(_even(height * 0.8), h - 4)             # a larger circle in the same wide slot
+        return Geometry(w, h, d, d, 0, 0, bw, 0, 24, True, True)
+    # the click area reaches a few px past the face on every side
     if style == "classic":
-        side = max(14, round(ctl * 0.72))
-        return centred(side, side, 4)
+        side = _even(max(14, ctl * 0.72))
+        return centred(side + 6, side + 8, side, side, 0)
     if style == "dots":
         d = 14 if height >= 26 else 12
-        return centred(d, d, 8, 12)
+        return centred(d + 8, d + 10, d, d, 0, 12)
     if style in ("arrows", "arrows-flat"):
-        return centred(ctl, ctl, max(4, round(ctl * 0.3)), 16)
-    return centred(round(ctl * 1.12), ctl, 2)
+        d = _even(ctl)
+        return centred(d + max(6, round(d * 0.3)), d + 6, d, d, 0, 16)
+    if style == "claude":
+        fw, fh = _even(ctl * 1.12), _even(ctl)
+        return centred(fw + 6, fh + 6, fw, fh, 0)
+    w = round(ctl * 1.12)
+    return centred(w, ctl, w, ctl, 2, inner=False)
 
 
 def _kind(fn: str) -> str:
@@ -138,13 +157,13 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     ptext = t["wbp.text"]
     tb, cb, bt = "wbp.w.title_button.", "wbp.w.close_button.", "wbp.w.button."
     acc_fg, acc_press = t["accent_fg"], t["accent_press"]
-    r = min(int(t["r"]), g.h // 2)
+    r = min(int(t["r"]), g.fh // 2)
 
     def rect(top, bottom, border=None, s3="none", s4="none", glyph=None, **kw):
         return Face("rect", top, bottom, border, kw.pop("radius", r), shadow3=s3, shadow4=s4, glyph=glyph, **kw)
 
     def circle(color, glyph, border=None, size=None):
-        return Face("circle", color, color, border, glyph=glyph, size=size or min(g.w, g.h))
+        return Face("circle", color, color, border, glyph=glyph, size=size or min(g.fw, g.fh))
 
     none = lambda glyph: Face(glyph=glyph)  # noqa: E731
     style_hover = rect(t[tb + "hover_top"], t[tb + "hover_bottom"], t[tb + "hover_border"],
@@ -205,7 +224,7 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
             ch = rect(t[cb + "hover_top"], t[cb + "hover_bottom"], glyph=acc_fg, radius=0)
             cp = rect(acc_press, acc_press, glyph=acc_fg, radius=0)
         else:
-            d = int(t["wb.button_h"])
+            d = g.fw
             hover_c = pal.mix(title, text, 0.12)       # a white circle barely shows on a light bar
             hover = circle(hover_c, ptext, size=d)
             pressed = circle(t["wbp.pressed"], ptext, size=d)
@@ -223,7 +242,7 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     elif style == "claude":
         # quiet at rest; a soft squircle with a short accent bar on hover,
         # echoing the claude tabs; close fills with the accent
-        sq = max(r, round(g.h * 0.3))
+        sq = max(r, round(g.fh * 0.3))
         soft = pal.mix(t[tb + "hover_top"], t[tb + "hover_bottom"], 0.5)
         put(KINDS, rest=none(pal.mix(text, title, 0.22)),
             hover=rect(soft, soft, glyph=ptext, radius=sq, bar=t["accent"]),
@@ -323,7 +342,7 @@ def metacity(style: str, t: dict[str, str]) -> tuple[dict[str, str], dict[str, s
             return ""
         name = _name("face", face.shape, face.top, face.bottom, face.border and _split_color(face.border)[0],
                      str(face.radius), face.bar, corner_[0], str(corner_[1]), str(face.size))
-        files[name] = face_svg(face, g.w, g.h, corner_)
+        files[name] = face_svg(face, g.fw, g.fh, corner_)
         return f'\t<image filename="{name}" {CENTER}/>\n'
 
     def glyph_op(fn: str, color: str | None) -> str:
@@ -402,97 +421,118 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
     out = [f"/* Title buttons: {STYLES[style]} (cheeselooks/titlebuttons.py) */"]
     if gtk4:
         out.append("windowcontrols { border-spacing: 0; }")
-    # Every state is drawn the same way (circles are the button itself, a round
-    # border box; faces are background colours; the claude bar is a layer in
-    # every state, clear when hidden), so hover fades between like things.
-    # Fading between differently built backgrounds flashed: a dark ring around
-    # circles, an accent wash behind the claude bar.
-    circles = any(f.shape == "circle" for f in fc.values())
-    has_bar = any(f.bar for f in fc.values())
-    if circles:
-        d = max(f.size for f in fc.values() if f.shape == "circle")
-        side_margin = (g.w - d) // 2 if style == "gargantuan-circles" else g.gap // 2
-        out.append(f"{sel('', '')} {{\n  min-width: {d - 2}px;\n  min-height: {d - 2}px;\n  padding: 0;\n"
-                   f"  margin: 0 {side_margin}px;\n  -gtk-icon-shadow: none; }}")
-        if style == "gargantuan-circles":
-            # the outer circle sits as far in as on the window border
-            out.append(_edge_rule(gtk4, f"{side_margin - pad}px"))
-    else:
-        h = int(t["wb.height_inner"]) if g.full_height else g.h
-        margin = "0" if g.full_height else f"0 {g.gap // 2}px"
-        out.append(f"{sel('', '')} {{\n  min-width: {g.w - 2}px;\n  min-height: {h - 2}px;\n  padding: 0;\n"
-                   f"  margin: {margin};\n  -gtk-icon-shadow: none; }}")
-        if g.full_height:
-            out.append(_edge_rule(gtk4, f"-{pad}px"))
-    if glyphs:
-        out.append(f"{img} {{ color: transparent; opacity: 0; }}")
-    elif g.glyph:
-        rule = f"-gtk-icon-size: {g.glyph}px;" if gtk4 else f"-gtk-icon-transform: scale({g.glyph / 16:g});"
-        out.append(f"{img} {{ {rule} }}")
-
     pseudos = {"rest": [""], "backdrop": [":backdrop"], "hover": [":hover", ":hover:backdrop"],
                "pressed": [":active", ":active:backdrop", ":checked"]}
     classes = {"button": "", "minimize": ".minimize", "maximize": ".maximize", "close": ".close"}
+    child = " > image" if gtk4 else " image"
     assets = "assets/"
+    has_bar = any(f.bar for f in fc.values())
+    circles = any(f.shape == "circle" for f in fc.values())
+
+    # The button: the click area. Inner styles draw nothing on it; their face is
+    # drawn on the icon node inside, so the area can be larger than the face.
+    if g.full_height:
+        h = int(t["wb.height_inner"])
+        margin = "0"
+    else:
+        h, margin = g.h, f"0 {g.gap // 2}px"
+    border_px = 0 if g.inner else 1
+    out.append(f"{sel('', '')} {{\n  min-width: {g.w - 2 * border_px}px;\n  min-height: {h - 2 * border_px}px;\n"
+               f"  padding: 0;\n  margin: {margin};\n  -gtk-icon-shadow: none; }}")
+    if g.full_height:
+        out.append(_edge_rule(gtk4, f"-{pad}px"))
+    if g.inner:
+        every = ",\n".join(sel(c, p) for c in classes.values() for ps in pseudos.values() for p in ps)
+        out.append(every + " {\n  border: none;\n  background-color: transparent;\n  background-image: none;\n"
+                   "  box-shadow: none; }")
+        # the face fades on its own node
+        if gtk4:
+            fade = ("transition-property: color, background-color, border-color, box-shadow;\n"
+                    f"  transition-duration: {t['hover_out_ms']}ms;")
+        else:
+            fade = f"transition: all {t['hover_out_ms']}ms ease-out;"
+        out.append(f"{sel('', child)} {{\n  {fade} }}")
+        out.append(f"{sel('', ':hover' + child)} {{ transition-duration: {t['hover_in_ms']}ms; }}")
+        out.append(f"{sel('', ':active' + child)} {{ transition-duration: 0; }}")
+    elif glyphs:
+        out.append(f"{sel('', child)} {{ color: transparent; }}")
+
+    # glyph offsets in whole pixels (a glyph on a half pixel is blurry)
+    if g.inner:
+        box_w, box_h = g.fw - 2, g.fh - 2
+    else:
+        box_w, box_h = g.w - 2, h - 2
+    gs = g.glyph or 16
+    glyph_pos = f"{(box_w - gs) // 2}px {(box_h - gs) // 2}px"
+
+    def bg_layers(face: Face, glyph_name: str | None) -> tuple[list[str], list[str], list[str]]:
+        layers, sizes, positions = [], [], []
+        if glyph_name and face.glyph:
+            c, _a = _split_color(face.glyph)
+            name = _name(glyph_name, c)
+            files[name] = glyph_svg(glyph_name, face.glyph)
+            layers.append(f'url("{assets}{name}")')
+            sizes.append(f"{gs}px {gs}px")
+            positions.append(glyph_pos)
+        if has_bar:
+            bar = face.bar or _clear(t["accent"])
+            layers.append(f"linear-gradient(to right, {bar}, {bar})")
+            sizes.append("10px 2px")
+            positions.append(f"{(box_w - 10) // 2}px {box_h // 2 + 6}px")    # just under the glyph
+        if face.shape != "none" and face.top != face.bottom:
+            layers.append(f"linear-gradient(to bottom, {face.top}, {face.bottom})")
+            sizes.append("100% 100%")
+            positions.append("0 0")
+        return layers, sizes, positions
+
+    def bg_decl(layers, sizes, positions) -> list[str]:
+        out_ = [f"background-image: {', '.join(layers) if layers else 'none'};"]
+        if layers:   # always set: Mint-Y sizes title button backgrounds at 80px
+            out_ += [f"background-size: {', '.join(sizes)};",
+                     f"background-position: {', '.join(positions)};", "background-repeat: no-repeat;"]
+        return out_
+
     for kind, cls in classes.items():
         hv = fc[(kind, "hover")]
         hv_color = pal.mix(hv.top, hv.bottom, 0.5) if hv.shape != "none" else t["wb.title"]
         for state in STATES:
             face = fc[(kind, state)]
-            selectors = ",\n".join(sel(cls, p) for p in pseudos[state])
+            target = child if g.inner else ""
+            selectors = ",\n".join(sel(cls, p + target) for p in pseudos[state])
             drawn = face.shape != "none"
-            if circles:
+            if face.shape == "circle" or (circles and not drawn):
                 radius = "9999px"
             elif kind == "close" and side and cr:
                 radius = f"0 {cr}px 0 0" if side == "right" else f"{cr}px 0 0 0"
             else:
                 radius = f"{(face if drawn else hv).radius}px"
             border = face.border if (drawn and face.border) else _clear(hv.border or hv_color)
-            gradient = drawn and not circles and face.top != face.bottom
-            if drawn:
-                bg = pal.mix(face.top, face.bottom, 0.5) if circles else face.bottom
-            else:
-                bg = _clear(hv_color)
-            layers, sizes, positions = [], [], []
-            if glyphs and face.glyph:
-                fn = {"close": "close", "minimize": "minimize", "maximize": "maximize"}.get(kind)
-                if fn:
-                    c, _a = _split_color(face.glyph)
-                    name = _name(glyphs[fn], c)
-                    files[name] = glyph_svg(glyphs[fn], face.glyph)
-                    layers.append(f'url("{assets}{name}")')
-                    sizes.append(f"{g.glyph or 16}px {g.glyph or 16}px")
-                    positions.append("center")
-            if has_bar:
-                bar = face.bar or _clear(t["accent"])
-                layers.append(f"linear-gradient(to right, {bar}, {bar})")
-                sizes.append("10px 2px")
-                positions.append(f"50% {g.h // 2 + 6}px")       # just under the glyph
-            if gradient:
-                layers.append(f"linear-gradient(to bottom, {face.top}, {face.bottom})")
-                sizes.append("100% 100%")
-                positions.append("center")
-            shadow = (face.shadow4 if gtk4 else face.shadow3) if (drawn and not circles) else "none"
+            bg = (pal.mix(face.top, face.bottom, 0.5) if face.shape == "circle" else face.bottom) if drawn \
+                else _clear(hv_color)
+            fn = {"close": "close", "minimize": "minimize", "maximize": "maximize"}.get(kind)
+            layers = bg_layers(face, glyphs.get(fn) if glyphs and fn else None)
+            shadow = (face.shadow4 if gtk4 else face.shadow3) if (drawn and face.shape == "rect") else "none"
             decl = [f"border-radius: {radius};", f"border: 1px solid {border};", f"box-shadow: {shadow};",
-                    f"background-color: {bg};",
-                    f"background-image: {', '.join(layers) if layers else 'none'};"]
-            if layers:   # always set: Mint-Y sizes title button backgrounds at 80px
-                decl += [f"background-size: {', '.join(sizes)};",
-                         f"background-position: {', '.join(positions)};", "background-repeat: no-repeat;"]
-            decl.append(f"color: {face.glyph or 'transparent'};")
+                    f"background-color: {bg};"] + bg_decl(*layers)
+            if g.inner:
+                # the icon node fills the button unless held in by margins
+                mx, my = (g.w - g.fw) // 2, (h - g.fh) // 2
+                decl = [f"min-width: {g.fw - 2}px;", f"min-height: {g.fh - 2}px;", "padding: 0;",
+                        f"margin: {my}px {g.w - g.fw - mx}px {h - g.fh - my}px {mx}px;",
+                        "-gtk-icon-shadow: none;"] + decl
+            # our own glyphs replace the icon, which stays but is hidden
+            decl.append(f"color: {'transparent' if glyphs else (face.glyph or 'transparent')};")
             out.append(selectors + " {\n  " + "\n  ".join(decl) + " }")
     if glyphs and "unmaximize" in glyphs and glyphs["unmaximize"] != glyphs["maximize"]:
         # a maximized window's maximize button restores: its own glyph
         win = "window.maximized" if gtk4 else ".maximized"
+        target = child if g.inner else ""
         for state in STATES:
             face = fc[("maximize", state)]
             if not face.glyph:
                 continue
-            c, _a = _split_color(face.glyph)
-            name = _name(glyphs["unmaximize"], c)
-            files[name] = glyph_svg(glyphs["unmaximize"], face.glyph)
-            selectors = ",\n".join(f"{win} {b}.maximize{p}" for b in bases for p in pseudos[state])
-            out.append(f'{selectors} {{\n  background-image: url("{assets}{name}"); }}')
+            selectors = ",\n".join(f"{win} {b}.maximize{p}{target}" for b in bases for p in pseudos[state])
+            out.append(selectors + " {\n  " + "\n  ".join(bg_decl(*bg_layers(face, glyphs["unmaximize"]))) + " }")
     if side and cr:
         # maximized and tiled windows have square corners
         win = "window" if gtk4 else ""

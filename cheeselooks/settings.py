@@ -79,7 +79,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("window_borders", "title_bar_height"), "int", (30, 56)),
     (("window_borders", "border_width"), "int", (0, 6)),
     (("window_borders", "title_gradient"), "int", (0, 100)),
-    (("window_borders", "button_layout"), "choice", ("right", "left")),
+    (("window_borders", "button_layout"), "choice", ("left", "right")),
     (("window_borders", "button_style"), "choice", tuple(titlebuttons.STYLES)),
     (("terminal", "separate_colors"), "bool", None),
     (("terminal", "bg"), "color?", None),
