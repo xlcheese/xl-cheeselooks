@@ -1,0 +1,84 @@
+# xl-Gummy-Dark: xl-Gummy for dark colours.
+# Bright and crisp on a dark background: the split gradient, sharp (barely
+# blurred) top and side lights kept faint, a crisp shade below, ink outlines,
+# sunken fields, boxed tabs with an accent glow and the accent scrollbar, as
+# in Gummy. Slightly brighter surfaces than Classic Dark.
+#
+# Alpha values are written for Depth 50. alpha_dark is what dark colours use;
+# alpha is the fallback if you pair this style with light colours.
+
+name = "xl-Gummy-Dark"
+author = "xl_cheese, dark tuning by Claude"
+description = "Bright, crisp buttons, sunken fields, boxed tabs with an accent glow. xl-Gummy for dark colours."
+
+adapt_strength = 0.6
+gradient_shape = "split"
+split_step = 0.6
+
+[defaults]
+roundness = 20
+gradient = 30
+depth = 50
+panel_opacity = 85
+
+[edges.raised]
+border    = "darker(bg, 0.42)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.30, alpha_dark = 0.09 }
+left      = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.05 }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.02, alpha_dark = 0.20 }
+right     = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.05 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.03, alpha_dark = 0.35 }
+
+[edges.raised_hover]
+border    = "mix(darker(bg, 0.42), text, 0.25)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.30, alpha_dark = 0.12 }
+left      = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.06 }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.02, alpha_dark = 0.20 }
+right     = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.06 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.03, alpha_dark = 0.40 }
+
+[edges.linked_hover]
+border    = "mix(darker(bg, 0.42), text, 0.2)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.30, alpha_dark = 0.12 }
+left      = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.06 }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.05, alpha_dark = 0.20 }
+right     = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.06 }
+
+[edges.sunken]
+border = "darker(bg, 0.40)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.40 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.40 }
+
+[edges.flat]
+border = "none"
+
+[edges.check_box]
+border = "mix(bg, text, 0.36)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.35 }
+
+[edges.check_hover]
+border = "accent"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.35 }
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lift(button_hover, 0.06)" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.12)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+check          = { edge = "check_box", hover_edge = "check_hover", pressed_edge = "check_box", focus_edge = "focus" }
+tab            = { tab_kind = "boxed", active_marker = "glow", hover_color = "lift(header, 0.09)", hover_edge = "raised_hover" }
+menu_item      = { hover_color = "menu_hover" }
+menubar_item   = { hover_color = "menubar_hover" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "mix(bg, text, 0.08)", hover_color = "mix(bg, text, 0.14)", selected_color = "mix(bg, text, 0.19)", selected_border = "mix(darker(bg, 0.42), text, 0.3)", active_marker = "glow" }
+scrollbar      = { color = "accent", hover_color = "accent_hover", pressed_color = "accent_press", border = "accent_press" }
+
+[panel]
+color = "darker(bg, 0.22)"

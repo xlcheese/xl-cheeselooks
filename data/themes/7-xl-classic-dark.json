@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "name": "xl-Classic Dark",
+  "settings": {
+    "style": {
+      "name": "xl-Classic-Dark"
+    },
+    "global": {
+      "accent": "#FA8562",
+      "bg": "#2F2F2F",
+      "text": "#E4E4E4"
+    },
+    "window_borders": {
+      "button_style": "classic",
+      "title_gradient": 15
+    }
+  }
+}

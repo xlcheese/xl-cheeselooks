@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "name": "xl-Cheeselooks Dark",
+  "settings": {
+    "style": {
+      "name": "xl-Cheeselooks-Dark"
+    },
+    "global": {
+      "accent": "#FA8562",
+      "bg": "#2C2C2C",
+      "text": "#E6E6E6"
+    },
+    "window_borders": {
+      "button_style": "flat",
+      "title_gradient": 10
+    }
+  }
+}

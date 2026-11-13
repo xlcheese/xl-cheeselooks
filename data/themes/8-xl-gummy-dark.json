@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "name": "xl-Gummy Dark",
+  "settings": {
+    "style": {
+      "name": "xl-Gummy-Dark"
+    },
+    "global": {
+      "accent": "#FA8562",
+      "bg": "#323232",
+      "text": "#EBEBEB"
+    },
+    "window_borders": {
+      "button_style": "drawn",
+      "title_gradient": 15
+    }
+  }
+}

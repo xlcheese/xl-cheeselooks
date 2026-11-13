@@ -1,0 +1,81 @@
+# xl-Classic-Dark: xl-Classic for dark colours.
+# The soft traditional bevel, retuned for a dark background: a blurred light
+# along the top and left kept faint (white glows on dark), a soft shade along
+# the bottom and right doing more of the shaping, ink outlines, sunken fields,
+# accent-filled menu hovers and boxed tabs with an accent line, as in Classic.
+#
+# Alpha values are written for Depth 50. alpha_dark is what dark colours use;
+# alpha is the fallback if you pair this style with light colours.
+
+name = "xl-Classic-Dark"
+author = "xl_cheese, dark tuning by Claude"
+description = "A soft traditional bevel, sunken fields, boxed tabs with an accent line. xl-Classic for dark colours."
+
+adapt_strength = 0.6
+
+[defaults]
+roundness = 20
+gradient = 30
+depth = 50
+panel_opacity = 85
+
+[edges.raised]
+border    = "darker(bg, 0.45)"
+highlight = { y = 2, blur = 2, color = "white", alpha = 0.60, alpha_dark = 0.10 }
+left      = { x = 1, blur = 2, color = "white", alpha = 0.50, alpha_dark = 0.06 }
+shade     = { y = -2, blur = 3, color = "black", alpha = 0.03, alpha_dark = 0.22 }
+right     = { x = 2, blur = 3, color = "black", alpha = 0.03, alpha_dark = 0.18 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.35 }
+
+[edges.raised_hover]
+border    = "mix(darker(bg, 0.45), text, 0.22)"
+highlight = { y = 2, blur = 2, color = "white", alpha = 0.60, alpha_dark = 0.13 }
+left      = { x = 2, blur = 2, color = "white", alpha = 0.50, alpha_dark = 0.08 }
+shade     = { y = -2, blur = 3, color = "black", alpha = 0.05, alpha_dark = 0.22 }
+right     = { x = 2, blur = 3, color = "black", alpha = 0.03, alpha_dark = 0.18 }
+shadow    = { y = 1, blur = 4, color = "black", alpha = 0.08, alpha_dark = 0.40 }
+
+[edges.linked_hover]
+border    = "mix(darker(bg, 0.45), text, 0.18)"
+highlight = { y = 2, blur = 2, color = "white", alpha = 0.60, alpha_dark = 0.13 }
+left      = { x = 2, blur = 2, color = "white", alpha = 0.50, alpha_dark = 0.08 }
+shade     = { y = -2, blur = 3, color = "black", alpha = 0.05, alpha_dark = 0.22 }
+right     = { x = 2, blur = 3, color = "black", alpha = 0.03, alpha_dark = 0.18 }
+
+[edges.sunken]
+border = "darker(bg, 0.42)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.15, alpha_dark = 0.45 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.40 }
+
+[edges.flat]
+border = "none"
+
+[edges.check_box]
+border = "mix(bg, text, 0.34)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.35 }
+
+[edges.check_hover]
+border = "mix(bg, text, 0.50)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.35 }
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lift(button_hover, 0.06)" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.10)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+check          = { edge = "check_box", hover_edge = "check_hover", pressed_edge = "check_box", focus_edge = "focus" }
+tab            = { tab_kind = "boxed", active_marker = "line", hover_color = "lift(header, 0.07)", hover_edge = "raised_hover" }
+menu_item      = { hover_color = "accent", hover_fg = "accent_fg" }
+menubar_item   = { hover_color = "accent", hover_fg = "accent_fg" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "mix(bg, text, 0.06)", hover_color = "mix(bg, text, 0.12)", selected_color = "mix(bg, text, 0.16)", selected_border = "mix(darker(bg, 0.45), text, 0.3)", active_marker = "line" }
+
+[panel]
+color = "darker(bg, 0.22)"

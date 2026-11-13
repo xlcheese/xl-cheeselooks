@@ -1,0 +1,83 @@
+# xl-Cheeselooks-Dark: xl-Cheeselooks for dark colours.
+# The same muted buttons, retuned for a dark background: ink outlines (darker
+# than the surface) instead of light grey lines, a faint glint along the top
+# and sides, a stronger drop shadow doing the lifting, hover borders that
+# brighten toward the text, fields and checks in a darker well (checks keep a
+# visible outline), boxed tabs whose border brightens on hover, and a panel a
+# shade darker than the windows with soft chips.
+#
+# Alpha values are written for Depth 50. alpha_dark is what dark colours use;
+# alpha is the fallback if you pair this style with light colours.
+
+name = "xl-Cheeselooks-Dark"
+author = "xl_cheese, dark tuning by Claude"
+description = "Muted buttons with a faint top glint, ink outlines, sunken fields, boxed tabs. xl-Cheeselooks for dark colours."
+
+adapt_strength = 0.6
+
+[defaults]
+roundness = 15
+gradient = 10
+depth = 50
+panel_opacity = 80
+panel_roundness = 0
+
+[edges.raised]
+border    = "darker(bg, 0.40)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30, alpha_dark = 0.07 }
+left      = { x = 1, blur = 0, color = "white", alpha = 0.10, alpha_dark = 0.03 }
+right     = { x = 1, blur = 0, color = "white", alpha = 0.10, alpha_dark = 0.03 }
+shadow    = { y = 2, blur = 3, color = "black", alpha = 0.06, alpha_dark = 0.30 }
+
+[edges.raised_hover]
+border    = "mix(darker(bg, 0.40), text, 0.22)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30, alpha_dark = 0.09 }
+left      = { x = 1, blur = 0, color = "white", alpha = 0.10, alpha_dark = 0.04 }
+right     = { x = 1, blur = 0, color = "white", alpha = 0.10, alpha_dark = 0.04 }
+shadow    = { y = 2, blur = 4, color = "black", alpha = 0.08, alpha_dark = 0.35 }
+
+[edges.sunken]
+border = "darker(bg, 0.36)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.35 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.35 }
+
+[edges.flat]
+border = "none"
+
+# checks, radios and switches: a visible outline on the dark well
+[edges.check_box]
+border = "mix(bg, text, 0.32)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }
+
+[edges.check_hover]
+border = "mix(bg, text, 0.48)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }
+
+[edges.panel_raised]
+border = "darker(bg, 0.45)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.20, alpha_dark = 0.04 }
+
+[edges.panel_hover]
+border = "mix(darker(bg, 0.45), text, 0.22)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.20, alpha_dark = 0.06 }
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(header, 0.10)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+check          = { edge = "check_box", hover_edge = "check_hover", pressed_edge = "check_box", focus_edge = "focus" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_color = "lift(header, 0.08)", hover_edge = "raised_hover" }
+menu_item      = { hover_color = "menu_hover" }
+menubar_item   = { hover_color = "menubar_hover" }
+panel_button   = { edge = "panel_raised", hover_edge = "panel_hover", color = "mix(bg, text, 0.07)", hover_color = "mix(bg, text, 0.13)", selected_color = "mix(bg, text, 0.18)", selected_border = "mix(darker(bg, 0.45), text, 0.3)", spacing = 3 }
+
+[panel]
+color = "darker(bg, 0.25)"
