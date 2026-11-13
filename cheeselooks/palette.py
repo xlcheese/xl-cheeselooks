@@ -186,7 +186,9 @@ def derive(accent: str, bg: str, text: str, hover: float = 1.0) -> dict[str, str
         "sidebar": pick(mix(bg, text, 0.035), mix(bg, text, 0.03)),
         "sidebar_hover": pick(mix(bg, text, 0.035 + 0.105 * hover), mix(bg, text, 0.03 + 0.10 * hover)),
         "hover": pick(mix(bg, text, 0.07 * hover), mix(bg, text, 0.08 * hover)),
-        "pressed": pick(mix(bg, text, 0.13), mix(bg, text, 0.15)),
+        # pressed and toggled: darker on light themes; on dark ones too, into a
+        # well below the surface (toward the text color would look raised)
+        "pressed": pick(mix(bg, text, 0.13), darker(bg, 0.16)),
         "border": pick(mix(bg, text, 0.20), mix(bg, text, 0.16)),
         "border_strong": border_strong,
         # hovered borders: darker on light themes, lighter on dark (both toward text)

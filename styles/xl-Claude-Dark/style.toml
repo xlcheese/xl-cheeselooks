@@ -1,0 +1,92 @@
+# xl-Claude-Dark: designed by Claude, for dark colours.
+# The same calm as xl-Claude, rethought for a dark background: warm charcoal
+# like paper at night. Light-theme habits don't carry over, so:
+#   - outlines are dark ink (darker than the surface), not light grey lines,
+#     which look like wireframes on dark;
+#   - the top light is a faint glint, the drop shadow does the lifting;
+#   - hover lifts toward the text colour and warms the border toward the
+#     terracotta; menus hover with a warm terracotta tint;
+#   - fields sink into a darker well; the panel is a shade darker than windows,
+#     with soft chips and a terracotta line under the focused window.
+#
+# Made to go with the Claude Dark theme. Alpha values are written for Depth 50;
+# alpha_dark is what dark colours use, alpha is a fallback if you pair this
+# style with light colours.
+
+name = "xl-Claude-Dark"
+author = "Claude"
+description = "Warm charcoal, ink outlines, terracotta accents. xl-Claude for dark colours. Designed by Claude."
+
+adapt_strength = 0.6
+gradient_shape = "smooth"
+
+[defaults]
+roundness = 35
+gradient = 8
+depth = 50
+panel_opacity = 94
+panel_roundness = 25
+panel_gradient = 4
+
+# Buttons: an ink outline, a faint glint along the top, a soft drop shadow
+[edges.raised]
+border    = "darker(bg, 0.42)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.40, alpha_dark = 0.07 }
+shadow    = { y = 1, blur = 2, color = "black", alpha = 0.06, alpha_dark = 0.30 }
+
+# Hover: the outline warms toward the accent, the glint brightens a touch
+[edges.raised_hover]
+border    = "mix(darker(bg, 0.42), accent, 0.45)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.45, alpha_dark = 0.10 }
+shadow    = { y = 1, blur = 3, color = "black", alpha = 0.08, alpha_dark = 0.35 }
+
+# Fields and pressed buttons: a darker well with a soft inner shadow
+[edges.sunken]
+border = "darker(bg, 0.38)"
+inner  = { y = 1, blur = 3, color = "black", alpha = 0.08, alpha_dark = 0.40 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.40 }
+inner  = { y = 1, blur = 3, color = "black", alpha = 0.08, alpha_dark = 0.40 }
+
+[edges.flat]
+border = "none"
+
+# Check boxes, radios and switches sit in a dark well too, but need an outline
+# you can see when they're off
+[edges.check_box]
+border = "mix(bg, text, 0.34)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.08, alpha_dark = 0.30 }
+
+[edges.check_hover]
+border = "mix(mix(bg, text, 0.34), accent, 0.5)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.08, alpha_dark = 0.30 }
+
+# Panel chips: no outline (the border is the chip's own colour), a faint glint
+[edges.panel_rest]
+border    = "mix(bg, text, 0.10)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30, alpha_dark = 0.05 }
+
+[edges.panel_hover]
+border    = "mix(mix(bg, text, 0.16), accent, 0.35)"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30, alpha_dark = 0.07 }
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(button, 0.12)" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+destructive    = { like = "button", border = "darker(destructive, 0.3)" }
+toolbar_button = { edge = "flat", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(header, 0.10)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+check          = { edge = "check_box", hover_edge = "check_hover", pressed_edge = "check_box", focus_edge = "focus" }
+tab            = { tab_kind = "claude", active_marker = "none", hover_color = "lift(header, 0.08)" }
+menu_item      = { hover_color = "mix(menu_bg, accent, 0.24)", hover_fg = "text" }
+menubar_item   = { hover_color = "mix(header, accent, 0.24)", hover_fg = "text" }
+panel_button   = { edge = "panel_rest", hover_edge = "panel_hover", color = "mix(bg, text, 0.10)", hover_color = "mix(bg, text, 0.16)", selected_color = "mix(bg, text, 0.22)", selected_border = "mix(mix(bg, text, 0.22), accent, 0.4)", active_marker = "line", spacing = 2 }
+scrollbar      = { color = "mix(bg, text, 0.32)", hover_color = "mix(bg, accent, 0.6)", pressed_color = "accent" }
+
+[panel]
+color = "darker(bg, 0.28)"

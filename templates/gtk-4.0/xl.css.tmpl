@@ -456,3 +456,7 @@ vte-terminal {
 /* Hovered list rows follow Hover strength */
 row.activatable:hover:not(:selected), row.activatable.has-open-popup:not(:selected) {
   background-color: {{row_hover}}; }
+
+/* list text color: set here, or another theme's (e.g. black from a light
+   system theme in the settings app's preview) shows through */
+list { color: {{text}}; }

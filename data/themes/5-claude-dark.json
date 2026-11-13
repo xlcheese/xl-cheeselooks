@@ -1,0 +1,17 @@
+{
+  "format": 1,
+  "name": "Claude Dark",
+  "settings": {
+    "style": {
+      "name": "xl-Claude-Dark"
+    },
+    "global": {
+      "accent": "#D97757",
+      "bg": "#2A2925",
+      "text": "#EAE6DD"
+    },
+    "window_borders": {
+      "button_style": "claude"
+    }
+  }
+}
