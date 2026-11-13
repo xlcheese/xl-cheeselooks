@@ -139,7 +139,7 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
     else:  # open and pills: nothing drawn until hover
         rest = (f"  color: {t['text_dim']};\n  border-color: transparent;\n"
                 f"  background-color: transparent;\n  background-image: none;\n  box-shadow: none;")
-    hover_edge = "transparent" if kind == "claude" else t["w.tab.hover_border"]
+    hover_edge = t["w.tab.hover_border"]
     hover = (f"  color: {t['w.tab.hover_fg']};\n  border-color: {hover_edge};\n"
              f"  background-color: {t['w.tab.hover_color']};\n"
              f"  background-image: {t['w.tab.hover_grad']};\n"

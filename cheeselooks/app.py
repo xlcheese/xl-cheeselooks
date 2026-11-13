@@ -121,16 +121,14 @@ class SettingsWindow(Gtk.ApplicationWindow):
         self.apply_btn = Gtk.Button(label="Apply")
         self.apply_btn.get_style_context().add_class("suggested-action")
         self.apply_btn.connect("clicked", self.on_apply)
-        header.pack_start(self.apply_btn)          # opposite the window buttons
+        header.pack_start(self.apply_btn)          # opposite the window buttons, at the outer edge
+        # shown after Apply: puts the previous desktop theme back
+        self.revert_btn = Gtk.Button(label="Revert")
+        self.revert_btn.set_tooltip_text("Put the previous theme back on the desktop (your settings here stay)")
+        self.revert_btn.connect("clicked", self.on_revert)
+        self.revert_btn.set_no_show_all(True)
+        header.pack_start(self.revert_btn)
         self.set_titlebar(header)
-
-        # shown after Apply: undo it on the desktop
-        self.bar = Gtk.InfoBar(message_type=Gtk.MessageType.INFO, show_close_button=True)
-        self.bar_label = Gtk.Label(xalign=0, wrap=True)
-        self.bar.get_content_area().add(self.bar_label)
-        self.bar_revert = self.bar.add_button("Revert", 1)
-        self.bar.connect("response", self.on_bar_response)
-        self.bar.set_no_show_all(True)
 
         self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
         for section, title in TABS:
@@ -151,7 +149,6 @@ class SettingsWindow(Gtk.ApplicationWindow):
         paned.pack2(self._preview(), resize=False, shrink=False)
         paned.set_position(660)
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        main.pack_start(self.bar, False, False, 0)
         main.pack_start(paned, True, True, 0)
         self.add(main)
         self.fill_theme_list()
@@ -393,6 +390,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
         outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin=10)
         outer.set_size_request(460, -1)
         frame = Gtk.Frame()
+        frame.get_style_context().add_class("xl-prev-window")
         win = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         hb = Gtk.HeaderBar(show_close_button=True, title="Preview")
         hb.get_style_context().add_class("titlebar")
@@ -486,6 +484,8 @@ button.xl-prev-pb.focused {{ border-color: {t[pb + 'selected_border']}; backgrou
   background-image: linear-gradient(to bottom, {t[pb + 'selected_top']}, {t[pb + 'selected_bottom']});
   box-shadow: {marker}; }}
 button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: bold; }}
+frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.border']};
+  border-radius: {t['r2']}px {t['r2']}px 0 0; }}
 .xl-prev-terminal {{ font-family: monospace; color: {t['term.text']}; background-color: {t['term.bg']}; padding: 6px; }}
 """
 
@@ -734,12 +734,9 @@ button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: 
 
     def applied_ok(self, data: dict, log: list[str]) -> bool:
         self.applied = data
-        self.status.set_text("\n".join(log[:3]))
-        self.bar_label.set_text(f"“{data['theme']}” is on the desktop. Not what you wanted? "
-                                "Revert puts the previous theme back (your settings here stay).")
-        self.bar_revert.set_sensitive(True)
-        self.bar.show_all()
-        self.bar.set_visible(True)
+        self.status.set_text(f"“{data['theme']}” is on the desktop. Revert puts the previous theme back.")
+        self.revert_btn.set_sensitive(True)
+        self.revert_btn.show()
         self.update_buttons()
         return False
 
@@ -748,11 +745,9 @@ button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: 
         self.update_buttons()
         return False
 
-    def on_bar_response(self, bar: Gtk.InfoBar, response: int) -> None:
-        if response != 1:                          # closed
-            bar.set_visible(False)
-            return
-        self.bar_revert.set_sensitive(False)
+    def on_revert(self, _button: Gtk.Button) -> None:
+        self.revert_btn.set_sensitive(False)
+        self.status.set_text("Reverting… the desktop flickers once while it reloads.")
 
         def work() -> None:
             try:
@@ -765,7 +760,7 @@ button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: 
     def reverted(self, restored: dict | None, log: list[str]) -> bool:
         if restored:
             self.applied = restored
-        self.bar.set_visible(False)
+        self.revert_btn.hide()
         self.status.set_text("The previous theme is back on the desktop. Your settings here are unchanged.")
         self.update_buttons()
         return False
