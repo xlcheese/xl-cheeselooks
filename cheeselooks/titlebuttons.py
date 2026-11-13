@@ -27,19 +27,36 @@ import re
 from dataclasses import dataclass
 
 from . import palette as pal
+from . import shape
 
 STYLES = {
-    "flat": "xl-Cheeselooks-flat",
+    "flat": "xl-Cheeselooks Flat",
     "drawn": "xl-Cheeselooks",
     "classic": "Classic",
     "dots": "Dots",
     "gargantuan": "Gargantuan",
-    "gargantuan-circles": "Gargantuan circles",
+    "gargantuan-circles": "Less Gargantuan",
     "arrows": "Arrows",
-    "arrows-flat": "Arrows flat",
+    "arrows-flat": "Arrows Flat",
     "claude": "Claude",
 }
 OLD_NAMES = {"theme": "flat", "wide": "gargantuan", "circles": "arrows"}
+
+# Each style's own roundness, as a percentage of fully round (the Button
+# roundness slider shows it until you move it). None: the theme's Roundness.
+DEFAULT_ROUNDNESS = {
+    "flat": None, "drawn": None, "classic": 25, "dots": 100, "gargantuan": 0,
+    "gargantuan-circles": 100, "arrows": 100, "arrows-flat": 100, "claude": 60,
+}
+
+
+def roundness(style: str, chosen: int | None, theme_roundness: int) -> int:
+    """The button roundness in use: yours, else the style's, else the theme's."""
+    if chosen is not None:
+        return chosen
+    own = DEFAULT_ROUNDNESS.get(style)
+    return theme_roundness if own is None else own
+
 
 KINDS = ("button", "minimize", "maximize", "close")
 STATES = ("rest", "hover", "pressed", "backdrop")
@@ -129,11 +146,13 @@ def geometry(style: str, t: dict[str, str]) -> Geometry:
         return Geometry(w, h, d, d, 0, 0, bw, 0, 24, True, True)
     # the click area reaches a few px past the face on every side
     if style == "classic":
-        side = _even(max(14, ctl * 0.72))
+        side = _even(max(18, ctl * 0.72))
         return centred(side + 6, side + 8, side, side, 0)
     if style == "dots":
-        d = 14 if height >= 26 else 12
-        return centred(d + 8, d + 10, d, d, 0, 12)
+        # 16px: in GTK the face is drawn on the icon node, which is never
+        # smaller than the 16px icon inside it (a smaller face put the glyph off centre)
+        d = 16
+        return centred(d + 8, d + 8, d, d, 0, 12)
     if style in ("arrows", "arrows-flat"):
         d = _even(ctl)
         return centred(d + max(6, round(d * 0.3)), d + 6, d, d, 0, 16)
@@ -157,13 +176,15 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     ptext = t["wbp.text"]
     tb, cb, bt = "wbp.w.title_button.", "wbp.w.close_button.", "wbp.w.button."
     acc_fg, acc_press = t["accent_fg"], t["accent_press"]
-    r = min(int(t["r"]), g.fh // 2)
+    pct = int(t["wb.button_roundness"])
+    r = shape.radius(pct, min(g.fw, g.fh))
 
     def rect(top, bottom, border=None, s3="none", s4="none", glyph=None, **kw):
         return Face("rect", top, bottom, border, kw.pop("radius", r), shadow3=s3, shadow4=s4, glyph=glyph, **kw)
 
     def circle(color, glyph, border=None, size=None):
-        return Face("circle", color, color, border, glyph=glyph, size=size or min(g.fw, g.fh))
+        d = size or min(g.fw, g.fh)
+        return Face("circle", color, color, border, shape.radius(pct, d), glyph=glyph, size=d)
 
     none = lambda glyph: Face(glyph=glyph)  # noqa: E731
     style_hover = rect(t[tb + "hover_top"], t[tb + "hover_bottom"], t[tb + "hover_border"],
@@ -194,7 +215,7 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     elif style == "classic":
         # Clearlooks: small squares in the title bar's own colour, a lighter
         # outline toward the title text and a soft highlight along the top
-        cr = min(r, 3)
+        cr = r
         edge = pal.mix(title, text, 0.38)
         hi = "inset 0 1px 0 rgba(255, 255, 255, 0.22)"
         rest = rect(pal.lighter(title, 0.22), title, edge, hi, hi, text, radius=cr)
@@ -219,10 +240,10 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     elif style in ("gargantuan", "gargantuan-circles"):
         hover_c = pal.mix(t[tb + "hover_top"], t[tb + "hover_bottom"], 0.5)
         if style == "gargantuan":
-            hover = rect(hover_c, hover_c, glyph=ptext, radius=0)
-            pressed = rect(t["wbp.pressed"], t["wbp.pressed"], glyph=ptext, radius=0)
-            ch = rect(t[cb + "hover_top"], t[cb + "hover_bottom"], glyph=acc_fg, radius=0)
-            cp = rect(acc_press, acc_press, glyph=acc_fg, radius=0)
+            hover = rect(hover_c, hover_c, glyph=ptext)
+            pressed = rect(t["wbp.pressed"], t["wbp.pressed"], glyph=ptext)
+            ch = rect(t[cb + "hover_top"], t[cb + "hover_bottom"], glyph=acc_fg)
+            cp = rect(acc_press, acc_press, glyph=acc_fg)
         else:
             d = g.fw
             hover_c = pal.mix(title, text, 0.12)       # a white circle barely shows on a light bar
@@ -242,7 +263,7 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
     elif style == "claude":
         # quiet at rest; a soft squircle with a short accent bar on hover,
         # echoing the claude tabs; close fills with the accent
-        sq = max(r, round(g.fh * 0.3))
+        sq = r
         soft = pal.mix(t[tb + "hover_top"], t[tb + "hover_bottom"], 0.5)
         put(KINDS, rest=none(pal.mix(text, title, 0.22)),
             hover=rect(soft, soft, glyph=ptext, radius=sq, bar=t["accent"]),
@@ -296,13 +317,18 @@ def face_svg(face: Face, w: int, h: int, corner: tuple[str | None, int] = (None,
         stroke = f' stroke="{c}" stroke-opacity="{a:g}"'
     if face.shape == "circle":
         d = face.size or min(w, h)
-        rad = d / 2 - (0.5 if face.border else 0)
-        parts.append(f'<circle cx="{w / 2:g}" cy="{h / 2:g}" r="{rad:g}" fill="url(#g)"{stroke}/>')
+        inset = 0.5 if face.border else 0
+        if face.radius * 2 >= d:
+            parts.append(f'<circle cx="{w / 2:g}" cy="{h / 2:g}" r="{d / 2 - inset:g}" fill="url(#g)"{stroke}/>')
+        else:     # Button roundness below 100: a rounded square
+            x0, y0 = (w - d) / 2 + inset, (h - d) / 2 + inset
+            parts.append(f'<rect x="{x0:g}" y="{y0:g}" width="{d - 2 * inset:g}" height="{d - 2 * inset:g}" '
+                         f'rx="{max(0, face.radius - inset):g}" fill="url(#g)"{stroke}/>')
     elif face.shape == "rect":
         side, cr = corner
         inset = 0.5 if face.border else 0
         x0, y0, x1, y1 = inset, inset, w - inset, h - inset
-        if side and cr:
+        if side and cr and not face.radius:
             if side == "right":
                 path = f"M{x0} {y0}H{x1 - cr}A{cr} {cr} 0 0 1 {x1} {y0 + cr}V{y1}H{x0}Z"
             else:
@@ -462,6 +488,11 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
         box_w, box_h = g.fw - 2, g.fh - 2
     else:
         box_w, box_h = g.w - 2, h - 2
+    # faces too small to hold the 16px icon inside a 1px border draw their
+    # outline as an inset ring instead (dots)
+    ring = g.inner and min(g.fw, g.fh) - 2 < 16
+    if ring:
+        box_w, box_h = g.fw, g.fh
     gs = g.glyph or 16
     glyph_pos = f"{(box_w - gs) // 2}px {(box_h - gs) // 2}px"
 
@@ -500,10 +531,10 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
             target = child if g.inner else ""
             selectors = ",\n".join(sel(cls, p + target) for p in pseudos[state])
             drawn = face.shape != "none"
-            if face.shape == "circle" or (circles and not drawn):
-                radius = "9999px"
-            elif kind == "close" and side and cr:
-                radius = f"0 {cr}px 0 0" if side == "right" else f"{cr}px 0 0 0"
+            if kind == "close" and side and cr and face.shape == "rect":
+                rr = face.radius
+                radius = (f"{rr}px {max(cr, rr)}px {rr}px {rr}px" if side == "right"
+                          else f"{max(cr, rr)}px {rr}px {rr}px {rr}px")
             else:
                 radius = f"{(face if drawn else hv).radius}px"
             border = face.border if (drawn and face.border) else _clear(hv.border or hv_color)
@@ -514,10 +545,15 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
             shadow = (face.shadow4 if gtk4 else face.shadow3) if (drawn and face.shape == "rect") else "none"
             decl = [f"border-radius: {radius};", f"border: 1px solid {border};", f"box-shadow: {shadow};",
                     f"background-color: {bg};"] + bg_decl(*layers)
+            if ring:
+                decl[1] = "border: none;"
+                inner_ring = f"inset 0 0 0 1px {border}"
+                decl[2] = f"box-shadow: {inner_ring if shadow == 'none' else inner_ring + ', ' + shadow};"
             if g.inner:
                 # the icon node fills the button unless held in by margins
                 mx, my = (g.w - g.fw) // 2, (h - g.fh) // 2
-                decl = [f"min-width: {g.fw - 2}px;", f"min-height: {g.fh - 2}px;", "padding: 0;",
+                b2 = 0 if ring else 2
+                decl = [f"min-width: {g.fw - b2}px;", f"min-height: {g.fh - b2}px;", "padding: 0;",
                         f"margin: {my}px {g.w - g.fw - mx}px {h - g.fh - my}px {mx}px;",
                         "-gtk-icon-shadow: none;"] + decl
             # our own glyphs replace the icon, which stays but is hidden

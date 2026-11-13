@@ -35,6 +35,7 @@ DEFAULTS: dict[str, Any] = {
         "separate_colors": False, "title_bar": None, "title_text": None, "border": None,
         "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
         "button_layout": "right", "button_style": "flat",
+        "button_roundness": None,   # None: the button style's own roundness
     },
     "terminal": {"separate_colors": False, "bg": None, "text": None},
     "details": {
@@ -81,6 +82,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("window_borders", "title_gradient"), "int", (0, 100)),
     (("window_borders", "button_layout"), "choice", ("left", "right")),
     (("window_borders", "button_style"), "choice", tuple(titlebuttons.STYLES)),
+    (("window_borders", "button_roundness"), "int?", (0, 100)),
     (("terminal", "separate_colors"), "bool", None),
     (("terminal", "bg"), "color?", None),
     (("terminal", "text"), "color?", None),
@@ -148,7 +150,9 @@ def validate(data: dict) -> list[str]:
                 problems.append(f"{name} must be a hex color like #FA8562 (got {value!r})")
             else:
                 _set(data, path, palette.normalize(value))
-        elif kind == "int":
+        elif kind in ("int", "int?"):
+            if value is None and kind == "int?":
+                continue
             lo, hi = extra
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not lo <= value <= hi:
                 problems.append(f"{name} must be a number from {lo} to {hi} (got {value!r})")

@@ -52,7 +52,7 @@ LABELS = {
     "title_bar": "Title bar", "title_text": "Title text", "border": "Border",
     "title_bar_height": "Title bar height", "border_width": "Border width",
     "title_gradient": "Title bar gradient", "button_layout": "Buttons on the",
-    "button_style": "Button style",
+    "button_style": "Button style", "button_roundness": "Button roundness",
     "mode": "Mode", "color": "Color", "width": "Width",
     "libadwaita_colors": "Colors for libadwaita apps", "libadwaita_accent": "GNOME accent color",
 }
@@ -214,7 +214,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
             box.pack_start(value, False, False, 0)
             self.controls[path] = ((button, value), kind)
             return box
-        if kind == "int":
+        if kind in ("int", "int?"):    # int?: None shows the default (button roundness: the style's)
             lo, hi = extra
             scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, lo, hi, 1)
             scale.set_digits(0)
@@ -538,6 +538,9 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
         if self.syncing:
             return
         _set(self.data, path, value)
+        if path == ("window_borders", "button_style"):
+            # a new style starts at its own roundness
+            self.data["window_borders"]["button_roundness"] = None
         parent = _get(self.data, path[:-1])
         for gate, on in GATES.items():       # changing a setting turns its hidden switch on
             if gate in parent and path[-1] != gate:
@@ -577,6 +580,10 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
                         label.set_text(f"{shown}   rgb({r}, {gg}, {b})")
                 elif kind == "int":
                     widget.set_value(value)
+                elif kind == "int?":   # button roundness: None shows the style's own
+                    wb = self.data["window_borders"]
+                    widget.set_value(titlebuttons.roundness(wb["button_style"], value,
+                                                            self.data["global"]["roundness"]))
                 elif kind == "bool":
                     widget.set_active(value)
                 elif kind == "inline":

@@ -11,7 +11,8 @@
       "text": "#EAE6DD"
     },
     "window_borders": {
-      "button_style": "claude"
+      "button_style": "claude",
+      "title_gradient": 10
     }
   }
 }

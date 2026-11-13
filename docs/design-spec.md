@@ -76,7 +76,7 @@ It brings back an idea from GNOME 2's Clearlooks and the GNOME Color Chooser, re
                "menu_shape":  { "follow_global": true, "roundness": 15, "gradient": 10 } },
   "window_borders": { "separate_colors": false, "title_bar": null, "title_text": null, "border": null,
                       "title_bar_height": 44, "border_width": 1, "title_gradient": 30,
-                      "button_layout": "right", "button_style": "flat" },
+                      "button_layout": "right", "button_style": "flat", "button_roundness": null },
   "terminal": { "separate_colors": false, "bg": null, "text": null },
   "details": {
     "tooltips":    { "custom": false, "bg": null, "text": null },
@@ -357,15 +357,17 @@ Borderless, with soft shadows. Suggested buttons cast a shadow **tinted with the
   - Newer theme features carry version guards (`ellipsize_width` 3.1, attached dialogs 3.2, tiled states 3.3), as Mint-Y does; without them Muffin and Metacity fall back to Adwaita.
   - Test without Cinnamon: `tools/wm-preview.sh THEME_DIR OUT` runs GNOME's Metacity (same theme format) on a virtual display and screenshots two windows.
 - **Button styles** (`window_borders.button_style`, drawn by `cheeselooks/titlebuttons.py`): one description per style (a face behind the glyph for each kind of button, minimize / maximize / close / other, and each state: rest, hover, pressed, unfocused) drives all three places title buttons are drawn, so they match: Muffin's window borders (SVG faces and glyphs written at apply time, `"file:<path>"` tokens), GTK 3 header bars and GTK 4 / libadwaita window controls (CSS tokens `titlebuttons.css`, `titlebuttons4.css`). The styles:
-  - `flat` (**xl-Cheeselooks-flat**, default; theme xl-Cheeselooks): glyph only at rest; the style's title button on hover; close fills with the accent.
+  - `flat` (**xl-Cheeselooks Flat**, default; theme xl-Cheeselooks): glyph only at rest; the style's title button on hover; close fills with the accent.
   - `drawn` (**xl-Cheeselooks**; theme xl-Gummy): the style's normal button at rest, its hover and pressed faces; close is a normal button that hovers in the accent.
   - `classic` (theme xl-Classic): small square buttons in the title bar's own colour (a lighter gradient, an outline toward the title text, a soft top highlight), as Clearlooks; close looks like the others.
-  - `dots`: red / yellow / green dots, grey for other buttons and unfocused windows; the glyph shows on the hovered dot (window managers can't show it on all three at once).
+  - `dots`: red / yellow / green 16px dots (16px so the face holds GTK's 16px icon node exactly, which keeps the glyph centred; their outline is an inset ring), grey for other buttons and unfocused windows; the glyph shows on the hovered dot (window managers can't show it on all three at once).
   - `gargantuan`: wide (1.16 × title bar height), full-height buttons with no gap, flush with the window edge, with thin 1px glyphs at 150% of the theme's (minus, square, two squares for restore, ×); the style's hover face, close in the accent; close's outer top corner follows the window's roundness (square when maximized or tiled).
-  - `gargantuan-circles`: the same wide, full-height slots (the whole slot is clickable), with a larger circle (0.8 × title bar height) on hover.
+  - `gargantuan-circles` (**Less Gargantuan**): the same wide, full-height slots (the whole slot is clickable), with a larger circle (0.8 × title bar height) on hover.
   - `arrows`: circles at rest (title bar tinted toward the text), chevron glyphs (down = minimize, up = maximize, a diamond = restore, ×), close hovers in the accent.
-  - `arrows-flat`: the same, with no circle until hover.
+  - `arrows-flat` (**Arrows Flat**): the same, with no circle until hover.
   - `claude` (theme Claude): muted glyphs at rest; on hover a soft squircle with a short accent bar under the glyph, echoing the claude tabs; close fills with the accent.
+
+  **Button roundness** (`window_borders.button_roundness`, 0–100, the slider under Button style): how round the faces are, as a percentage of fully round, like the global Roundness. `null` (the default) means the style's own: the theme's Roundness for xl-Cheeselooks and xl-Cheeselooks Flat, Classic 25, Claude 60, Gargantuan 0, and 100 (circles) for Dots, Arrows, Arrows Flat and Less Gargantuan. The slider shows that value until you move it; picking another style puts it back to that style's own. Below 100, circles become rounded squares; Gargantuan's close keeps its window-corner rounding.
 
   **Click area vs face:** Classic, Dots, Arrows, Arrows flat, Claude and Gargantuan circles draw a face smaller than the button, so the area you can click reaches a few px past the face (3–5 px each side) and covers the gaps. In GTK the face is drawn on the button's icon node, held to the face size by margins; the button itself draws nothing. Faces are even-sized and glyphs are placed in whole pixels (a glyph on a half pixel is blurry).
 
