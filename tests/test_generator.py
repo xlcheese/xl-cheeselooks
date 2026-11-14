@@ -291,6 +291,21 @@ class StyleTests(unittest.TestCase):
         self.assertIn("g4_", "".join(k for k in t if k.startswith("w.button.g4")))
         self.assertNotEqual(t["tabs.css"], t["tabs4.css"])                 # GTK 4 tabs use GTK 4 blur
 
+    def test_glass_gradient(self):
+        g = palette.gradient_css("#FFFFFF", "#000000", "glass", 0.6, 0.4)
+        stops = g[len("linear-gradient(to bottom, "):-1].split(", ")
+        self.assertEqual(stops[0], "#FFFFFF")
+        self.assertEqual(stops[2], "#000000 50%")              # the darkest at the middle
+        self.assertEqual(stops[3], palette.mix("#000000", "#FFFFFF", 0.4))   # back up, lighter
+        self.assertGreater(palette.luminance(stops[3]), palette.luminance("#000000"))
+        errors, warnings = styles.check({"name": "G", "gradient_shape": "glass", "glass_return": 0.5})
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+        errors, _w = styles.check({"name": "G", "gradient_shape": "glass", "glass_return": 2})
+        self.assertTrue(any("glass_return" in e for e in errors))
+        _e, warnings = styles.check({"name": "G", "glass_return": 0.5})        # not glass: ignored
+        self.assertTrue(any("glass_return" in w for w in warnings))
+
     def test_split_gradient(self):
         self.assertEqual(palette.gradient_css("#FFFFFF", "#000000"), "linear-gradient(to bottom, #FFFFFF, #000000)")
         split = palette.gradient_css("#FFFFFF", "#000000", "split", 1.0)

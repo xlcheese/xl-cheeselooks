@@ -103,7 +103,8 @@ def _add_face_gradients(t: dict[str, str], style: sty.Style) -> None:
         base = key[: -len("_top")]
         if base + "_bottom" in t and not key.endswith("_rgb"):
             t[base + "_grad"] = pal.gradient_css(t[key], t[base + "_bottom"],
-                                                 style.gradient_shape, style.split_step)
+                                                 style.gradient_shape, style.split_step,
+                                                 style.glass_return)
 
 
 def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PANEL_HEIGHT,
@@ -211,6 +212,10 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     _add_colors(t, "wbp.", wb_pal)
     _add_gradients(t, "wbp.", wb_pal, amount)
     _add_widgets(t, "wbp.", style, wb_pal, depth, amount)
+    # the style's face shape, for title buttons drawn outside the CSS (SVG faces)
+    t["style.gradient_shape"] = style.gradient_shape
+    t["style.split_step"] = str(style.split_step)
+    t["style.glass_return"] = str(style.glass_return)
     t.update(titlebuttons.tokens(t))
 
     # --- Terminal

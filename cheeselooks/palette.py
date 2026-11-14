@@ -95,11 +95,12 @@ def gradient(color: str, amount: float) -> tuple[str, str]:
     return lighter(color, 0.10 * amount), darker(color, 0.20 * amount)
 
 
-GRADIENT_SHAPES = ("smooth", "split")
+GRADIENT_SHAPES = ("smooth", "split", "glass")
 
 
-def gradient_css(top: str, bottom: str, shape: str = "smooth", step: float = 0.4) -> str:
-    """A top-to-bottom face as a CSS gradient.
+def gradient_stops(top: str, bottom: str, shape: str = "smooth", step: float = 0.4,
+                   glass_return: float = 0.4) -> list[tuple[float, str]]:
+    """A top-to-bottom face as (offset 0-1, colour) stops.
 
     smooth  top fading to bottom
     split   a glossy face, as in Clearlooks Gummy / Phenix: the top half fades
@@ -107,12 +108,31 @@ def gradient_css(top: str, bottom: str, shape: str = "smooth", step: float = 0.4
             bottom half fades on to the bottom colour. `step` (0-1) is how much
             of the top half's fade is saved for that step: 0 = smooth, 1 = a flat
             top half and the whole first half of the fade in one step.
+    glass   light reflected from below, as xl_cheese's GTK 2 xl_cheeselooks: the
+            top half fades from the top colour toward the darkest, a step down to
+            the darkest at the middle, then the bottom half fades back *lighter*.
+            `step` as for split (0 = no step, a smooth dip); `glass_return` (0-1)
+            is how far the bottom half climbs back toward the top colour.
     """
-    if shape != "split" or top == bottom:
-        return f"linear-gradient(to bottom, {top}, {bottom})"
-    upper = mix(top, bottom, 0.5 * (1 - step))   # where the top half ends
-    middle = mix(top, bottom, 0.5)               # where the bottom half starts
-    return f"linear-gradient(to bottom, {top}, {upper} 50%, {middle} 50%, {bottom})"
+    if top == bottom:
+        return [(0.0, top), (1.0, bottom)]
+    if shape == "split":
+        upper = mix(top, bottom, 0.5 * (1 - step))   # where the top half ends
+        middle = mix(top, bottom, 0.5)               # where the bottom half starts
+        return [(0.0, top), (0.5, upper), (0.5, middle), (1.0, bottom)]
+    if shape == "glass":
+        upper = mix(top, bottom, 1 - 0.5 * step)     # the top half ends just above the darkest
+        end = mix(bottom, top, glass_return)          # the bottom edge, lighter again
+        return [(0.0, top), (0.5, upper), (0.5, bottom), (1.0, end)]
+    return [(0.0, top), (1.0, bottom)]
+
+
+def gradient_css(top: str, bottom: str, shape: str = "smooth", step: float = 0.4,
+                 glass_return: float = 0.4) -> str:
+    """The face as a CSS gradient (see gradient_stops)."""
+    stops = gradient_stops(top, bottom, shape, step, glass_return)
+    parts = [stops[0][1]] + [f"{c} {o * 100:g}%" for o, c in stops[1:-1]] + [stops[-1][1]]
+    return f"linear-gradient(to bottom, {', '.join(parts)})"
 
 
 def title_gradient(color: str, amount: float) -> tuple[str, str]:

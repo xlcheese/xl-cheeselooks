@@ -305,12 +305,20 @@ def glyph_svg(name: str, color: str) -> str:
             f'stroke-linecap="{cap}" stroke-linejoin="miter"/></svg>')
 
 
-def face_svg(face: Face, w: int, h: int, corner: tuple[str | None, int] = (None, 0)) -> str:
-    """The face as an SVG the size of the button (metacity centres it)."""
+def _shape(t: dict[str, str]) -> tuple[str, float, float]:
+    """The style's face gradient: (shape, split_step, glass_return)."""
+    return (t.get("style.gradient_shape", "smooth"), float(t.get("style.split_step", 0.4)),
+            float(t.get("style.glass_return", 0.4)))
+
+
+def face_svg(face: Face, w: int, h: int, corner: tuple[str | None, int] = (None, 0),
+             shape: tuple[str, float, float] = ("smooth", 0.4, 0.4)) -> str:
+    """The face as an SVG the size of the button (metacity centres it), with the
+    style's gradient shape (smooth, split or glass), as the GTK buttons have."""
+    stops = "".join(f'<stop offset="{o:g}" stop-color="{c}"/>'
+                    for o, c in pal.gradient_stops(face.top, face.bottom, *shape))
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">',
-             '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">'
-             f'<stop offset="0" stop-color="{face.top}"/><stop offset="1" stop-color="{face.bottom}"/>'
-             '</linearGradient></defs>']
+             f'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">{stops}</linearGradient></defs>']
     stroke = ""
     if face.border:
         c, a = _split_color(face.border)
@@ -358,6 +366,7 @@ def metacity(style: str, t: dict[str, str]) -> tuple[dict[str, str], dict[str, s
     """(tokens, files): draw ops for every function x state, and the SVG files they use."""
     g = geometry(style, t)
     fc = faces(style, t)
+    shape = _shape(t)
     corner = outer_corner(style, t["wb.button_layout"], t)
     glyphs = CUSTOM_GLYPHS.get(style, {})
     files: dict[str, str] = {}
@@ -367,8 +376,9 @@ def metacity(style: str, t: dict[str, str]) -> tuple[dict[str, str], dict[str, s
         if face.shape == "none":
             return ""
         name = _name("face", face.shape, face.top, face.bottom, face.border and _split_color(face.border)[0],
-                     str(face.radius), face.bar, corner_[0], str(corner_[1]), str(face.size))
-        files[name] = face_svg(face, g.fw, g.fh, corner_)
+                     str(face.radius), face.bar, corner_[0], str(corner_[1]), str(face.size),
+                     *(str(v) for v in shape))
+        files[name] = face_svg(face, g.fw, g.fh, corner_, shape)
         return f'\t<image filename="{name}" {CENTER}/>\n'
 
     def glyph_op(fn: str, color: str | None) -> str:
@@ -429,6 +439,7 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
     """(css, asset files) for title buttons in GTK 3 header bars or GTK 4 window controls."""
     g = geometry(style, t)
     fc = faces(style, t)
+    shape = _shape(t)
     glyphs = CUSTOM_GLYPHS.get(style, {})
     side, cr = outer_corner(style, t["wb.button_layout"], t)
     files: dict[str, str] = {}
@@ -511,7 +522,7 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
             sizes.append("10px 2px")
             positions.append(f"{(box_w - 10) // 2}px {box_h // 2 + 6}px")    # just under the glyph
         if face.shape != "none" and face.top != face.bottom:
-            layers.append(f"linear-gradient(to bottom, {face.top}, {face.bottom})")
+            layers.append(pal.gradient_css(face.top, face.bottom, *shape))     # split / glass as the style says
             sizes.append("100% 100%")
             positions.append("0 0")
         return layers, sizes, positions
