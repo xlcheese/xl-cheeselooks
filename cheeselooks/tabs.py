@@ -169,7 +169,7 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
             out.append(f"{sel(pos, ':not(:checked)')}"
                        f"{',' + chr(10) + 'notebook > header > tabs > tab:not(:checked)' if pos == 'top' else ''} {{\n"
                        f"  border-{side}-style: solid;\n  border-{side}-width: 1px;\n"
-                       f"  border-{side}-color: {t['w.button.border']}; }}")
+                       f"  border-{side}-color: {t['frame']}; }}")      # the page's frame line
     out.append(f"{all_pos(':hover:not(:checked)')} {{\n{hover} }}")
     if kind != "pills":
         # boxed and open tabs are joined to the page: no highlight or shade on
@@ -195,7 +195,8 @@ def css(t: dict[str, str], gtk4: bool = False) -> str:
                     f"  box-shadow: {_join(t[k('w.button.shadow')], m)};")
         else:
             bar = claude_bar(pos, accent) if kind == "claude" else "none"
-            body = (f"  color: {t['text']};\n  border-color: {t['w.button.border']};\n"
+            # the selected tab opens into the page: outlined in the page's frame colour
+            body = (f"  color: {t['text']};\n  border-color: {t['frame']};\n"
                     f"  background-color: {t['base']};\n  background-image: {bar};\n"
                     f"  box-shadow: {_join(m)};")
         selectors = sel(pos, ":checked") + (",\nnotebook > header > tabs > tab:checked" if pos == "top" else "")

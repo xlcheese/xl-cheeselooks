@@ -157,6 +157,8 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # hovered list rows (activatable rows on a list): a text tint that follows
     # Hover strength (Mint-Y's is a fixed 3%)
     t["row_hover"] = pal.rgba(theme["text"], 0.075 * hover)
+    # the frame round a notebook's pages (Mint-Y's), which the tabs join
+    t["frame"] = pal.mix(theme["bg"], theme["text"], 0.234)
     _add_gradients(t, "", theme, amount)
     for k, v in shape.shape_tokens(g["size"], g["roundness"]).items():
         t[k] = str(v)
