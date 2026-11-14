@@ -3,9 +3,10 @@
 Themes: the Global tab starts with the list of themes (built-in, yours, and
 Custom). Picking one sets every tab to that theme. Changing anything makes it
 "Custom", which keeps your latest changes; Save Theme… names Custom as a theme
-of your own. Each tab's "Reset to Theme Defaults" puts that tab back to the
-theme it started from (and if nothing differs any more, the theme is no longer
-Custom).
+of your own. Each tab's Reset button (Reset Style, Reset Panel & Menu...) puts
+that tab back to the theme it started from; Global also has "Reset All to Theme
+Defaults" for every tab. If nothing differs any more, the theme is no longer
+Custom, and your latest changes stay in Custom, one click away.
 
 Preview: every change regenerates the theme into a cache folder and loads its
 GTK 3 stylesheet into this app only, so the app's own widgets and a sample
@@ -109,6 +110,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
             self.base = self.data["theme"]
         self.base_cache: dict[str, dict] = {}
         self.controls: dict[tuple[str, ...], tuple[Any, str]] = {}
+        self.reset_btns: dict[str, Gtk.Button] = {}     # tooltips name the theme (see update_buttons)
         self.syncing = False
         self.pending = 0
         self.preview_dir = paths.HOME / ".cache" / "xl-cheeselooks" / "preview"
@@ -198,10 +200,18 @@ class SettingsWindow(Gtk.ApplicationWindow):
             row += 1
         if section == "integration":
             row = self._flatpak_row(grid, row)
-        reset = Gtk.Button(label="Reset to Theme Defaults", halign=Gtk.Align.START, margin_top=14)
-        reset.set_tooltip_text("Put this tab back to the theme's values (other tabs stay as they are)")
-        reset.connect("clicked", lambda _b, s=section: self.reset_section(s))
-        grid.attach(reset, 0, row, 2, 1)
+        if section != "integration":   # two switches, and Flatpak access is a change to the system
+            box = Gtk.Box(spacing=8, halign=Gtk.Align.START, margin_top=14)
+            reset = Gtk.Button(label=f"Reset {dict(TABS)[section]}")
+            reset.connect("clicked", lambda _b, s=section: self.reset_section(s))
+            box.pack_start(reset, False, False, 0)
+            self.reset_btns[section] = reset
+            if section == "global":
+                every = Gtk.Button(label="Reset All to Theme Defaults")
+                every.connect("clicked", lambda _b: self.reset_all())
+                box.pack_start(every, False, False, 0)
+                self.reset_btns["all"] = every
+            grid.attach(box, 0, row, 2, 1)
         return self._page(grid)
 
     def _control(self, path: tuple[str, ...], kind: str, extra: Any) -> Gtk.Widget:
@@ -617,6 +627,15 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
         return theme["accent"]
 
     def update_buttons(self) -> None:
+        # tooltips name the theme a reset goes back to (not the labels: names can be long)
+        for section, b in self.reset_btns.items():
+            if section == "all":
+                b.set_tooltip_text(f"Put every tab back to {self.base}. Your latest changes stay in Custom.")
+            elif section == "global":
+                b.set_tooltip_text(f"Put Global back to {self.base}. Other tabs keep what you set there, "
+                                   "but colours on “Follow theme” and shapes that follow Global change with it.")
+            else:
+                b.set_tooltip_text(f"Put {dict(TABS)[section]} back to {self.base} (other tabs stay as they are)")
         self.apply_btn.set_sensitive(not _same(self.data, self.applied) or self.data["theme"] != self.applied["theme"])
         self.save_btn.set_sensitive(self.data["theme"] == themes.CUSTOM)
         row = self.theme_list.get_selected_row()
@@ -646,6 +665,12 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
         if self.syncing or row is None or row.style_name == self.data["style"]["name"]:
             return
         self.changed(("style", "name"), row.style_name)
+
+    def reset_all(self) -> None:
+        """Every tab back to the theme you started from; Custom keeps your changes."""
+        self.data = copy.deepcopy(self.base_settings())
+        self.status.set_text(f"Every tab reset to {self.base}. Your latest changes are still in Custom.")
+        self.after_change()
 
     def reset_section(self, section: str) -> None:
         if section in ("share",):
