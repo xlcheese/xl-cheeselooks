@@ -505,14 +505,15 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
     if kind == "recess":
         # the background around the button pressed in a little: a 1px ring just
         # outside the border, darker along the top and left (color), lighter
-        # along the bottom and right (light). Two outer shadows: the light one
-        # shifted down-right, drawn over a full ring in the dark colour.
+        # along the bottom and right (light). Two outer shadows, the dark one
+        # shifted up-left and the light one down-right, so they never overlap
+        # (light over dark came out darker than a near-white background).
         width = layer.get("width", 1)
         la = (layer.get("light_alpha_dark", layer.get("light_alpha", alpha / scale)) if dark
               else layer.get("light_alpha", alpha / scale))
         la = min(1.0, la * scale)
         light = pal.rgba(_resolve_color(layer.get("light", "white"), palette), la)
-        return f"{px(width)} {px(width)} 0 {light}, 0 0 0 {px(width)} {color}"
+        return f"{px(width)} {px(width)} 0 {light}, -{px(width)} -{px(width)} 0 {color}"
     if kind in ("ring", "outline"):
         width = layer.get("width", 1)
         inset = layer.get("inset", kind == "ring")
