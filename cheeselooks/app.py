@@ -35,7 +35,8 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 from gi.repository import Gdk, GLib, Gtk  # noqa: E402
 
-from . import cli, flatpak, palette as pal, panelmarker, paths, render, settings, styles, themes, titlebuttons, tokens  # noqa: E402
+from . import cli, flatpak, palette as pal, panelmarker, paths, reload, render, settings, styles, themes, titlebuttons, tokens  # noqa: E402
+from .shape import DEFAULT_PANEL_HEIGHT  # noqa: E402
 
 APP_TITLE = "xl-Cheeselooks"
 PREVIEW_DELAY_MS = 120
@@ -50,7 +51,7 @@ LABELS = {
     "roundness": "Roundness", "gradient": "Gradient", "hover_in_ms": "Hover in (ms)",
     "hover_out_ms": "Hover out (ms)", "hover_strength": "Hover strength", "depth": "Depth",
     "label_weight": "Label weight", "panel_opacity": "Panel opacity", "menu_opacity": "Menu opacity",
-    "notification_opacity": "Notification opacity",
+    "notification_opacity": "Notification opacity", "panel_height": "Panel height",
     "title_bar": "Title bar", "title_text": "Title text", "border": "Border",
     "title_bar_height": "Title bar height", "border_width": "Border width",
     "title_gradient": "Title bar gradient", "button_layout": "Buttons on the",
@@ -111,7 +112,8 @@ class SettingsWindow(Gtk.ApplicationWindow):
             self.base = self.data["theme"]
         self.base_cache: dict[str, dict] = {}
         self.controls: dict[tuple[str, ...], tuple[Any, str]] = {}
-        self.reset_btns: dict[str, Gtk.Button] = {}     # tooltips name the theme (see update_buttons)
+        self.reset_btns: dict[str, Gtk.Button] = {}
+        self.cinnamon_panel_height: int | None = None   # read once, for the Panel height slider     # tooltips name the theme (see update_buttons)
         self.syncing = False
         self.pending = 0
         self.preview_dir = paths.HOME / ".cache" / "xl-cheeselooks" / "preview"
@@ -489,7 +491,7 @@ class SettingsWindow(Gtk.ApplicationWindow):
   rgba({t['panel.panel_bottom_rgb']}, {t['panel.opacity']}));
   border-top: 1px solid {t['panel.border']}; padding: 3px 4px; color: {t['panel.text']}; }}
 .xl-prev-panel label {{ color: {t['panel.text']}; font-weight: {t['panel.label_weight']}; }}
-button.xl-prev-pb {{ min-height: 26px; padding: 0 {t[pb + 'padding']}px; margin-right: {t[pb + 'spacing']}px;
+button.xl-prev-pb {{ min-height: {max(14, int(t['panel.height']) - 14)}px; padding: 0 {t[pb + 'padding']}px; margin-right: {t[pb + 'spacing']}px;
   border: 1px solid {t[pb + 'border']}; border-radius: {t['panel.r']}px;
   background-color: {t[pb + 'color']};
   background-image: linear-gradient(to bottom, {t[pb + 'color_top']}, {t[pb + 'color_bottom']});
@@ -517,7 +519,8 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
         self.pending = 0
         try:
             style = cli._load_style(self.data["style"]["name"], None)
-            t = tokens.build(self.data, style)
+            ph = self.data["panel"]["panel_height"] or self._int_default(("panel", "panel_height"))
+            t = tokens.build(self.data, style, panel_height=ph)
         except (styles.StyleError, settings.SettingsError, KeyError) as exc:
             self.status.set_text(f"Can't preview: {exc}")
             return False
@@ -591,10 +594,8 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
                         label.set_text(f"{shown}   rgb({r}, {gg}, {b})")
                 elif kind == "int":
                     widget.set_value(value)
-                elif kind == "int?":   # button roundness: None shows the style's own
-                    wb = self.data["window_borders"]
-                    widget.set_value(titlebuttons.roundness(wb["button_style"], value,
-                                                            self.data["global"]["roundness"]))
+                elif kind == "int?":   # None shows the default in use
+                    widget.set_value(self._int_default(path) if value is None else value)
                 elif kind == "bool":
                     widget.set_active(value)
                 elif kind == "inline":
@@ -612,6 +613,18 @@ frame.xl-prev-window > border {{ border: {t['wb.border_width']}px solid {t['wb.b
                 self.term_combo.set_active_id("default")
         finally:
             self.syncing = False
+
+    def _int_default(self, path: tuple[str, ...]) -> int:
+        """What an unset number setting shows: button roundness, the style's own;
+        panel height, Cinnamon's current height."""
+        if path[-1] == "button_roundness":
+            wb = self.data["window_borders"]
+            return titlebuttons.roundness(wb["button_style"], None, self.data["global"]["roundness"])
+        if path[-1] == "panel_height":
+            if self.cinnamon_panel_height is None:
+                self.cinnamon_panel_height = reload.panel_height(DEFAULT_PANEL_HEIGHT)
+            return self.cinnamon_panel_height
+        return 0
 
     def _effective_color(self, path: tuple[str, ...], theme: dict[str, str]) -> str:
         name = path[-1]

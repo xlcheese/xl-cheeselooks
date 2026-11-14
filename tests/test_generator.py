@@ -818,6 +818,36 @@ class RenderAndInstallTests(unittest.TestCase):
                 self.assertEqual((name, notes), ("Blue Claude", []))
                 self.assertEqual(themes.load(name)["global"]["accent"], "#2F7DE1")
 
+    def test_panel_height_apply_and_revert(self):
+        from unittest import mock
+        from cheeselooks import reload
+        store = {"panels-height": "['1:40', '2:30']"}
+
+        def fake_run(cmd, schema, key, value=None):
+            if cmd == "get":
+                return store.get(key, "''")
+            store[key] = value
+            return ""
+        st = styles.load(DEFAULT_STYLE)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            with mock.patch.object(reload, "_run", fake_run), \
+                    mock.patch.object(reload, "available", lambda: True), \
+                    mock.patch.object(reload, "apply", lambda *a, **k: []), \
+                    mock.patch.object(cli, "_libadwaita", lambda *a: []), \
+                    mock.patch.object(cli.paths, "theme_dir", lambda: tmp / "themes" / "xl-Cheeselooks"), \
+                    mock.patch.object(cli.paths, "last_good_dir", lambda: tmp / "good"), \
+                    mock.patch.object(cli.paths, "settings_file", lambda: tmp / "settings.json"):
+                s = defaults()
+                cli.apply_to_desktop(s, st)                          # unset: Cinnamon's height untouched
+                self.assertEqual(store["panels-height"], "['1:40', '2:30']")
+                s["panel"]["panel_height"] = 32
+                log = cli.apply_to_desktop(s, st)
+                self.assertEqual(store["panels-height"], "['1:32', '2:32']")   # every panel, ids kept
+                self.assertIn("panel height set to 32px", log)
+                cli.revert_desktop()
+                self.assertEqual(store["panels-height"], "['1:40', '2:30']")   # Revert puts it back
+
     def test_install_and_revert(self):
         st = styles.load(DEFAULT_STYLE)
         with tempfile.TemporaryDirectory() as tmp:

@@ -28,6 +28,7 @@ DEFAULTS: dict[str, Any] = {
         "separate_colors": False, "accent": None, "bg": None, "text": None,
         "label_weight": "bold",
         "panel_opacity": 70, "menu_opacity": 94, "notification_opacity": 94,
+        "panel_height": None,   # None: leave Cinnamon's panel height as it is
         "panel_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
         "menu_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
     },
@@ -68,6 +69,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("panel", "panel_opacity"), "int", (30, 100)),
     (("panel", "menu_opacity"), "int", (30, 100)),
     (("panel", "notification_opacity"), "int", (30, 100)),
+    (("panel", "panel_height"), "int?", (20, 60)),
     (("panel", "panel_shape", "follow_global"), "bool", None),
     (("panel", "panel_shape", "roundness"), "int", (0, 100)),
     (("panel", "panel_shape", "gradient"), "int", (0, 100)),

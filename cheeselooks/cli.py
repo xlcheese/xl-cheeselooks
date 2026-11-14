@@ -111,17 +111,51 @@ def _libadwaita(data: dict, table: dict) -> list[str]:
     return [line for line in log if line]
 
 
+PANEL_HEIGHT_FILE = "panels-height"   # in the last-good folder: Cinnamon's height before Apply
+
+
+def _panel_height(data: dict, live: bool = True) -> int:
+    """The height to build for: yours, else Cinnamon's current one."""
+    chosen = data["panel"]["panel_height"]
+    if chosen is not None:
+        return chosen
+    return reload.panel_height(DEFAULT_PANEL_HEIGHT) if live else DEFAULT_PANEL_HEIGHT
+
+
+def _apply_panel_height(data: dict, last_good: Path) -> list[str]:
+    """Set Cinnamon's panel height when you chose one, keeping the old value
+    in the last-good folder for Revert."""
+    chosen = data["panel"]["panel_height"]
+    raw = reload.panel_heights_raw()
+    if chosen is None or raw is None or reload.panel_height(DEFAULT_PANEL_HEIGHT) == chosen \
+            and "," not in raw:
+        return []
+    (last_good / PANEL_HEIGHT_FILE).write_text(raw + "\n", encoding="utf-8")
+    line = reload.set_panel_height(chosen, raw)
+    return [line] if line else []
+
+
+def _restore_panel_height(last_good: Path) -> list[str]:
+    f = last_good / PANEL_HEIGHT_FILE
+    if not f.exists():
+        return []
+    line = reload.restore_panel_heights(f.read_text(encoding="utf-8").strip())
+    f.unlink()
+    return [line] if line else []
+
+
 def apply_to_desktop(data: dict, style: styles.Style, activate: bool = False,
                      save: bool = True) -> list[str]:
     """Write the theme to ~/.themes, save the settings, update the libadwaita
     colours and reload the desktop: everything `cheeselooks apply` does.
     Returns the log lines. Used by the settings app's Apply button."""
     log = []
-    height = reload.panel_height(DEFAULT_PANEL_HEIGHT)
+    height = _panel_height(data)
     table = tokens.build(data, style, panel_height=height,
                          overlay_scrollbars=reload.overlay_scrollbars())
     theme_dir = paths.theme_dir()
     written = install.install(paths.templates_dir(), table, theme_dir, paths.last_good_dir(), data)
+    log += _apply_panel_height(data, paths.last_good_dir())
     if save:
         settings.save(data, paths.settings_file())
     log.append(f"Wrote {len(written)} files to {theme_dir}")
@@ -144,7 +178,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
     for w in style.warnings:
         _err(f"style warning: {w}")
     live = not args.no_reload
-    height = reload.panel_height(DEFAULT_PANEL_HEIGHT) if live else DEFAULT_PANEL_HEIGHT
+    height = _panel_height(data, live)
     table = tokens.build(data, style, panel_height=height,
                          overlay_scrollbars=reload.overlay_scrollbars() if live else None)
     if args.theme_dir:
@@ -163,6 +197,8 @@ def cmd_apply(args: argparse.Namespace) -> int:
         for line in _libadwaita(data, table):
             print(f"  {line}")
     if not args.no_reload and not args.theme_dir:
+        for line in _apply_panel_height(data, last_good):
+            print(f"  {line}")
         layout = table["wb.button_layout"] if (theme_dir / "metacity-1").is_dir() else None
         sb = data["details"]["scrollbars"]
         if sb["custom"]:
@@ -178,7 +214,7 @@ def revert_desktop() -> tuple[dict | None, list[str]]:
     """Put the previous theme back on the desktop (the one before the last
     Apply). Returns the restored settings and the log lines; the settings app
     keeps its own settings as they are."""
-    log = []
+    log = _restore_panel_height(paths.last_good_dir())
     data = install.revert(paths.theme_dir(), paths.last_good_dir())
     if data:
         data = settings.from_dict(data)
@@ -193,11 +229,14 @@ def revert_desktop() -> tuple[dict | None, list[str]]:
 
 
 def cmd_revert(args: argparse.Namespace) -> int:
+    height_lines = [] if args.no_reload else _restore_panel_height(paths.last_good_dir())
     data = install.revert(paths.theme_dir(), paths.last_good_dir())
     if data:
         data = settings.from_dict(data)
         settings.save(data, paths.settings_file())
     print("Restored the previous theme.")
+    for line in height_lines:
+        print(f"  {line}")
     if data:
         # the libadwaita colours live outside the theme folder: rewrite them to match
         try:

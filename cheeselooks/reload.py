@@ -59,6 +59,27 @@ def panel_height(default: int) -> int:
     return default
 
 
+def panel_heights_raw() -> str | None:
+    """Cinnamon's panels-height as stored, e.g. "['1:40', '2:30']"."""
+    return _run("get", *PANEL_HEIGHT_KEY) if available() else None
+
+
+def set_panel_height(height: int, raw: str | None) -> str | None:
+    """Every panel to `height` px (Cinnamon resizes them at once). `raw` is the
+    current value, whose panel ids are kept. Returns a log line."""
+    ids = re.findall(r"(\d+):\d+", raw or "") or ["1"]
+    value = "[" + ", ".join(f"'{i}:{height}'" for i in ids) + "]"
+    if not set_value(*PANEL_HEIGHT_KEY, value):
+        return None
+    return f"panel height set to {height}px"
+
+
+def restore_panel_heights(raw: str) -> str | None:
+    if not set_value(*PANEL_HEIGHT_KEY, raw):
+        return None
+    return f"panel height put back ({raw})"
+
+
 def overlay_scrollbars() -> bool | None:
     """Whether GTK apps use overlay (floating) scrollbars; None when unknown."""
     if not available():
