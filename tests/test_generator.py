@@ -853,6 +853,16 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertNotIn("#35a854", css.lower())             # no Mint green left
             self.assertEqual(css.count("{"), css.count("}"))
 
+    def test_recess_layer(self):
+        pal_ = palette.derive("#FA8562", "#F5F5F5", "#303030")
+        css = styles.edge_css({"border": "border_strong",
+                               "recess": {"color": "black", "alpha": 0.1, "light": "white", "light_alpha": 0.5}},
+                              pal_, 50)
+        self.assertTrue(css["shadow"].startswith("1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.1)"))
+        self.assertEqual(css["inset_shadow"], "none")             # outside the button: not for joined groups
+        errors, _w = styles.check({"name": "R", "edges": {"raised": {"recess": {"color": "black", "light": "nope"}}}})
+        self.assertTrue(any("light" in e for e in errors))
+
     def test_button_color(self):
         base = styles.load(DEFAULT_STYLE)
         plain = tokens.build(defaults(), base)

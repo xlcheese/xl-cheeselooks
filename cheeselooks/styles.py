@@ -17,10 +17,11 @@ from typing import Any
 
 from . import palette as pal
 
-LAYER_KINDS = ("highlight", "sides", "left", "right", "shade", "inner", "shadow", "ring", "outline")
+LAYER_KINDS = ("highlight", "sides", "left", "right", "shade", "inner", "recess", "shadow", "ring", "outline")
 # Cinnamon (St) allows one box-shadow: keep the first layer present in this order.
 ST_PRIORITY = ("highlight", "shadow", "shade", "inner", "ring", "outline")
-LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset", "adaptive"}
+LAYER_KEYS = {"x", "y", "blur", "spread", "width", "color", "alpha", "alpha_dark", "grow", "inset", "adaptive",
+              "light", "light_alpha", "light_alpha_dark"}     # light*: recess only
 # Layers drawn on the widget's own surface. Their strength adapts to that surface
 # (see _adapt), so one line in a style looks alike on light and dark buttons.
 SURFACE_LAYERS = ("highlight", "sides", "left", "right", "shade", "inner")
@@ -287,7 +288,12 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                     elif lk in ("grow", "inset", "adaptive"):
                         if not isinstance(lv, bool):
                             errors.append(f"{where}.{lk} must be true or false")
-                    elif lk in ("alpha", "alpha_dark"):
+                    elif lk == "light":
+                        if not _is_color_ref(lv, names):
+                            errors.append(f"{where}.light must be a palette color name or #RRGGBB (got {lv!r})")
+                        elif k != "recess":
+                            warnings.append(f"{where}.light only matters on a recess layer")
+                    elif lk in ("alpha", "alpha_dark", "light_alpha", "light_alpha_dark"):
                         if isinstance(lv, bool) or not isinstance(lv, (int, float)) or not 0 <= lv <= 1:
                             errors.append(f"{where}.{lk} must be a number from 0 to 1")
                     elif isinstance(lv, bool) or not isinstance(lv, (int, float)):
@@ -496,6 +502,17 @@ def _layer_css(kind: str, layer: dict[str, Any], palette: dict[str, str], depth:
         left = f"inset {px(w)} 0{tail} {color}"
         right = f"inset -{px(w)} 0{tail} {color}"
         return {"sides": f"{left}, {right}", "left": left, "right": right}[kind]
+    if kind == "recess":
+        # the background around the button pressed in a little: a 1px ring just
+        # outside the border, darker along the top and left (color), lighter
+        # along the bottom and right (light). Two outer shadows: the light one
+        # shifted down-right, drawn over a full ring in the dark colour.
+        width = layer.get("width", 1)
+        la = (layer.get("light_alpha_dark", layer.get("light_alpha", alpha / scale)) if dark
+              else layer.get("light_alpha", alpha / scale))
+        la = min(1.0, la * scale)
+        light = pal.rgba(_resolve_color(layer.get("light", "white"), palette), la)
+        return f"{px(width)} {px(width)} 0 {light}, 0 0 0 {px(width)} {color}"
     if kind in ("ring", "outline"):
         width = layer.get("width", 1)
         inset = layer.get("inset", kind == "ring")
