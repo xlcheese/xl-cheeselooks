@@ -853,6 +853,18 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertNotIn("#35a854", css.lower())             # no Mint green left
             self.assertEqual(css.count("{"), css.count("}"))
 
+    def test_button_color(self):
+        base = styles.load(DEFAULT_STYLE)
+        plain = tokens.build(defaults(), base)
+        widgets = {**base.widgets, "button": {**base.widgets.get("button", {}), "color": "darker(button, 0.1)"}}
+        st = styles.Style(**{**base.__dict__, "widgets": widgets})
+        t = tokens.build(defaults(), st)
+        self.assertEqual(t["button"], palette.darker(plain["button"], 0.1))      # read once, not twice
+        self.assertNotEqual(t["button_hover"], plain["button_hover"])           # the hover follows it
+        self.assertIn(t["button_top"], t["button_grad"])
+        _e, warnings = styles.check({"name": "B", "widgets": {"button": {"color": "darker(button, 0.1)"}}})
+        self.assertFalse(any("button.color" in w for w in warnings))
+
     def test_notification_kinds(self):
         base = styles.load(DEFAULT_STYLE)
         s = defaults()

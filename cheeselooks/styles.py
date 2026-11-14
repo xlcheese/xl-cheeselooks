@@ -47,7 +47,7 @@ WIDGET_KEYS = {
     "pressed_color",
 }
 # keys only some widgets use so far (others accept them but ignore them)
-WIDGET_ONLY_KEYS = {"color": ("panel_button", "scrollbar"), "selected_color": ("panel_button",),
+WIDGET_ONLY_KEYS = {"color": ("button", "panel_button", "scrollbar"), "selected_color": ("panel_button",),
                     "pressed_color": ("scrollbar",),
                     "selected_border": ("panel_button",), "padding": ("panel_button",),
                     "spacing": ("panel_button",),

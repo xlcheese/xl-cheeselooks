@@ -15,6 +15,7 @@ Every color token also has a <name>_rgb twin ("250, 133, 98") for rgba().
 from __future__ import annotations
 
 import colorsys
+import dataclasses
 
 from . import palette as pal
 from . import render, shape
@@ -107,6 +108,30 @@ def _add_face_gradients(t: dict[str, str], style: sty.Style) -> None:
                                                  style.glass_return)
 
 
+def _derive(style: sty.Style, accent: str, bg: str, text: str, hover: float) -> dict[str, str]:
+    """The palette, with the style's button color (widgets.button.color) as the
+    button face when it sets one. The expression is read against the plain
+    palette (so "darker(button, 0.05)" starts from the usual button), then the
+    palette is worked out again from that face, so the default button hover
+    and gradients follow it."""
+    plain = pal.derive(accent, bg, text, hover)
+    face = style.widgets.get("button", {}).get("color")
+    if not face:
+        return plain
+    return pal.derive(accent, bg, text, hover, button_face=sty._resolve_color(face, plain))
+
+
+def _without_button_color(style: sty.Style) -> sty.Style:
+    """The style for widget tokens once the button color is in the palette: the
+    key is dropped, so widgets that copy button (combo, linked...) don't apply
+    the expression a second time."""
+    button = style.widgets.get("button")
+    if not button or "color" not in button:
+        return style
+    widgets = {**style.widgets, "button": {k: v for k, v in button.items() if k != "color"}}
+    return dataclasses.replace(style, widgets=widgets)
+
+
 def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PANEL_HEIGHT,
           overlay_scrollbars: bool | None = None) -> dict[str, str]:
     """overlay_scrollbars: Mint's own switch, used when Details doesn't choose a mode."""
@@ -117,7 +142,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # 40 on the original scale: h = value / 50 x 0.8.
     hover = g["hover_strength"] / 50 * HOVER_CALIBRATION
     render.LIFT_SCALE = g["hover_strength"] / 50     # style lift() hovers follow the slider too
-    theme = pal.derive(g["accent"], g["bg"], g["text"], hover)
+    theme = _derive(style, g["accent"], g["bg"], g["text"], hover)
+    # the button color is in the palette now; widget tokens use the style without it
+    face_style, style = style, _without_button_color(style)
     t: dict[str, str] = {}
 
     # --- meta
@@ -146,7 +173,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # --- Panel & Menu: shared colors, separate shapes
     p = settings["panel"]
     if p["separate_colors"]:
-        pcolors = pal.derive(p["accent"] or g["accent"], p["bg"] or g["bg"], p["text"] or g["text"], hover)
+        pcolors = _derive(face_style, p["accent"] or g["accent"], p["bg"] or g["bg"], p["text"] or g["text"], hover)
     else:
         pcolors = theme
     ps, ms = p["panel_shape"], p["menu_shape"]
@@ -215,7 +242,7 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # bar's own colours, their faces come from a palette built on those (wbp.*),
     # so a hover face isn't light on a dark title bar; otherwise wbp = the theme.
     if sep and (title != theme["header"] or title_text != theme["text"]):
-        wb_pal = pal.derive(g["accent"], title, title_text, hover)
+        wb_pal = _derive(face_style, g["accent"], title, title_text, hover)
     else:
         wb_pal = theme
     _add_colors(t, "wbp.", wb_pal)
