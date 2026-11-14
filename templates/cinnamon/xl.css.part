@@ -28,13 +28,18 @@
 
 .panel-button { color: {{panel.text}}; }
 .applet-label { font-weight: {{panel.label_weight}}; color: {{panel.text}}; }
-/* Window-list labels: Mint-Y sets bold on the label itself, which beats the
-   panel's weight, so set it here too. The focused window's label is one step
-   heavier (light -> regular, regular -> bold). */
-.window-list-item-label, .grouped-window-list-item-label {
+/* Window-list labels take their weight from the button box (Cinnamon's
+   grouped window list labels are .grouped-window-list-button-label; the classic
+   list's have no class), and Mint-Y sets the box bold. So the weight goes on
+   the boxes. The focused window is one step heavier (light -> regular,
+   regular -> bold). */
+.window-list-item-box, .grouped-window-list-item-box,
+.window-list-item-label, .grouped-window-list-item-label, .grouped-window-list-button-label {
   font-weight: {{panel.label_weight}}; }
+.window-list-item-box:focus, .grouped-window-list-item-box:focus,
 .window-list-item-box:focus .window-list-item-label,
-.grouped-window-list-item-box:focus .grouped-window-list-item-label {
+.grouped-window-list-item-box:focus .grouped-window-list-item-label,
+.grouped-window-list-item-box:focus .grouped-window-list-button-label {
   font-weight: {{panel.label_weight_focus}}; }
 .applet-icon { color: {{panel.text}}; }
 
@@ -113,7 +118,7 @@
 .grouped-window-list-item-box:focus, .grouped-window-list-item-box:focus:hover,
 .window-list-item-box:focus, .window-list-item-box:focus:hover {
   color: {{panel.w.panel_button.selected_fg}};
-  font-weight: bold;
+  font-weight: {{panel.label_weight_focus}};
   border-color: {{panel.w.panel_button.selected_border}};
   background-color: {{panel.w.panel_button.selected_color}};
   background-gradient-direction: vertical;
