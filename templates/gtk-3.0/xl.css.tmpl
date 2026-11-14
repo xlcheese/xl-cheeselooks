@@ -77,6 +77,13 @@ toolbar button:active, toolbar button:checked {
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.toolbar_button.pressed_shadow}}; }
 
+/* Joined groups: the recess ring (edge layer "recess") goes round the whole
+   group, on the box that holds the buttons. (Spin buttons are fields: they
+   take it from the entry's edge.) */
+.linked {
+  border-radius: {{r}}px;
+  box-shadow: {{w.linked.recess}}; }
+
 /* Grouped (linked) buttons: inside edges only. Drop shadows would overlap the
    neighbouring button and make one look bigger than the others. Grouped buttons
    in toolbars (path bar, view switchers) stay raised as one group. */
