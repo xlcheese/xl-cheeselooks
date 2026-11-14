@@ -226,9 +226,11 @@
   border-color: {{menu.w.entry.focus_border}};
   box-shadow: {{menu.w.entry.focus_st_shadow}}; }
 
-/* Notifications, on-screen displays and alt-tab follow Menu opacity */
+/* Notification popups: the style's [notification] kind and your Notification
+   opacity; on-screen displays and alt-tab follow Menu opacity */
 #notification, .notification {
-  background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}}); }
+  {{notification.css}}
+  background-color: rgba({{menu.menu_bg_rgb}}, {{notification.opacity}}); }
 .workspace-switch-osd, .info-osd, .media-keys-osd {
   background-color: rgba({{menu.menu_bg_rgb}}, {{menu.opacity}}); }
 .switcher-list {

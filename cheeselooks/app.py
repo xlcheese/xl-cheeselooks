@@ -50,6 +50,7 @@ LABELS = {
     "roundness": "Roundness", "gradient": "Gradient", "hover_in_ms": "Hover in (ms)",
     "hover_out_ms": "Hover out (ms)", "hover_strength": "Hover strength", "depth": "Depth",
     "label_weight": "Label weight", "panel_opacity": "Panel opacity", "menu_opacity": "Menu opacity",
+    "notification_opacity": "Notification opacity",
     "title_bar": "Title bar", "title_text": "Title text", "border": "Border",
     "title_bar_height": "Title bar height", "border_width": "Border width",
     "title_gradient": "Title bar gradient", "button_layout": "Buttons on the",

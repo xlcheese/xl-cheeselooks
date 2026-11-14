@@ -61,6 +61,11 @@ TAB_KINDS = ("boxed", "open", "pills", "claude")
 # [panel]: the panel's own colors (opacity is a user setting; a style suggests
 # it with [defaults] panel_opacity)
 PANEL_KEYS = ("color",)
+# [notification]: Cinnamon's notification popups. kind: "line" (an accent line
+# along the top, Mint-Y's look), "flat" (no accent) or "bordered" (a thin
+# border all round); color: the line / border color (default accent).
+NOTIFICATION_KINDS = ("line", "flat", "bordered")
+NOTIFICATION_KEYS = ("kind", "color")
 # Settings a style can suggest in [defaults] (applied when the style is picked
 # and on a fresh install). Panel and menu values are optional: left out, the
 # panel and menus follow Global.
@@ -68,7 +73,7 @@ DEFAULT_KEYS: dict[str, Any] = {
     "roundness": (0, 100), "gradient": (0, 100), "depth": (0, 100),
     "panel_roundness": (0, 100), "panel_gradient": (0, 100),
     "menu_roundness": (0, 100), "menu_gradient": (0, 100),
-    "panel_opacity": (30, 100), "menu_opacity": (30, 100),
+    "panel_opacity": (30, 100), "menu_opacity": (30, 100), "notification_opacity": (30, 100),
     "panel_label_weight": None,
 }
 DEFAULT_ADAPT_STRENGTH = 0.6
@@ -153,6 +158,7 @@ class Style:
     edges: dict[str, dict[str, Any]] = field(default_factory=dict)
     widgets: dict[str, dict[str, Any]] = field(default_factory=dict)
     panel: dict[str, Any] = field(default_factory=dict)
+    notification: dict[str, Any] = field(default_factory=dict)
     extra_css: str = ""
     warnings: list[str] = field(default_factory=list)
 
@@ -187,7 +193,7 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
     if not isinstance(data.get("name"), str) or not data["name"].strip():
         errors.append("'name' is required and must be text")
     for key in data:
-        if key not in ("name", "author", "description", "defaults", "edges", "widgets", "panel",
+        if key not in ("name", "author", "description", "defaults", "edges", "widgets", "panel", "notification",
                        "adapt_strength", "gradient_shape", "split_step", "glass_return"):
             warnings.append(f"unknown top-level key '{key}' is ignored")
 
@@ -219,6 +225,19 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                                 f"(known: {', '.join(PANEL_KEYS)})")
             elif not _is_color_ref(v, names):
                 errors.append(f"panel.{k} must be a palette color name or #RRGGBB (got {v!r})")
+
+    notification = data.get("notification", {})
+    if not isinstance(notification, dict):
+        errors.append("'notification' must be a table")
+    else:
+        for k, v in notification.items():
+            if k not in NOTIFICATION_KEYS:
+                warnings.append(f"notification.{k} is not a known notification setting and is ignored "
+                                f"(known: {', '.join(NOTIFICATION_KEYS)})")
+            elif k == "kind" and v not in NOTIFICATION_KINDS:
+                errors.append(f"notification.kind must be one of {', '.join(NOTIFICATION_KINDS)} (got {v!r})")
+            elif k == "color" and not _is_color_ref(v, names):
+                errors.append(f"notification.color must be a palette color name or #RRGGBB (got {v!r})")
 
     defaults = data.get("defaults", {})
     if not isinstance(defaults, dict):
@@ -364,6 +383,7 @@ def load(path: Path) -> Style:
         edges=copy.deepcopy(data.get("edges", {})),
         widgets=copy.deepcopy(data.get("widgets", {})),
         panel=copy.deepcopy(data.get("panel", {})),
+        notification=copy.deepcopy(data.get("notification", {})),
         extra_css=extra.read_text(encoding="utf-8") if extra.exists() else "",
         warnings=warnings,
     )

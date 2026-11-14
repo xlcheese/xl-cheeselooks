@@ -853,6 +853,20 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertNotIn("#35a854", css.lower())             # no Mint green left
             self.assertEqual(css.count("{"), css.count("}"))
 
+    def test_notification_kinds(self):
+        base = styles.load(DEFAULT_STYLE)
+        s = defaults()
+        s["panel"]["notification_opacity"] = 80
+        for kind, want in (("line", "border-top: 4px solid"), ("flat", "border: none;"),
+                           ("bordered", "border: 1px solid")):
+            st = styles.Style(**{**base.__dict__, "notification": {"kind": kind}})
+            t = tokens.build(s, st)
+            self.assertIn(want, t["notification.css"])
+            self.assertEqual(t["notification.opacity"], "0.8")
+        self.assertIn("border-top: 4px solid", tokens.build(s, base)["notification.css"])   # default: line
+        errors, _w = styles.check({"name": "N", "notification": {"kind": "wavy"}})
+        self.assertTrue(any("notification.kind" in e for e in errors))
+
     def test_include(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)

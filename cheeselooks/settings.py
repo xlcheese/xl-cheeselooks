@@ -27,7 +27,7 @@ DEFAULTS: dict[str, Any] = {
     "panel": {
         "separate_colors": False, "accent": None, "bg": None, "text": None,
         "label_weight": "bold",
-        "panel_opacity": 70, "menu_opacity": 94,
+        "panel_opacity": 70, "menu_opacity": 94, "notification_opacity": 94,
         "panel_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
         "menu_shape": {"follow_global": True, "roundness": 15, "gradient": 10},
     },
@@ -67,6 +67,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("panel", "label_weight"), "choice", ("bold", "regular")),
     (("panel", "panel_opacity"), "int", (30, 100)),
     (("panel", "menu_opacity"), "int", (30, 100)),
+    (("panel", "notification_opacity"), "int", (30, 100)),
     (("panel", "panel_shape", "follow_global"), "bool", None),
     (("panel", "panel_shape", "roundness"), "int", (0, 100)),
     (("panel", "panel_shape", "gradient"), "int", (0, 100)),
@@ -220,7 +221,7 @@ def apply_style_defaults(settings: dict, defaults: dict) -> dict:
             shape.update(follow_global=False,
                          roundness=g["roundness"] if r is None else r,
                          gradient=g["gradient"] if gr is None else gr)
-    for key in ("panel_opacity", "menu_opacity"):
+    for key in ("panel_opacity", "menu_opacity", "notification_opacity"):
         if key in defaults:
             p[key] = defaults[key]
     if "panel_label_weight" in defaults:

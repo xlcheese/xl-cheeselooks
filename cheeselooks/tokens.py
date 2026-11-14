@@ -176,6 +176,15 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     t["menu.r"] = str(m_r)
     t["menu.r2"] = str(shape.window_radius(m_r))
     t["menu.opacity"] = f"{p['menu_opacity'] / 100:g}"
+    # notification popups: the style's kind of accent, your opacity
+    t["notification.opacity"] = f"{p['notification_opacity'] / 100:g}"
+    n = style.notification
+    n_color = sty._resolve_color(n["color"], mcolors) if n.get("color") else mcolors["accent"]
+    t["notification.css"] = {
+        "line": f"border: 0 solid {n_color}; border-top: 4px solid {n_color};",
+        "flat": "border: none;",
+        "bordered": f"border: 1px solid {n_color};",
+    }[n.get("kind", "line")]
 
     # --- Window borders
     wb = settings["window_borders"]
