@@ -883,6 +883,17 @@ class RenderAndInstallTests(unittest.TestCase):
             self.assertNotIn("#35a854", css.lower())             # no Mint green left
             self.assertEqual(css.count("{"), css.count("}"))
 
+    def test_find_style_by_name_not_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            mine = Path(tmp) / "xl-Cheeselooks"                 # a copy, renamed only inside
+            mine.mkdir()
+            (mine / "style.toml").write_text(
+                (REPO / "styles" / "xl-Cheeselooks" / "style.toml").read_text()
+                .replace('name = "xl-Cheeselooks"', 'name = "xl-Cheeselooks-mine"', 1))
+            dirs = [Path(tmp), REPO / "styles"]
+            self.assertEqual(styles.find("xl-Cheeselooks", dirs).path.parent, REPO / "styles" / "xl-Cheeselooks")
+            self.assertEqual(styles.find("xl-Cheeselooks-mine", dirs).path.parent, mine)
+
     def test_recess_layer(self):
         pal_ = palette.derive("#FA8562", "#F5F5F5", "#303030")
         css = styles.edge_css({"border": "border_strong",

@@ -396,22 +396,28 @@ def load(path: Path) -> Style:
 
 
 def find(name: str, search_dirs: list[Path]) -> Style:
-    """Find a style by its name (folder name or the 'name' inside style.toml)."""
+    """Find a style by the name inside its style.toml (your styles first, then
+    the built-in ones). A folder's name is only a fallback, for a style.toml
+    without a usable name: a copy left in a folder called "xl-Cheeselooks" but
+    renamed inside to "xl-Cheeselooks-mine" must not stand in for xl-Cheeselooks."""
+    fallback: Path | None = None
     for base in search_dirs:
         if not base.is_dir():
             continue
-        direct = base / name
-        if (direct / "style.toml").exists():
-            return load(direct)
         for sub in sorted(base.iterdir()):
             toml_path = sub / "style.toml"
-            if toml_path.exists():
-                try:
-                    data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
-                except tomllib.TOMLDecodeError:
-                    continue
-                if data.get("name") == name:
-                    return load(sub)
+            if not toml_path.exists():
+                continue
+            try:
+                data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
+            except tomllib.TOMLDecodeError:
+                data = {}
+            if data.get("name") == name:
+                return load(sub)
+            if fallback is None and sub.name == name and not isinstance(data.get("name"), str):
+                fallback = sub
+    if fallback is not None:
+        return load(fallback)
     raise StyleError([f"style '{name}' not found in: {', '.join(str(d) for d in search_dirs)}"])
 
 
