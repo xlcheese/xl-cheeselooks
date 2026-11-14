@@ -501,7 +501,7 @@ button.xl-prev-pb:hover {{ border-color: {t[pb + 'hover_border']}; background-co
 button.xl-prev-pb.focused {{ border-color: {t[pb + 'selected_border']}; background-color: {t[pb + 'selected_color']};
   background-image: linear-gradient(to bottom, {t[pb + 'selected_top']}, {t[pb + 'selected_bottom']});
   box-shadow: {marker}; }}
-button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: bold; }}
+button.xl-prev-pb.focused label {{ color: {t[pb + 'selected_fg']}; font-weight: {t['panel.label_weight_focus']}; }}
 headerbar button.xl-drawn {{ border-color: {t['wbp.w.button.border']}; background-color: {t['wbp.button']};
   background-image: {t['wbp.button_grad']}; box-shadow: {t['wbp.w.button.shadow']}; }}
 headerbar button.xl-drawn:hover {{ border-color: {t['wbp.w.button.hover_border']};

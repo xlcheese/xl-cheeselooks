@@ -28,6 +28,14 @@
 
 .panel-button { color: {{panel.text}}; }
 .applet-label { font-weight: {{panel.label_weight}}; color: {{panel.text}}; }
+/* Window-list labels: Mint-Y sets bold on the label itself, which beats the
+   panel's weight, so set it here too. The focused window's label is one step
+   heavier (light -> regular, regular -> bold). */
+.window-list-item-label, .grouped-window-list-item-label {
+  font-weight: {{panel.label_weight}}; }
+.window-list-item-box:focus .window-list-item-label,
+.grouped-window-list-item-box:focus .grouped-window-list-item-label {
+  font-weight: {{panel.label_weight_focus}}; }
 .applet-icon { color: {{panel.text}}; }
 
 /* Applets (menu button, tray, clock): flat until hovered, full height */

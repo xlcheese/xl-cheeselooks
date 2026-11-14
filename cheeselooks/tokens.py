@@ -194,6 +194,8 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     # light: 300, which needs a font with a Light face (Ubuntu, Noto Sans,
     # Inter...); a font without one shows Regular
     t["panel.label_weight"] = {"bold": "bold", "regular": "normal", "light": "300"}[p["label_weight"]]
+    # the focused window's label: one step heavier, so it still stands out
+    t["panel.label_weight_focus"] = {"bold": "bold", "regular": "bold", "light": "normal"}[p["label_weight"]]
     t["panel.opacity"] = f"{p['panel_opacity'] / 100:g}"
     t["panel_marker.css"] = panelmarker.css(t)
 
