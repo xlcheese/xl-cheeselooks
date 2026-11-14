@@ -99,12 +99,12 @@ actionbar button:not(.osd):active, actionbar button:not(.osd):checked {
   background-image: linear-gradient(to bottom, {{pressed_bottom}}, {{pressed_top}});
   box-shadow: {{w.toolbar_button.pressed_g4_shadow}}; }
 
-/* Joined groups: the recess ring (edge layer "recess") goes round the whole
-   group, on the box that holds the buttons. (Spin buttons are fields: they
-   take it from the entry's edge.) */
+/* Joined groups: the layers outside a button (recess ring, drop shadow) go
+   round the whole group, on the box that holds the buttons. (Spin buttons are
+   fields: they take them from the entry's edge.) */
 .linked {
   border-radius: {{r}}px;
-  box-shadow: {{w.linked.recess}}; }
+  box-shadow: {{w.linked.g4_outer}}; }
 
 /* Grouped (linked) buttons: inside edges only, so neighbours don't overlap */
 .linked > button, .linked > dropdown > button, .linked > combobox > box > button.combo,

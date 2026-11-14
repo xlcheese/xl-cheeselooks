@@ -560,9 +560,13 @@ def edge_css(edge: dict[str, Any], palette: dict[str, str], depth: float,
         "g4_shadow": ", ".join(gtk4) if gtk4 else "none",
         "g4_inset_shadow": ", ".join(inset4) if inset4 else "none",
         "st_shadow": st or "none",
-        # the recess ring alone, for a joined group's box (its buttons can't
-        # each have one: it would overlap the next button)
-        "recess": layers.get("recess") or "none",
+        # the layers outside the widget (recess ring, drop shadow, outer
+        # outline), for a joined group's box: its buttons can't each have them,
+        # they'd overlap the next button
+        "outer": ", ".join(layers[k] for k in ("recess", "shadow", "outline")
+                           if layers.get(k) and not layers[k].startswith("inset")) or "none",
+        "g4_outer": ", ".join(layers4[k] for k in ("recess", "shadow", "outline")
+                              if layers4.get(k) and not layers4[k].startswith("inset")) or "none",
     }
 
 
@@ -617,7 +621,8 @@ def widget_tokens(style: Style, palette: dict[str, str], depth: float) -> dict[s
             tokens[prefix + "seam_shadow"] = (seam if css["inset_shadow"] == "none"
                                               else f"{seam}, {css['inset_shadow']}")
             tokens[prefix + "st_shadow"] = css["st_shadow"]
-            tokens[prefix + "recess"] = css["recess"]
+            tokens[prefix + "outer"] = css["outer"]
+            tokens[prefix + "g4_outer"] = css["g4_outer"]
         hover_color = spec.get("hover_color")
         if hover_color:
             tokens[f"w.{wname}.hover_color"] = _resolve_color(hover_color, palette)
