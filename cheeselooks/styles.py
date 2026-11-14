@@ -249,8 +249,8 @@ def check(data: dict[str, Any]) -> tuple[list[str], list[str]]:
                 warnings.append(f"defaults.{k} is not a known setting and is ignored "
                                 f"(known: {', '.join(DEFAULT_KEYS)})")
             elif k == "panel_label_weight":
-                if v not in ("bold", "regular"):
-                    errors.append("defaults.panel_label_weight must be \"bold\" or \"regular\"")
+                if v not in ("bold", "regular", "light"):
+                    errors.append("defaults.panel_label_weight must be \"bold\", \"regular\" or \"light\"")
             else:
                 lo, hi = DEFAULT_KEYS[k]
                 if isinstance(v, bool) or not isinstance(v, (int, float)) or not lo <= v <= hi:

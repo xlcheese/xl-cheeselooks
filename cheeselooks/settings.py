@@ -64,7 +64,7 @@ _RULES: list[tuple[tuple[str, ...], str, Any]] = [
     (("panel", "accent"), "color?", None),
     (("panel", "bg"), "color?", None),
     (("panel", "text"), "color?", None),
-    (("panel", "label_weight"), "choice", ("bold", "regular")),
+    (("panel", "label_weight"), "choice", ("bold", "regular", "light")),
     (("panel", "panel_opacity"), "int", (30, 100)),
     (("panel", "menu_opacity"), "int", (30, 100)),
     (("panel", "notification_opacity"), "int", (30, 100)),

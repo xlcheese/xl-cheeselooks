@@ -191,7 +191,9 @@ def build(settings: dict, style: sty.Style, panel_height: int = shape.DEFAULT_PA
     _add_widgets(t, "panel.", style, pcolors, depth, p_grad / 100)
     t["panel.r"] = str(shape.radius(p_round, panel_height))
     t["panel.height"] = str(panel_height)
-    t["panel.label_weight"] = "bold" if p["label_weight"] == "bold" else "normal"
+    # light: 300, which needs a font with a Light face (Ubuntu, Noto Sans,
+    # Inter...); a font without one shows Regular
+    t["panel.label_weight"] = {"bold": "bold", "regular": "normal", "light": "300"}[p["label_weight"]]
     t["panel.opacity"] = f"{p['panel_opacity'] / 100:g}"
     t["panel_marker.css"] = panelmarker.css(t)
 
