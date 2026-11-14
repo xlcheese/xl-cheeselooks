@@ -142,7 +142,8 @@ def geometry(style: str, t: dict[str, str]) -> Geometry:
         w = round(height * 1.16)
         if style == "gargantuan":
             return Geometry(w, h, w, h, 0, 0, bw, 0, 24, True)
-        d = min(_even(height * 0.8), h - 4)             # a larger circle in the same wide slot
+        d = min(_even(height * 0.8), h - 4)             # a larger circle in a wide slot
+        w = d + round((w - d) * 0.8)                    # the gap between circles 20% smaller
         return Geometry(w, h, d, d, 0, 0, bw, 0, 24, True, True)
     # the click area reaches a few px past the face on every side
     if style == "classic":
@@ -507,13 +508,24 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
     gs = g.glyph or 16
     glyph_pos = f"{(box_w - gs) // 2}px {(box_h - gs) // 2}px"
 
+    # Every state has the same layer slots (glyph, claude bar, gradient face),
+    # each with the same size and position; a slot with nothing to show holds a
+    # clear image. Otherwise a layer appearing on hover is animated from the
+    # default size and position: the dots' glyphs slid in from the top left.
+    glyph_slot = bool(glyphs)
+    grad_slot = any(f.shape != "none" and f.top != f.bottom for f in fc.values())
+    clear = "image(transparent)"
+
     def bg_layers(face: Face, glyph_name: str | None) -> tuple[list[str], list[str], list[str]]:
         layers, sizes, positions = [], [], []
-        if glyph_name and face.glyph:
-            c, _a = _split_color(face.glyph)
-            name = _name(glyph_name, c)
-            files[name] = glyph_svg(glyph_name, face.glyph)
-            layers.append(f'url("{assets}{name}")')
+        if glyph_slot:
+            if glyph_name and face.glyph:
+                c, _a = _split_color(face.glyph)
+                name = _name(glyph_name, c)
+                files[name] = glyph_svg(glyph_name, face.glyph)
+                layers.append(f'url("{assets}{name}")')
+            else:
+                layers.append(clear)
             sizes.append(f"{gs}px {gs}px")
             positions.append(glyph_pos)
         if has_bar:
@@ -521,8 +533,11 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
             layers.append(f"linear-gradient(to right, {bar}, {bar})")
             sizes.append("10px 2px")
             positions.append(f"{(box_w - 10) // 2}px {box_h // 2 + 6}px")    # just under the glyph
-        if face.shape != "none" and face.top != face.bottom:
-            layers.append(pal.gradient_css(face.top, face.bottom, *shape))     # split / glass as the style says
+        if grad_slot:
+            if face.shape != "none" and face.top != face.bottom:
+                layers.append(pal.gradient_css(face.top, face.bottom, *shape))   # split / glass as the style says
+            else:
+                layers.append(clear)
             sizes.append("100% 100%")
             positions.append("0 0")
         return layers, sizes, positions
