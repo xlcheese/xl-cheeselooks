@@ -492,8 +492,15 @@ def css(style: str, t: dict[str, str], gtk4: bool = False) -> tuple[str, dict[st
         out.append(f"{sel('', child)} {{\n  {fade} }}")
         out.append(f"{sel('', ':hover' + child)} {{ transition-duration: {t['hover_in_ms']}ms; }}")
         out.append(f"{sel('', ':active' + child)} {{ transition-duration: 0; }}")
-    elif glyphs:
-        out.append(f"{sel('', child)} {{ color: transparent; }}")
+    else:
+        # The face is on the button: the icon node draws nothing but the glyph.
+        # Reset everything a face-on-the-icon style sets there, so none of it
+        # shows through from another title button style loaded underneath (the
+        # settings app previews over the applied theme).
+        out.append(f"{sel('', child)} {{\n  min-width: 0;\n  min-height: 0;\n  margin: 0;\n  padding: 0;\n"
+                   f"  border: none;\n  border-radius: 0;\n  box-shadow: none;\n"
+                   f"  background-color: transparent;\n  background-image: none;\n"
+                   f"  color: {'transparent' if glyphs else 'inherit'}; }}")
 
     # glyph offsets in whole pixels (a glyph on a half pixel is blurry)
     if g.inner:
