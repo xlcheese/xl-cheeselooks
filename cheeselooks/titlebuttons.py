@@ -12,7 +12,7 @@ draw behind the glyph and in what colour the glyph is. Faces are "none", a
     flat                glyph only; the style's title button on hover
                         (xl-Cheeselooks-flat, the original look)
     drawn               the style's normal button at rest (xl-Cheeselooks)
-    classic             small square buttons in the title bar's colour
+    classic             the style's own buttons, small and square
     dots                coloured dots; the glyph shows on hover
     gargantuan          wide, full-height buttons flush with the edge
     gargantuan-circles  the same size, with a circle on hover
@@ -203,7 +203,8 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
             for s, face in states.items():
                 f[(k, s)] = face
 
-    if style == "drawn":
+    if style in ("drawn", "classic"):
+        # the style's own buttons (Classic: the same, smaller, in its own size)
         rest = rect(t["wbp.button_top"], t["wbp.button_bottom"], t[bt + "border"],
                     t[bt + "shadow"], t[bt + "g4_shadow"], text)
         hover = rect(t[bt + "hover_top"], t[bt + "hover_bottom"], t[bt + "hover_border"],
@@ -213,20 +214,6 @@ def faces(style: str, t: dict[str, str]) -> dict[tuple[str, str], Face]:
         backdrop = rect(t["wbp.button"], t["wbp.button"], t[bt + "border"], glyph=utext)
         put(KINDS, rest=rest, hover=hover, pressed=pressed, backdrop=backdrop)
         put(["close"], hover=close_hover, pressed=close_pressed)
-    elif style == "classic":
-        # Clearlooks: small squares in the title bar's own colour, a lighter
-        # outline toward the title text and a soft highlight along the top
-        cr = r
-        edge = pal.mix(title, text, 0.38)
-        hi = "inset 0 1px 0 rgba(255, 255, 255, 0.22)"
-        rest = rect(pal.lighter(title, 0.22), title, edge, hi, hi, text, radius=cr)
-        hover = rect(pal.lighter(title, 0.42), pal.lighter(title, 0.14), pal.mix(title, text, 0.5),
-                     hi, hi, text, radius=cr)
-        pressed = rect(pal.darker(title, 0.10), pal.darker(title, 0.03), pal.mix(title, text, 0.5),
-                       "inset 0 1px 2px rgba(0, 0, 0, 0.15)", "inset 0 1px 2px rgba(0, 0, 0, 0.15)",
-                       text, radius=cr)
-        backdrop = rect(unf, unf, pal.mix(unf, utext, 0.3), glyph=utext, radius=cr)
-        put(KINDS, rest=rest, hover=hover, pressed=pressed, backdrop=backdrop)
     elif style == "dots":
         grey = pal.mix(title, text, 0.25)
         ring = "rgba(0, 0, 0, 0.14)"
