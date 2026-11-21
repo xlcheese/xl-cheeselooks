@@ -1,0 +1,8 @@
+{
+  "name": "Paper Terminal",
+  "terminal": {
+    "separate_colors": true,
+    "bg": "#FAFAF7",
+    "text": "#303030"
+  }
+}

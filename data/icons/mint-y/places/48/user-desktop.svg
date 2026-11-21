@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="1309.06 602.221 48 48" version="1.1"><g id="user-desktop_48" transform="translate(1305.1502,601.37098)">
+    <rect y="0.85019338" x="3.9067583" height="48" width="48" id="rect4148" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    <g id="g838-63" transform="translate(3.9067582,0.35019336)">
+      <rect style="opacity:0.2" width="40" height="36" x="4" y="7" rx="2" ry="2" id="rect2-8" />
+      <g id="g28069" transform="rotate(180,24,24)">
+        <path style="fill:#eeca8f;fill-opacity:1" d="M 4,9.9 V 40 c 0,1.108 0.892,2 2,2 h 36 c 1.108,0 2,-0.892 2,-2 V 9.9 Z" id="path4-5" />
+        <path style="fill:#c89e6b;fill-opacity:1" d="M 6,6 C 4.892,6 4,6.892 4,8 v 2 H 44 V 8 C 44,6.892 43.108,6 42,6 Z" id="path6-61" />
+      </g>
+      <path style="opacity:0.1;fill:#ffffff" d="M 6,6 C 4.892,6 4,6.892 4,8 V 9 C 4,7.892 4.892,7 6,7 h 36 c 1.108,0 2,0.892 2,2 V 8 C 44,6.892 43.108,6 42,6 Z" id="path10-59" />
+    </g>
+  </g>
+  </svg>

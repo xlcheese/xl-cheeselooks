@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "name": "xl-Gummy",
+  "settings": {
+    "global": {
+      "accent": "#86ABD9",
+      "bg": "#F2F1F0",
+      "text": "#1A1A1A",
+      "roundness": 25,
+      "gradient": 38
+    },
+    "panel": {
+      "separate_colors": true,
+      "label_weight": "regular",
+      "menu_opacity": 93,
+      "panel_height": 34
+    },
+    "window_borders": {
+      "separate_colors": true,
+      "border": "#A5A5A5",
+      "title_bar_height": 38,
+      "window_roundness": 35,
+      "button_style": "drawn",
+      "button_spacing": 4
+    },
+    "terminal": {
+      "separate_colors": true,
+      "bg": "#2B2B2B",
+      "text": "#E4E4E4"
+    },
+    "details": {
+      "tooltips": {
+        "custom": true,
+        "bg": "#F5F5B5"
+      }
+    },
+    "style": {
+      "name": "xl-Gummy"
+    }
+  }
+}

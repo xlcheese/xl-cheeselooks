@@ -1,0 +1,192 @@
+# {{name}}: a starter style sheet for xl-Cheeselooks.
+#
+# A style sets how widgets are drawn: their edges (border, highlight, shade,
+# shadow...), hover colors, tabs and the panel's buttons. Colors, roundness and
+# sizes come from the theme (the settings app), so one style works with any
+# colors.
+#
+# The lines without a # are the essentials, and work as they are. Everything
+# else is here too, switched off with a #: remove the # to use a line.
+# After saving, pick the style on the Style tab (it reloads), or check it with:
+#     cheeselooks check-style <this folder>
+#
+# Colors, everywhere a color goes, can be:
+#   a palette name     bg, base, text, accent, button, button_hover, header,
+#                      border, border_strong, border_hover, pressed, menu_bg,
+#                      menu_hover, menubar_hover, sidebar, accent_hover,
+#                      accent_press, accent_fg ...
+#   a hex color       "#C0C0C0"
+#   an expression      "darker(bg, 0.25)", "lighter(button, 0.1)",
+#                      "mix(border_strong, accent, 0.3)", "alpha(text, 0.5)",
+#                      "lift(header, 0.7)"  (a hover that also works on dark
+#                      surfaces: lighter on light ones, toward the text on dark)
+#
+# Alpha values are written for Depth 50 (the Depth slider scales them).
+# alpha_dark, where given, is used on dark surfaces (dark themes, dark title bars).
+
+name = "{{name}}"
+author = ""
+description = "My own style."
+
+# How much surface layers (highlight, shade...) adapt to the surface they're
+# on, so one line looks alike on light and dark buttons (0 = not at all).
+#adapt_strength = 0.6
+
+# Dividers: the lines between sections (frames, panes, toolbars, lists,
+# statusbars, tab frames, sidebars, separators). Left out, they're mixed toward
+# the text (lighter than the background on dark themes); "darker(bg, 0.35)"
+# draws them darker, as Mint-Y Dark does.
+#dividers = "darker(bg, 0.35)"
+
+# Button faces: "smooth" (top to bottom), "split" (glossy, a step at the
+# middle, as Clearlooks Gummy) or "glass" (light reflected from below).
+#gradient_shape = "smooth"
+#split_step     = 0.4    # split / glass: how much of the fade is the middle step (0-1)
+#glass_return   = 0.4    # glass: how far the bottom climbs back toward the top (0-1)
+
+# ---------------------------------------------------------------------------
+# Suggested settings, applied when the style is picked (users can change them)
+# ---------------------------------------------------------------------------
+[defaults]
+roundness = 15
+gradient = 10
+depth = 50
+#unfocused_depth     = 70   # % of the button layers kept in unfocused windows
+#panel_opacity       = 70
+#menu_opacity        = 94
+#notification_opacity = 94
+#panel_roundness     = 0    # left out: the panel follows Global
+#panel_gradient      = 10
+#menu_roundness      = 15   # left out: menus follow Global
+#menu_item_roundness = 15   # the main menu's items
+#panel_label_weight  = "bold"   # "bold", "regular" or "light"
+
+# ---------------------------------------------------------------------------
+# Edges: named sets of layers, used by the widgets below
+# ---------------------------------------------------------------------------
+# Each edge has a border and any of these layers:
+#   highlight  a light line along the top inside      { y = 1, color = "white", alpha = 0.3 }
+#   left / right / sides   lines down the sides inside { x = 1, ... }
+#   shade      a dark line along the bottom inside    { y = -1, color = "black", alpha = 0.05 }
+#   inner      an inner shadow (sunken fields)        { y = 1, blur = 2, ... }
+#   shadow     a drop shadow under the widget         { y = 2, blur = 3, color = "black", alpha = 0.06 }
+#   recess     the background pressed in round the widget: dark top and left,
+#              light bottom and right                 { color = "black", alpha = 0.08, light = "white", light_alpha = 0.35 }
+#   ring       a ring round the widget (focus)        { width = 1, color = "accent", alpha = 0.5 }
+#   outline    a thin line just outside               { width = 1, color = "black", alpha = 0.1 }
+# Layer keys: x, y, blur, spread, width, color, alpha, alpha_dark, and for
+# recess light, light_alpha, light_alpha_dark.
+
+[edges.raised]
+border    = "border_strong"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30 }
+#left      = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+#right     = { x = 1, blur = 0, color = "white", alpha = 0.10 }
+#shade     = { y = -1, blur = 0, color = "black", alpha = 0.02 }
+shadow    = { y = 2, blur = 3, color = "black", alpha = 0.06, alpha_dark = 0.30 }
+#recess    = { color = "black", alpha = 0.08, light = "white", light_alpha = 0.35, light_alpha_dark = 0.10 }
+
+[edges.raised_hover]
+border    = "border_hover"
+highlight = { y = 1, blur = 0, color = "white", alpha = 0.30 }
+shadow    = { y = 2, blur = 4, color = "black", alpha = 0.08, alpha_dark = 0.30 }
+
+[edges.sunken]
+border = "border_strong"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }
+#recess = { color = "black", alpha = 0.08, light = "white", light_alpha = 0.35 }   # fields and spin buttons
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+
+[edges.flat]
+border = "none"
+
+# Joined buttons (path bars, view switchers) can have their own hover edge:
+#[edges.linked_hover]
+#border    = "darker(bg, 0.32)"
+#highlight = { y = 1, blur = 0, color = "white", alpha = 0.30, alpha_dark = 0.12 }
+
+# The panel's buttons (window list, launchers, applets):
+#[edges.panel_raised]
+#border = "darker(button, 0.09)"
+#shade  = { y = -4, blur = 9, color = "black", alpha = 0.03 }
+#[edges.panel_hover]
+#border = "button"
+
+# ---------------------------------------------------------------------------
+# Widgets: which edge each one uses at rest, on hover, pressed and focused
+# ---------------------------------------------------------------------------
+# Keys: like (copy another widget), edge, hover_edge, pressed_edge, focus_edge,
+# border, hover_border, color (the resting face), hover_color, pressed_color,
+# hover_fg (text on the hover face).
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.7)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+#button        = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button_hover", color = "darker(button, 0.03)" }   # instead of the button line above: a resting face of your own
+#destructive   = { like = "button", hover_color = "lift(destructive, 0.2)", border = "darker(destructive, 0.4)" }   # border left out: a step darker than the face
+# On dark styles, accent and delete buttons read best with a dark rim, e.g.
+# suggested border = "darker(accent, 0.4)" (it also borders the close button's accent hover).
+#linked        = { like = "button", hover_edge = "linked_hover", hover_color = "lift(button, 0.7)" }
+#check         = { edge = "sunken", focus_edge = "focus" }
+#switch        = { like = "check" }
+
+# Tabs: tab_kind "boxed" (joined to the page), "open" (Mint-Y), "pills" or
+# "claude"; active_marker "none", "line" (an accent line) or "glow" (Clearlooks).
+tab            = { tab_kind = "boxed", active_marker = "none", hover_color = "lift(header, 0.6)" }
+
+# Menus: hover_color (and hover_fg for its text, e.g. "accent_fg" on an accent
+# hover). (The Cinnamon main menu's selected category is set under [panel].)
+menu_item      = { hover_color = "menu_hover" }
+#menu_item     = { hover_color = "accent", hover_fg = "accent_fg" }   # instead of the line above: accent hovers
+menubar_item   = { hover_color = "menubar_hover" }
+
+# The panel's buttons: color (at rest), hover_color, selected_color (the
+# focused window's button) and selected_border, padding (0-24px, left and
+# right), spacing (0-12px between window-list buttons), active_marker for the
+# focused window ("none", "line" or "glow").
+#panel_button  = { edge = "panel_raised", hover_edge = "panel_hover", color = "darker(button, 0.09)", hover_color = "button", selected_color = "button", selected_border = "button", spacing = 3 }
+
+# The scrollbar thumb: color, hover_color, pressed_color (while dragging), border.
+#scrollbar     = { color = "scroll_slider", hover_color = "scroll_hover", pressed_color = "accent_press" }
+
+# ---------------------------------------------------------------------------
+# The panel, notifications, title bars and window buttons
+# ---------------------------------------------------------------------------
+#[panel]                             # Cinnamon only
+#color         = "darker(bg, 0.14)"  # the panel's own color
+#menu_category = "accent"            # the main menu's selected category (default: a light grey)
+#menu_hover    = "lift(menu_bg, 0.7)"  # the main menu's hover: apps, categories, favorites (default: a step
+                                      # toward the text, set by Hover strength)
+#menu_hover_fg = "text"              # its text (left out: picked to read on menu_hover)
+#menu_fav_hover = "darker(accent, 0.2)"  # the favorites column's hover, and Cinnamon 6.4's sidebar
+                                      # (left out: menu_hover, moved as the column's color is)
+
+#[notification]
+#kind  = "line"                      # "line" (an accent line on top), "flat" or "bordered"
+#color = "accent"                    # the line or border color
+
+#[title_bar]
+#highlight      = 0.15               # the light line along the top of header bars (0 = none)
+#highlight_dark = 0.08               # the same on dark title bars
+#gradient_shape = "smooth"           # the title bar's own gradient: smooth, split or glass
+#split_step     = 0.4
+#glass_return   = 0.4
+
+# The window buttons' own colors (xl-Cheeselooks, Linked and Classic buttons);
+# close_hover works with every button style.
+#[title_buttons]
+#color         = "button"            # resting face, e.g. light grey buttons on a dark title bar
+#hover_color   = "button_hover"
+#pressed_color = "pressed"
+#border        = "border_strong"
+#hover_border  = "border_hover"
+#glyph         = "text"              # left out: picked to read on each face
+#close_hover   = "accent"            # "accent", "hover" (as the other buttons) or a color

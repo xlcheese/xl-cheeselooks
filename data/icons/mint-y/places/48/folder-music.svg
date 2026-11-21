@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="314.75 601.25 48 48" version="1.1"><defs><g transform="translate(313.24998,90.749994)" style="display:inline" id="folder_48">
+    <g id="g897" transform="matrix(0.99995795,0,0,0.97297297,1.7501892,-1.5878318)">
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="17" rx="2" ry="2" id="rect2-37" />
+      <path style="fill:#c89e6b" d="m 4,34 c 0,1.108 0.892,2 2,2 h 36 c 1.108,0 2,-0.892 2,-2 V 12 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 H 6 C 4.892,6 4,6.892 4,8" id="path4-4" />
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="15" rx="2" ry="2" id="rect6-5" />
+      <rect style="fill:#e8e8e8" width="36" height="16" x="6" y="13" rx="2" ry="2" id="rect8-25" />
+      <rect style="fill:#eeca8f" width="40" height="26" x="4" y="16" rx="2" ry="2" id="rect10-4" />
+      <path style="opacity:0.1;fill:#ffffff" d="M 6,6 C 4.892,6 4,6.892 4,8 V 9 C 4,7.892 4.892,7 6,7 h 11 c 3,0 4,4 7,4 h 18 c 1.108,0 2,0.892 2,2 v -1 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 Z" id="path12-7" />
+    </g>
+    <rect y="-1.749994" x="1.750021" height="48" width="48" id="rect4140-4-3" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="folder-music_48" transform="translate(10,10)">
+    <use height="100%" width="100%" transform="translate(-10.249979,502.25001)" id="use6333" xlink:href="#folder_48" y="0" x="0" />
+    <path style="display:inline;fill:#575757;fill-opacity:1;stroke:#4b4b4b;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" d="m 325.28848,610.75001 v 1.34946 1.41977 1.38461 8.86479 a 3.461538,2.7692304 0 0 0 -2.07693,-0.5571 3.461538,2.7692304 0 0 0 -3.46153,2.76923 3.461538,2.7692304 0 0 0 3.46153,2.76924 3.461538,2.7692304 0 0 0 3.46155,-2.76924 v -11.07692 h 9.69231 v 7.48017 a 3.461538,2.7692304 0 0 0 -2.07693,-0.55709 3.461538,2.7692304 0 0 0 -3.46154,2.76924 3.461538,2.7692304 0 0 0 3.46154,2.76923 3.461538,2.7692304 0 0 0 3.46154,-2.76923 v -9.69232 -1.38461 -2.76923 h -1.2467 z" id="rect4067-4-5-2-3-9" />
+  </g>
+  </svg>

@@ -1,0 +1,46 @@
+{
+  "format": 1,
+  "name": "xl-Gummy Dark",
+  "settings": {
+    "global": {
+      "accent": "#86ABD9",
+      "bg": "#272727",
+      "text": "#EBEBEB",
+      "roundness": 25,
+      "gradient": 39
+    },
+    "panel": {
+      "separate_colors": true,
+      "label_weight": "regular",
+      "menu_opacity": 93,
+      "panel_height": 34
+    },
+    "window_borders": {
+      "separate_colors": true,
+      "border": "#262626",
+      "title_bar_height": 38,
+      "title_gradient": 7,
+      "window_roundness": 35,
+      "button_style": "drawn",
+      "button_spacing": 4
+    },
+    "terminal": {
+      "separate_colors": true,
+      "bg": "#2B2B2B",
+      "text": "#E4E4E4"
+    },
+    "details": {
+      "tooltips": {
+        "custom": true,
+        "bg": "#2C3A4B"
+      },
+      "focus_ring": {
+        "custom": true,
+        "color": "#3F6088"
+      }
+    },
+    "style": {
+      "name": "xl-Gummy-Dark"
+    }
+  }
+}

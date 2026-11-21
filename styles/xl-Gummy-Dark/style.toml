@@ -1,0 +1,92 @@
+# xl-Gummy-Dark: xl-Gummy for dark colours.
+# The same design as xl-Gummy, retuned for a dark background: ink outlines
+# (darker than the surface) where the light style draws grey lines, hover
+# borders that brighten toward the text, a stronger drop shadow, faint glints
+# instead of bright highlights, and a recess that still shows on dark grey.
+# Built from xl_cheese's xl-Gummy (tools: see docs/design-spec.md).
+#
+# Alpha values are written for Depth 50. alpha_dark is what dark colours use;
+# alpha is the fallback if you pair this style with light colours.
+
+name = "xl-Gummy-Dark"
+author = "xl_cheese, dark tuning by Claude"
+description = "Bright, crisp glass buttons, sunken fields, boxed tabs with an accent glow. xl-Gummy for dark colours."
+
+adapt_strength = 0.6
+dividers = "lift(bg, 0.95)"
+
+# Glossy faces, as in Clearlooks Gummy: a crisp step at the middle of every
+# gradient (buttons, selection, menu and sidebar hover). split_step 0-1: how
+# sharp the step is. The Gradient slider still sets the overall strength.
+gradient_shape = "glass"
+split_step = 0.8       # the step at the middle (0 = no step, a smooth dip)
+glass_return = 0.8     # how far the bottom fades back up toward the top colour
+
+[defaults]
+roundness = 20
+gradient = 30
+depth = 50
+
+[edges.raised]
+border    = "darker(bg, 0.40)"
+highlight = { y = 1, blur = 2, color = "white", alpha = 0.20, alpha_dark = 0.08 }
+left      = { x = 1, blur = 1, color = "white", alpha = 0.20, alpha_dark = 0.08 }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.02, alpha_dark = 0.07 }
+right     = { x = 1, blur = 1, color = "white", alpha = 0.2, alpha_dark = 0.08 }
+recess = { color = "black", alpha = 0.08, light = "black", light_alpha = 0.35, light_alpha_dark = 0.18, alpha_dark = 0.18 }
+
+# Hover: same layers, darker border (lighter on dark themes), as Mint-Y does
+[edges.raised_hover]
+border    = "darker(bg, 0.35)"
+highlight = { y = 1, blur = 4, color = "white", alpha = 0.30, alpha_dark = 0.09 }
+left      = { x = 1, blur = 2, color = "white", alpha = 0.20, alpha_dark = 0.09 }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.02, alpha_dark = 0.07 }
+right     = { x = 1, blur = 1, color = "white", alpha = 0.2, alpha_dark = 0.09 }
+recess = { color = "black", alpha = 0.08, light = "black", light_alpha = 0.35, light_alpha_dark = 0.18, alpha_dark = 0.18 }
+
+[edges.linked_hover]
+border    = "darker(bg, 0.35)"
+highlight = { y = 1, blur = 4, color = "white", alpha = 0.30, alpha_dark = 0.09 }
+left      = { x = 1, blur = 2, color = "white", alpha = 0.20, alpha_dark = 0.09 }
+shade     = { y = -2, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.07 }
+right     = { x = 1, blur = 3, color = "white", alpha = 0.2, alpha_dark = 0.09 }
+
+[edges.sunken]
+border = "darker(bg, 0.20)"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.15, alpha_dark = 0.66 }
+recess = { color = "white", alpha = 0.08, light = "white", light_alpha = 0.35, light_alpha_dark = 0.12, alpha_dark = 0.08 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+
+[edges.flat]
+border = "none"
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", color = "darker(button, 0.06)", hover_color = "lift(button, 0.40)" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "lift(button_hover, 0.7)" }
+suggested      = { like = "button", border = "darker(accent, 0.8)", hover_color = "accent_hover" }
+destructive    = { like = "button", hover_color = "destructive", border = "darker(destructive, 0.8)" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.7)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+tab            = { tab_kind = "boxed", active_marker = "glow", hover_color = "bg" }
+menu_item      = { hover_color = "accent" }
+menubar_item   = { hover_edge = "raised", hover_color = "accent" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "darker(button, 0.03)", hover_color = "lift(button_hover,0.10)", selected_color = "button", selected_border = "border_hover", active_marker = "glow"}
+scrollbar      = { color = "accent", hover_color = "accent_hover", pressed_color = "accent_press", border = "accent_press" }
+
+[title_bar]
+highlight      = 0.15   # light title bars (the default)
+highlight_dark = 0.20   # dark title bars, i.e. light title text
+
+[panel]
+color = "darker(bg, 0.03)"
+
+[notification]
+kind = "bordered"        # "line" (today's look), "flat" or "bordered"
+color = "accent"     # optional: the line or border colour

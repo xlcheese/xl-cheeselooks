@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "name": "xl-Organ Harvest",
+  "settings": {
+    "global": {
+      "accent": "#E39A46",
+      "bg": "#F2F0F0",
+      "hover_in_ms": 45,
+      "hover_out_ms": 100
+    },
+    "panel": {
+      "separate_colors": true,
+      "accent": "#E9648C",
+      "bg": "#BF2E41",
+      "text": "#FFFFFF",
+      "label_weight": "regular",
+      "panel_opacity": 80,
+      "panel_height": 44,
+      "panel_shape": {
+        "gradient": 20
+      }
+    },
+    "window_borders": {
+      "separate_colors": true,
+      "title_bar": "#D6CE7D",
+      "title_text": "#08686F",
+      "border": "#A4CA64",
+      "title_bar_height": 40,
+      "border_width": 5,
+      "title_gradient": 36,
+      "window_roundness": 100,
+      "button_style": "gargantuan",
+      "button_glyphs": "chevrons"
+    },
+    "terminal": {
+      "separate_colors": true,
+      "bg": "#2B2B2B",
+      "text": "#E4E4E4"
+    },
+    "details": {
+      "tooltips": {
+        "custom": true,
+        "bg": "#FAEEEB"
+      },
+      "scrollbars": {
+        "custom": true
+      },
+      "sliders": {
+        "custom": true,
+        "roundness": 80
+      },
+      "switches": {
+        "custom": true,
+        "roundness": 80
+      },
+      "focus_ring": {
+        "custom": true,
+        "color": "#F3F3F3"
+      }
+    },
+    "style": {
+      "name": "xl-Cheeselooks"
+    }
+  }
+}

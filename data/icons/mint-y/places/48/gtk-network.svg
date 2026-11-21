@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="1312.75 89.25 48 48" version="1.1"><defs><g transform="translate(313.24998,90.749994)" style="display:inline" id="folder_48">
+    <g id="g897" transform="matrix(0.99995795,0,0,0.97297297,1.7501892,-1.5878318)">
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="17" rx="2" ry="2" id="rect2-37" />
+      <path style="fill:#c89e6b" d="m 4,34 c 0,1.108 0.892,2 2,2 h 36 c 1.108,0 2,-0.892 2,-2 V 12 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 H 6 C 4.892,6 4,6.892 4,8" id="path4-4" />
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="15" rx="2" ry="2" id="rect6-5" />
+      <rect style="fill:#e8e8e8" width="36" height="16" x="6" y="13" rx="2" ry="2" id="rect8-25" />
+      <rect style="fill:#eeca8f" width="40" height="26" x="4" y="16" rx="2" ry="2" id="rect10-4" />
+      <path style="opacity:0.1;fill:#ffffff" d="M 6,6 C 4.892,6 4,6.892 4,8 V 9 C 4,7.892 4.892,7 6,7 h 11 c 3,0 4,4 7,4 h 18 c 1.108,0 2,0.892 2,2 v -1 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 Z" id="path12-7" />
+    </g>
+    <rect y="-1.749994" x="1.750021" height="48" width="48" id="rect4140-4-3" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="gtk-network_48" transform="translate(10,10)">
+    <use height="100%" width="100%" transform="translate(987.75002,-9.7499944)" id="use6357" xlink:href="#folder_48" y="0" x="0" />
+    <path style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.849999;marker:none;enable-background:accumulate" id="path4112-19-69-3-1-46-59-9-8-3-9-3" d="m 1326.7501,112.64804 c -1.4141,0 -2.8132,0.74671 -3.3896,1.38787 l 3.3896,3.7141 3.4225,-3.68093 c -0.5764,-0.67433 -2.0085,-1.42104 -3.4225,-1.42104 z m 0,-6.44902 c -2.9567,0 -5.6067,1.18741 -7.784,3.00066 l 2.1192,2.27928 c 1.4504,-1.04662 3.7071,-2.05542 5.5792,-2.05542 1.9175,0 4.2816,1.03158 5.7523,2.12506 l 2.1834,-2.38236 c -2.1771,-1.81326 -4.8935,-2.96722 -7.8501,-2.96722 z m 0,-6.449014 c -4.5656,0 -8.7493,1.767584 -12.0001,4.712274 l 2.0734,2.35284 c 2.8989,-2.56097 5.9484,-3.84059 9.9267,-3.84059 3.9782,0 6.9349,1.20515 9.9725,3.89243 l 2.0275,-2.40468 c -3.2507,-2.94469 -7.4345,-4.712274 -12,-4.712274 z" />
+  </g>
+  </svg>

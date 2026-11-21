@@ -1,0 +1,85 @@
+# xl-Vintage: a nod to OS/2 Warp.
+# Hard square bevels (bright top and left, dark bottom and right, no blur),
+# the background pressed in round them; grey window buttons on a deep indigo
+# title bar; accent menu hovers; square everything.
+#
+# Alpha values are written for Depth 50. alpha_dark is used on dark surfaces
+# (dark themes, dark title bars).
+
+name = "xl-Vintage"
+author = "xl_cheese"
+description = "Hard square bevels, grey buttons on an indigo title bar: OS/2 Warp."
+
+adapt_strength = 0.6
+
+[defaults]
+roundness = 0
+gradient = 0
+depth = 50
+
+[edges.raised]
+border = "darker(bg, 0.25)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.99, alpha_dark = 0.12 }
+left      = { x = 2, blur = 1, color = "white", alpha = 0.99, alpha_dark = 0.12  }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.50 }
+right     = { x = 2, blur = 1, color = "black", alpha = 0.50 }
+recess = { color = "black", alpha = 0.12, light = "white", light_alpha = 0.50, light_alpha_dark = 0.1 }
+
+# Hover: same layers, darker border (lighter on dark themes), as Mint-Y does
+[edges.raised_hover]
+border = "darker(bg, 0.32)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.99, alpha_dark = 0.12 }
+left      = { x = 2, blur = 1, color = "white", alpha = 0.99, alpha_dark = 0.12  }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.50, alpha_dark = 0.50   }
+right     = { x = 2, blur = 1, color = "black", alpha = 0.50, alpha_dark = 0.50   }
+recess = { color = "black", alpha = 0.12, light = "white", light_alpha = 0.50, light_alpha_dark = 0.1 }
+
+[edges.linked_hover]
+border    = "darker(bg, 0.32)"
+highlight = { y = 2, blur = 1, color = "white", alpha = 0.60, alpha_dark = 0.12  }
+left      = { x = 2, blur = 1, color = "white", alpha = 0.50, alpha_dark = 0.12  }
+shade     = { y = -2, blur = 1, color = "black", alpha = 0.50, alpha_dark = 0.50  }
+right     = { x = 2, blur = 1, color = "black", alpha = 0.50, alpha_dark = 0.50  }
+
+[edges.sunken]
+border = "border_strong"
+inner  = { y = 2, blur = 1, color = "black", alpha = 0.15, alpha_dark = 0.30 }
+recess = { color = "black", alpha = 0.12, light = "white", light_alpha = 0.50, light_alpha_dark = 0.1 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+
+[edges.flat]
+border = "none"
+
+[widgets]
+button         = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(button, 0.35)" }
+linked         = { like = "button", hover_edge = "linked_hover", hover_color = "button_hover" }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.7)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_color = "bg" }
+menu_item      = { hover_color = "accent", hover_fg = "accent_fg" }
+menubar_item   = { hover_color = "accent", hover_fg = "accent_fg" }
+panel_button   = { edge = "raised", hover_edge = "raised_hover", color = "darker(button, 0.06)", hover_color = "button_hover", selected_color = "button", selected_border = "border_hover", active_marker = "none" }
+
+[title_bar]
+highlight      = 0.0   # light title bars (the default)
+highlight_dark = 0.0   # dark title bars, i.e. light title text
+
+[title_buttons]
+color       = "button"   # the theme's grey button face, not the blue-tinted one
+hover_color = "button_hover"
+close_hover = "hover"    # close hovers like the other two (no accent)
+
+[panel]
+color = "darker(bg, 0.03)"
+
+[notification]
+kind = "flat"        # "line" (today's look), "flat" or "bordered"
+color = "accent"     # optional: the line or border colour

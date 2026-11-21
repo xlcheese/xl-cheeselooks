@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="455 633.071 16 16" version="1.1"><defs><g transform="translate(459,121.92857)" id="folder_16">
+    <path style="fill:#eeca8f;fill-opacity:1;stroke-width:0.960769" d="M -2.413139e-7,1.9945055 V 12.148351 c 0,0 0,0.923077 0.9999999013139,0.923077 H 13 c 0,0 1,0 1,-0.923077 V 3.8406593 C 14,2.9175825 13,2.9175825 13,2.9175825 H 7.9999999 L 5.9999996,1.0714285 H 0.99999966 c 0,0 -0.9999999013139,0 -0.9999999013139,0.923077 z" id="path2" />
+    <rect y="-0.92857164" x="-1.0000001" height="16" width="16" id="rect4139-7" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="folder-music_16">
+    <use height="100%" width="100%" transform="translate(-3,512.07145)" id="use5804" xlink:href="#folder_16" y="0" x="0" />
+    <path style="display:inline;fill:#575757;fill-opacity:1;stroke:#4b4b4b;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" d="m 461.84615,639.68684 v 0.44982 0.47325 0.46154 2.95493 a 1.1538457,0.92307655 0 0 0 -0.69231,-0.1857 1.1538457,0.92307655 0 0 0 -1.15384,0.92308 1.1538457,0.92307655 0 0 0 1.15384,0.92308 1.1538457,0.92307655 0 0 0 1.15385,-0.92308 v -3.69231 h 3.23077 v 2.49339 a 1.1538457,0.92307655 0 0 0 -0.69231,-0.18569 1.1538457,0.92307655 0 0 0 -1.15384,0.92308 1.1538457,0.92307655 0 0 0 1.15384,0.92307 A 1.1538457,0.92307655 0 0 0 466,644.30223 v -3.23078 -0.46154 -0.92307 h -0.41557 z" id="rect4067-4-5-2-3-9-2-3-1" />
+  </g>
+  </svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="813.75 217.25 48 48" version="1.1"><defs><g transform="translate(313.24998,90.749994)" style="display:inline" id="folder_48">
+    <g id="g897" transform="matrix(0.99995795,0,0,0.97297297,1.7501892,-1.5878318)">
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="17" rx="2" ry="2" id="rect2-37" />
+      <path style="fill:#c89e6b" d="m 4,34 c 0,1.108 0.892,2 2,2 h 36 c 1.108,0 2,-0.892 2,-2 V 12 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 H 6 C 4.892,6 4,6.892 4,8" id="path4-4" />
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="15" rx="2" ry="2" id="rect6-5" />
+      <rect style="fill:#e8e8e8" width="36" height="16" x="6" y="13" rx="2" ry="2" id="rect8-25" />
+      <rect style="fill:#eeca8f" width="40" height="26" x="4" y="16" rx="2" ry="2" id="rect10-4" />
+      <path style="opacity:0.1;fill:#ffffff" d="M 6,6 C 4.892,6 4,6.892 4,8 V 9 C 4,7.892 4.892,7 6,7 h 11 c 3,0 4,4 7,4 h 18 c 1.108,0 2,0.892 2,2 v -1 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 Z" id="path12-7" />
+    </g>
+    <rect y="-1.749994" x="1.750021" height="48" width="48" id="rect4140-4-3" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="folder-publicshare_48" transform="translate(10,10)">
+    <use height="100%" width="100%" transform="translate(488.75002,118.25001)" id="use6341" xlink:href="#folder_48" y="0" x="0" />
+    <g id="g859-1-2-3" transform="matrix(1.1294118,0,0,1.1294118,162.54378,4.924743)">
+      <circle id="path8192-1-4-8" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,148.15963,-64.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <circle id="path8194-0-0-0" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,158.12818,-59.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <circle id="path8196-8-6-5" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,158.12818,-69.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <path d="m 593.625,198.15625 -10.0625,4.875 -1.8125,0.90625 1.8125,0.90625 10.03125,5.0625 0.90625,-1.8125 -8.21875,-4.15625 8.21875,-4 z" id="path8198-5-2-6" style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    </g>
+  </g>
+  </svg>

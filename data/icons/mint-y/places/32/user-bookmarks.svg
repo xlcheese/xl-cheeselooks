@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="1363 233 32 32" version="1.1"><defs><g transform="translate(366,90.000274)" style="display:inline" id="folder_32">
+    <g id="g841" transform="matrix(0.99997899,0,0,1,-0.99995837,14.999726)">
+      <rect style="opacity:0.2" width="28" height="18" x="2" y="11" rx="1.4" ry="1.4" id="rect2-3" />
+      <path style="fill:#c89e6b;fill-opacity:1" d="M 2,22.6 C 2,23.376 2.6244,24 3.4,24 H 28.6 C 29.376,24 30,23.376 30,22.6 V 7.4 C 30,6.6244 29.376,6 28.6,6 H 16 C 13.9,6 13.2,3 11.1,3 H 3.4 C 2.6244,3 2,3.6244 2,4.4" id="path4-6" />
+      <rect style="opacity:0.2" width="28" height="18" x="2" y="9" rx="1.4" ry="1.4" id="rect6-7" />
+      <rect style="fill:#e8e8e8" width="24" height="11" x="4" y="8" rx="1.4" ry="1.4" id="rect8-5" />
+      <g id="g829-5-6" transform="matrix(0.69997055,0,0,0.69229343,-0.7992932,-1.0765095)">
+        <rect style="fill:#eeca8f" width="40" height="26" x="4" y="16" rx="2" ry="2" id="rect10-35-3" />
+      </g>
+      <path style="opacity:0.1;fill:#ffffff" d="M 3.4004,3 C 2.6248,3 2,3.6248 2,4.4004 v 1 C 2,4.6248 2.6248,4 3.4004,4 H 11.1 c 2.1,0 2.8,3 4.9,3 H 28.6 C 29.375,7 30,7.6248 30,8.4004 v -1 C 30,6.6248 29.375,6 28.6,6 H 16 C 13.9,6 13.2,3 11.1,3 Z" id="path12-6" />
+    </g>
+    <rect y="14.999726" x="-1.0000004" height="32" width="32" id="rect4141-0-7" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="user-bookmarks_32" transform="translate(10,10)">
+    <use height="100%" width="100%" transform="translate(988,117.99973)" id="use6363" xlink:href="#folder_32" y="0" x="0" />
+    <path transform="matrix(0.85715904,-0.00713405,0.00713405,0.85715904,916.07927,90.715208)" id="path11922-3" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" d="m 530.9488,186.70897 c -0.77941,0.55189 -3.15759,-1.90601 -4.11253,-1.9179 -0.95532,-0.0119 -3.39494,2.38585 -4.16096,1.8149 -0.76573,-0.57072 0.83698,-3.59203 0.55319,-4.50391 -0.2839,-0.91223 -3.31818,-2.49151 -3.01189,-3.39647 0.30617,-0.90461 3.67487,-0.31399 4.45442,-0.86567 0.77986,-0.5519 1.3442,-3.92569 2.29952,-3.91404 0.95494,0.0116 1.43421,3.39798 2.19979,3.9689 0.76588,0.57114 4.14893,0.0653 4.43307,0.97746 0.28402,0.9118 -2.78848,2.41405 -3.09488,3.31858 -0.30652,0.90489 1.21999,3.96605 0.44027,4.51815 z" />
+  </g>
+  </svg>

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Theme Roller
+GenericName=Theme Settings
+Comment=Make your own xl-Cheeselooks theme for Linux Mint: colours, shapes, panel and window borders
+Exec=theme-roller
+Icon=xl-cheeselooks
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;
+Keywords=theme;colour;color;accent;appearance;cinnamon;gtk;

@@ -1,0 +1,64 @@
+{
+  "format": 1,
+  "name": "xl-Vintage",
+  "settings": {
+    "global": {
+      "accent": "#2B00A2",
+      "bg": "#D2D1D3",
+      "text": "#050505",
+      "hover_in_ms": 9,
+      "hover_out_ms": 31
+    },
+    "panel": {
+      "separate_colors": true,
+      "label_weight": "regular",
+      "menu_opacity": 93,
+      "panel_height": 34,
+      "panel_shape": {
+        "roundness": 20,
+        "gradient": 30
+      },
+      "menu_shape": {
+        "roundness": 20
+      }
+    },
+    "window_borders": {
+      "separate_colors": true,
+      "title_bar": "#2B00A2",
+      "title_text": "#F9F9F9",
+      "border": "#2B00A2",
+      "title_bar_height": 34,
+      "border_width": 4,
+      "title_gradient": 0,
+      "button_style": "linked"
+    },
+    "details": {
+      "tooltips": {
+        "custom": true,
+        "bg": "#F6FA9C"
+      },
+      "scrollbars": {
+        "custom": true,
+        "mode": "classic",
+        "roundness": 0
+      },
+      "sliders": {
+        "custom": true,
+        "roundness": 0
+      },
+      "switches": {
+        "custom": true,
+        "roundness": 0
+      },
+      "focus_ring": {
+        "custom": true,
+        "color": "#000000",
+        "width": 2,
+        "style": "solid"
+      }
+    },
+    "style": {
+      "name": "xl-Vintage"
+    }
+  }
+}

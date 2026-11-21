@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "name": "xl-Classic",
+  "settings": {
+    "global": {
+      "accent": "#6688BB",
+      "bg": "#EDEBE6",
+      "text": "#1A1A1A",
+      "roundness": 25
+    },
+    "panel": {
+      "separate_colors": true,
+      "label_weight": "regular",
+      "menu_opacity": 93,
+      "panel_height": 34
+    },
+    "window_borders": {
+      "separate_colors": true,
+      "title_bar": "#5178B2",
+      "title_text": "#FFFFFF",
+      "border": "#5178B2",
+      "title_bar_height": 40,
+      "title_gradient": 24,
+      "window_roundness": 40,
+      "button_style": "classic",
+      "button_spacing": 1
+    },
+    "details": {
+      "tooltips": {
+        "custom": true,
+        "bg": "#F6FA9C"
+      }
+    },
+    "style": {
+      "name": "xl-Classic"
+    }
+  }
+}

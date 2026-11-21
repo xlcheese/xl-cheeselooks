@@ -1,0 +1,4 @@
+/* xl-Cheeselooks colours for GTK 4 / libadwaita apps (the block apply keeps in
+   ~/.config/gtk-4.0/gtk.css; anything outside its markers is yours and is kept).
+   Turn this off with integration.libadwaita_colors = false. */
+{{include "libadwaita-1.5/colors.part"}}

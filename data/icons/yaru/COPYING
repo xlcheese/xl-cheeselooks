@@ -1,0 +1,19 @@
+Yaru folder icons, cut out of Ubuntu's source sheet
+(icons/src/fullcolor/accented-full/places/folders.svg,
+https://github.com/ubuntu/yaru) by tools/import-yaru-places.py, and
+recoloured by xl-Cheeselooks (front and back may differ, which Yaru's own
+colours don't).
+
+Copyright: Canonical Ltd and the Yaru contributors
+Licence: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+https://creativecommons.org/licenses/by-sa/4.0/
+
+These files, and the recoloured copies the Tool writes from them, are under
+the same licence. The rest of xl-Cheeselooks is GPL-3.0 or later.
+
+
+--------------------------------------------------------------------------
+Some icons here (the ones Yaru does not draw: recent, saved search, network, workgroup, bookmarks) are this style's folder with
+the picture from the matching Mint-Y icon, made by tools/compose-missing-places.py.
+Those pictures are from Mint-Y (https://github.com/linuxmint/mint-y-icons),
+CC BY-SA 4.0, by Sam Hewitt and Alexey Varfolomeev.

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><g transform="matrix(0.500000 0 0 0.500000 -0.500000 -0.500000)"><path style="fill:#3daee9;fill-opacity:1;stroke:none" d="M 2 3 L 2 10 L 1 10 L 1 29 L 12 29 L 13 29 L 31 29 L 31 8 L 30 8 L 30 5 L 16 5 L 14 3 L 2 3 z " />
+ <path style="fill-opacity:1;fill-rule:evenodd;fill:#3dae09" d="m 2,3 0,7 9,0 L 13,8 30,8 30,5 16,5 14,3 2,3 Z" />
+ <path style="fill:#ffffff;fill-opacity:0.2;fill-rule:evenodd" d="M 14 3 L 15 6 L 30 6 L 30 5 L 16 5 L 14 3 z M 13 8 L 11 10 L 1 10 L 1 11 L 12 11 L 13 8 z " />
+ <path style="fill-opacity:0.2;fill-rule:evenodd" d="M 13 8 L 11 9 L 2 9 L 2 10 L 11 10 L 13 8 z M 1 28 L 1 29 L 31 29 L 31 28 L 1 28 z " class="ColorScheme-Text" />
+ </g><svg x="0" y="0" width="16" height="16" viewBox="955 249.071 16 16" overflow="visible"><defs><g transform="translate(459,121.92857)" id="m-folder_16">
+    <path style="fill:#eeca8f;fill-opacity:1;stroke-width:0.960769" d="M -2.413139e-7,1.9945055 V 12.148351 c 0,0 0,0.923077 0.9999999013139,0.923077 H 13 c 0,0 1,0 1,-0.923077 V 3.8406593 C 14,2.9175825 13,2.9175825 13,2.9175825 H 7.9999999 L 5.9999996,1.0714285 H 0.99999966 c 0,0 -0.9999999013139,0 -0.9999999013139,0.923077 z" id="m-path2" />
+    <rect y="-0.92857164" x="-1.0000001" height="16" width="16" id="m-rect4139-7" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="m-folder-publicshare_16">
+    <g id="m-g859-1-2-3-2-8" transform="matrix(0.37647059,0,0,0.37647059,741.26459,181.33888)">
+      <circle id="m-path8192-1-4-8-6-7" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#3dae39;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,148.15963,-64.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <circle id="m-path8194-0-0-0-7-04" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#3dae39;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,158.12818,-59.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <circle id="m-path8196-8-6-5-5-8" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#3dae39;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" transform="matrix(1.5079365,0,0,1.5079365,158.12818,-69.49107)" cx="289.03125" cy="178.03125" r="1.96875" />
+      <path d="m 593.625,198.15625 -10.0625,4.875 -1.8125,0.90625 1.8125,0.90625 10.03125,5.0625 0.90625,-1.8125 -8.21875,-4.15625 8.21875,-4 z" id="m-path8198-5-2-6-6-0" style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#3dae39;fill-opacity:1;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" />
+    </g>
+  </g>
+  </svg></svg>

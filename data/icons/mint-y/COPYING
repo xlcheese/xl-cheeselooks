@@ -1,0 +1,10 @@
+Mint-Y places icons (folders and places), cut out of Mint's source sheet
+(src/places/src.svg, https://github.com/linuxmint/mint-y-icons) by
+tools/import-mint-y-places.py, and recoloured by xl-Cheeselooks.
+
+Copyright: 2015 Sam Hewitt <sam@snwh.org>, Alexey Varfolomeev
+Licence: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+https://creativecommons.org/licenses/by-sa/4.0/
+
+These files, and the recoloured copies the Tool writes from them, are under
+the same licence. The rest of xl-Cheeselooks is GPL-3.0 or later.

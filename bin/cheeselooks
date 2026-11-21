@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+"""The old name of `theme-roller <command>`, kept so existing setups keep working
+(the theme watcher's login entry pointed here until the next Apply)."""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from cheeselooks.cli import main  # noqa: E402
+
+sys.exit(main())

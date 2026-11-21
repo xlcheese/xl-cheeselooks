@@ -1,0 +1,9 @@
+{
+  "name": "Charcoal Panel",
+  "panel": {
+    "separate_colors": true,
+    "accent": "#9AA3AE",
+    "bg": "#1F2023",
+    "text": "#E8E8E8"
+  }
+}

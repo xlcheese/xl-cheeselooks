@@ -1,0 +1,76 @@
+# xl-Cheeselooks: the default style.
+# Muted buttons with a thin border and a gentle drop shadow, no bevel; fields
+# set into the window (a recess); flat toolbar and title buttons that rise on
+# hover; boxed tabs. A square, slightly darker panel with flat-looking buttons.
+#
+# Alpha values are written for Depth 50. alpha_dark is used on dark surfaces
+# (dark themes, dark title bars).
+
+name = "xl-Cheeselooks"
+author = "xl_cheese"
+description = "Muted buttons with a soft shadow, fields set into the window, boxed tabs."
+
+adapt_strength = 0.6
+
+[defaults]
+roundness = 15
+gradient = 10
+depth = 50
+panel_opacity = 70
+panel_roundness = 0
+
+[edges.raised]
+border    = "darker(bg, 0.23)"
+shadow    = { y = 3, blur = 3, color = "black", alpha = 0.05, alpha_dark = 0.09 }
+
+# Hover: same layers, darker border (lighter on dark themes), as Mint-Y does
+[edges.raised_hover]
+border    = "darker(bg, 0.23)"
+shadow    = { y = 3, blur = 4, color = "black", alpha = 0.09, alpha_dark = 0.12 }
+
+[edges.sunken]
+border = "border_strong"
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.05, alpha_dark = 0.30 }
+recess = { color = "black", alpha = 0.08, light = "white", light_alpha = 0.35, light_alpha_dark = 0.1 }
+
+[edges.focus]
+border = "accent"
+ring   = { width = 1, color = "accent", alpha = 0.5 }
+inner  = { y = 1, blur = 2, color = "black", alpha = 0.10, alpha_dark = 0.30 }
+
+[edges.flat]
+border = "none"
+
+[edges.panel_raised]
+border = "darker(button, 0.09)"
+shade  = { y = -4, blur = 9, color = "black", alpha = 0.03 }
+
+[edges.panel_hover]
+border = "button"
+shade  = { y = -1, color = "black", alpha = 0.08 }
+
+[widgets]
+button = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "lift(button, 0.65)" }
+linked         = { like = "button", hover_edge = "raised_hover"  }
+suggested      = { like = "button", border = "accent_press", hover_color = "accent_hover" }
+toolbar_button = { edge = "flat", hover_edge = "raised", pressed_edge = "sunken", hover_color = "lift(header, 0.7)" }
+title_button   = { like = "toolbar_button" }
+close_button   = { like = "title_button", hover_color = "accent" }
+entry          = { edge = "sunken", focus_edge = "focus" }
+combo          = { like = "button" }
+tab            = { tab_kind = "boxed", active_marker = "none", hover_color = "lift(header, 0.6)" }
+menu_item      = { hover_color = "menu_hover" }
+menubar_item   = { hover_color = "menubar_hover" }
+panel_button   = { edge = "panel_raised", hover_edge = "panel_hover", color = "darker(button, 0.04)", hover_color = "button", selected_color = "button", selected_border = "button", spacing = 3 }
+
+[title_bar]
+highlight      = 0.15   # light title bars (the default)
+highlight_dark = 0.25   # dark title bars, i.e. light title text
+
+[panel]
+color = "darker(bg, 0.11)"
+menu_category = "accent"     # the main menu's selected category
+
+[notification]
+kind = "bordered"        # "line" (today's look), "flat" or "bordered"
+color = "darker(bg, 0.2)"     # optional: the line or border colour

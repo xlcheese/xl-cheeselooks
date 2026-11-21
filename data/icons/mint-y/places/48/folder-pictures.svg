@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="813.75 89.25 48 48" version="1.1"><defs><g transform="translate(313.24998,90.749994)" style="display:inline" id="folder_48">
+    <g id="g897" transform="matrix(0.99995795,0,0,0.97297297,1.7501892,-1.5878318)">
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="17" rx="2" ry="2" id="rect2-37" />
+      <path style="fill:#c89e6b" d="m 4,34 c 0,1.108 0.892,2 2,2 h 36 c 1.108,0 2,-0.892 2,-2 V 12 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 H 6 C 4.892,6 4,6.892 4,8" id="path4-4" />
+      <rect style="opacity:0.2" width="40" height="26" x="4" y="15" rx="2" ry="2" id="rect6-5" />
+      <rect style="fill:#e8e8e8" width="36" height="16" x="6" y="13" rx="2" ry="2" id="rect8-25" />
+      <rect style="fill:#eeca8f" width="40" height="26" x="4" y="16" rx="2" ry="2" id="rect10-4" />
+      <path style="opacity:0.1;fill:#ffffff" d="M 6,6 C 4.892,6 4,6.892 4,8 V 9 C 4,7.892 4.892,7 6,7 h 11 c 3,0 4,4 7,4 h 18 c 1.108,0 2,0.892 2,2 v -1 c 0,-1.108 -0.892,-2 -2,-2 H 24 C 21,10 20,6 17,6 Z" id="path12-7" />
+    </g>
+    <rect y="-1.749994" x="1.750021" height="48" width="48" id="rect4140-4-3" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="folder-pictures_48" transform="translate(10,10)">
+    <use height="100%" width="100%" transform="translate(488.75002,-9.7499944)" id="use6337" xlink:href="#folder_48" y="0" x="0" />
+    <g transform="matrix(0.4772728,0,0,0.4772728,797.20456,68.547791)" id="layer1-12-1-8-6" style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1">
+      <g style="fill:#000000;fill-opacity:1;stroke:none;stroke-opacity:1" transform="translate(136.99999,1.0001635)" id="g5098-2-0-4-9" />
+      <path style="fill:#575757;fill-opacity:1;stroke:#102b68;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" d="m 53.714286,60.137965 -3.428571,6.857143 h -6.857143 c -1.899394,0 -3.428571,1.529177 -3.428571,3.428571 v 23.999995 c 0,1.89943 1.529177,3.42857 3.428571,3.42857 H 84.57143 c 1.89946,0 3.42857,-1.52914 3.42857,-3.42857 V 70.423679 c 0,-1.899394 -1.531481,-3.333717 -3.42857,-3.428571 H 77.714284 L 74.285713,60.137965 H 64 Z m 10.285713,10.285714 c 5.680663,0 10.285714,4.605085 10.285714,10.285713 0,5.680663 -4.605051,10.285714 -10.285713,10.285714 -5.680629,0 -10.285714,-4.605051 -10.285714,-10.285714 0,-5.680628 4.605085,-10.285713 10.285713,-10.285713 z" id="rect3990-7-5-7-3" />
+    </g>
+  </g>
+  </svg>

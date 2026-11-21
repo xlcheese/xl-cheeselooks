@@ -1,0 +1,28 @@
+# Bevel: an example style. Classic raised look: light top and left edges,
+# dark bottom and right; pressed buttons flip it so they look pushed in.
+# Looks best with Roundness 0 and Gradient 0, for example with
+# bg #D4D0C8, accent #0A246A, text #000000.
+name = "Bevel"
+author = "xl-Cheeselooks"
+description = "Classic bevel: light top and left, dark bottom and right."
+adapt_strength = 0.3
+[edges.raised]
+border = "mix(border_strong, text, 0.5)"
+highlight = { y = 2, color = "white", alpha = 0.9 }
+left      = { x = 2, color = "white", alpha = 0.9 }
+shade     = { y = -2, color = "black", alpha = 0.30 }
+right     = { x = 2, color = "black", alpha = 0.30 }
+[edges.raised_hover]
+border = "mix(border_strong, text, 0.6)"
+highlight = { y = 2, color = "white", alpha = 1.0 }
+left      = { x = 2, color = "white", alpha = 1.0 }
+shade     = { y = -2, color = "black", alpha = 0.35 }
+right     = { x = 2, color = "black", alpha = 0.35 }
+[edges.sunken]
+border = "mix(border_strong, text, 0.5)"
+highlight = { y = 2, color = "black", alpha = 0.30 }
+left      = { x = 2, color = "black", alpha = 0.30 }
+shade     = { y = -2, color = "white", alpha = 0.9 }
+right     = { x = 2, color = "white", alpha = 0.9 }
+[widgets]
+button = { edge = "raised", hover_edge = "raised_hover", pressed_edge = "sunken", hover_color = "button" }

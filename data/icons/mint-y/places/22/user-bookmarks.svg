@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="22" viewBox="1426.39 243.534 22 22" version="1.1"><defs><g id="folder_22" transform="translate(432,115)">
+    <g id="g841-8" transform="matrix(1,0,0,0.97297297,0,0.05405409)">
+      <rect style="opacity:0.2" width="20" height="12" x="1" y="8.5" rx="1" ry="1" id="rect2-7" />
+      <path style="fill:#c89e6b;fill-opacity:1" d="m 1,16 c 0,0.554 0.446,1 1,1 h 18 c 0.554,0 1,-0.446 1,-1 V 5 C 21,4.446 20.554,4 20,4 H 11 C 9.5,4 9,2 7.5,2 H 2 C 1.446,2 1,2.446 1,3" id="path4-9" />
+      <rect style="opacity:0.2" width="20" height="12" x="1" y="7.5" rx="1" ry="1" id="rect6-2" />
+      <rect style="fill:#e8e8e8" width="16" height="8" x="3" y="6" rx="1" ry="1" id="rect8-0" />
+      <rect style="fill:#eeca8f;fill-opacity:1" width="20" height="12" x="1" y="8" rx="1" ry="1" id="rect10-2" />
+      <path style="opacity:0.1;fill:#ffffff" d="M 2,2 C 1.446,2 1,2.446 1,3 v 0.5 c 0,-0.554 0.446,-1 1,-1 h 5.5 c 1.5,0 2,2 3.5,2 h 9 c 0.554,0 1,0.446 1,1 V 5 C 21,4.446 20.554,4 20,4 H 11 C 9.5,4 9,2 7.5,2 Z" id="path12-3" />
+    </g>
+    <rect y="0" x="0" height="22" width="22" id="rect4140-0-8" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  </g>
+  </defs><g id="user-bookmarks_22">
+    <use height="100%" width="100%" transform="translate(994.38532,128.53443)" id="use5846" xlink:href="#folder_22" y="0" x="0" />
+    <path transform="matrix(0.54546484,-0.00453985,0.00453985,0.54546484,1149.163,160.46705)" id="path11922-30" style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#575757;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;enable-background:accumulate" d="m 530.9488,186.70897 c -0.77941,0.55189 -3.15759,-1.90601 -4.11253,-1.9179 -0.95532,-0.0119 -3.39494,2.38585 -4.16096,1.8149 -0.76573,-0.57072 0.83698,-3.59203 0.55319,-4.50391 -0.2839,-0.91223 -3.31818,-2.49151 -3.01189,-3.39647 0.30617,-0.90461 3.67487,-0.31399 4.45442,-0.86567 0.77986,-0.5519 1.3442,-3.92569 2.29952,-3.91404 0.95494,0.0116 1.43421,3.39798 2.19979,3.9689 0.76588,0.57114 4.14893,0.0653 4.43307,0.97746 0.28402,0.9118 -2.78848,2.41405 -3.09488,3.31858 -0.30652,0.90489 1.21999,3.96605 0.44027,4.51815 z" />
+  </g>
+  </svg>
